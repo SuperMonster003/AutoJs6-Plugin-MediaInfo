@@ -23,8 +23,8 @@ class MediainfoPluginService : Service() {
     private val binder = object : IMediainfoPlugin.Stub() {
         override fun getInfo(): PluginInfo {
             return pluginInfo(
-                name = "MediaInfo",
-                description = "MediaInfo provider for AutoJs6.",
+                name = getString(R.string.app_name),
+                description = getString(R.string.plugin_description),
             )
         }
 
@@ -63,7 +63,7 @@ class MediainfoPluginService : Service() {
     }
 
     private fun <T> withMediaTempFile(mediaFd: ParcelFileDescriptor?, displayName: String?, block: (File) -> T): T {
-        require(mediaFd != null) { "MediaInfo file descriptor is null" }
+        require(mediaFd != null) { getString(R.string.error_media_file_descriptor_null) }
         val suffix = displayName
             ?.substringAfterLast('.', "")
             ?.takeIf { it.isNotBlank() && it.length <= 12 }
@@ -85,7 +85,7 @@ class MediainfoPluginService : Service() {
     private fun String?.toMediaInfoStreamKind(): MediaInfo.StreamKind {
         val normalized = this.orEmpty().trim().uppercase(Locale.US)
         return MediaInfo.StreamKind.entries.firstOrNull { it.name == normalized }
-            ?: throw IllegalArgumentException("Unsupported MediaInfo stream kind: $this")
+            ?: throw IllegalArgumentException(getString(R.string.error_unsupported_stream_kind, this))
     }
 
     private fun mediaInfoSections(inform: String): JSONObject {

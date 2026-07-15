@@ -1,0 +1,39 @@
+{
+  "$name": "简体中文",
+  "text_current_lowercase": "当前",
+  "text_plugin_synopsis": "用于读取媒体文件信息的 MediaInfo 插件",
+  "h3_languages_with_ascii": "语言 (Languages)",
+  "p_languages_all_supported_for_readme": "当前 README.md 支持以下语言",
+  "h3_introduction": "简介",
+  "p_introduction": "AutoJs6 MediaInfo 插件为 AutoJs6 提供基于 MediaInfo 的媒体元数据读取能力, 可生成完整报告, 查询单个参数, 并输出结构化 JSON 快照.",
+  "h3_functions": "功能",
+  "features": [
+    "提供 `mediainfo` 插件服务, 插件 ID 为 `mediainfo`.",
+    "支持 AutoJs6 Node 环境中的 `mediainfo.read(path, options)` 和 `mediainfo.get(path, streamKind, parameter, options)`.",
+    "支持通过 `org.autojs.plugin.MEDIAINFO` 发现并调用插件, 底层 AIDL 暴露 `inform`/`get`/`snapshot`.",
+    "内置 `arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 的 `libmediainfo.so`.",
+    "插件信息, 使用说明, README 与 CHANGELOG 均支持西班牙语/法语/俄语/阿拉伯语/日语/韩语/英语/简体中文/香港繁体/台湾繁体."
+  ],
+  "h3_usage": "使用示例",
+  "p_usage_path_note": "路径应为宿主允许访问的媒体文件路径, Node 环境可使用工作目录内的相对路径",
+  "h3_stream_kinds": "流类型",
+  "p_stream_kinds": "支持的 MediaInfo 流类型包括",
+  "p_stream_kinds_note": "`mediainfo.get()` 的 `streamKind` 不区分大小写, 会映射到 MediaInfo 原生流类型",
+  "h3_snapshot_options": "快照选项",
+  "snapshot_options": [
+    "`includeInform`: 是否在快照中包含 MediaInfo 文本报告, 默认 `true`.",
+    "`includeSections`: 是否解析报告并写入 `sections`, 默认 `true`."
+  ],
+  "h3_release_history": "发行历史",
+  "h5_for_more_release_history": "更多发行历史可参阅",
+  "h3_build": "构建",
+  "text_release_build": "Release 构建",
+  "p_build_params": "构建参数来自 `version.properties`, 当前最低 SDK 为 24, 目标 SDK 为 36",
+  "h3_resource_layout": "资源结构",
+  "p_resource_layout": "`strings.xml` 提供插件描述和错误信息本地化; `plugin_instruction.md` 提供宿主侧展示的插件使用说明. README 与 CHANGELOG 由 `.python/generate_markdown.py` 根据 JSON 源文件生成",
+  "h3_links": "相关链接",
+  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo 文档",
+  "text_link_mediainfo_official": "MediaInfo 官方项目",
+  "text_link_mediainfolib_official": "MediaInfoLib 官方项目",
+  "text_link_mediainfo_android": "MediaInfoLib Android 项目"
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plugin_description">MediaInfo plugin for reading media file information</string>
+    <string name="error_media_file_descriptor_null">MediaInfo file descriptor is null</string>
+    <string name="error_unsupported_stream_kind">Unsupported MediaInfo stream kind: %1$s</string>
+</resources>

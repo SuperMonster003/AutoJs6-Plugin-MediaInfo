@@ -1,0 +1,39 @@
+{
+  "$name": "繁體中文 (台灣)",
+  "text_current_lowercase": "目前",
+  "text_plugin_synopsis": "用於讀取媒體檔案資訊的 MediaInfo 外掛",
+  "h3_languages_with_ascii": "語言 (Languages)",
+  "p_languages_all_supported_for_readme": "目前 README.md 支援以下語言",
+  "h3_introduction": "簡介",
+  "p_introduction": "AutoJs6 MediaInfo 外掛為 AutoJs6 提供基於 MediaInfo 的媒體中繼資料讀取能力, 可產生完整報告, 查詢單一參數, 並輸出結構化 JSON 快照.",
+  "h3_functions": "功能",
+  "features": [
+    "提供 `mediainfo` 外掛服務, 外掛 ID 為 `mediainfo`.",
+    "支援 AutoJs6 Node 環境中的 `mediainfo.read(path, options)` 和 `mediainfo.get(path, streamKind, parameter, options)`.",
+    "支援透過 `org.autojs.plugin.MEDIAINFO` 探索並呼叫外掛, 底層 AIDL 暴露 `inform`/`get`/`snapshot`.",
+    "內建 `arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 的 `libmediainfo.so`.",
+    "外掛資訊, 使用說明, README 與 CHANGELOG 均支援西班牙語/法語/俄語/阿拉伯語/日語/韓語/英語/簡體中文/香港繁體/台灣繁體."
+  ],
+  "h3_usage": "使用範例",
+  "p_usage_path_note": "路徑應為宿主允許存取的媒體檔案路徑, Node 環境可使用工作目錄內的相對路徑",
+  "h3_stream_kinds": "串流類型",
+  "p_stream_kinds": "支援的 MediaInfo 串流類型包括",
+  "p_stream_kinds_note": "`mediainfo.get()` 的 `streamKind` 不區分大小寫, 會對應到 MediaInfo 原生串流類型",
+  "h3_snapshot_options": "快照選項",
+  "snapshot_options": [
+    "`includeInform`: 是否在快照中包含 MediaInfo 文字報告, 預設 `true`.",
+    "`includeSections`: 是否解析報告並寫入 `sections`, 預設 `true`."
+  ],
+  "h3_release_history": "發行歷史",
+  "h5_for_more_release_history": "更多發行歷史可參閱",
+  "h3_build": "建置",
+  "text_release_build": "Release 建置",
+  "p_build_params": "建置參數來自 `version.properties`, 目前最低 SDK 為 24, 目標 SDK 為 36",
+  "h3_resource_layout": "資源結構",
+  "p_resource_layout": "`strings.xml` 提供外掛描述和錯誤資訊在地化; `plugin_instruction.md` 提供宿主側展示的外掛使用說明. README 與 CHANGELOG 由 `.python/generate_markdown.py` 根據 JSON 原始檔生成",
+  "h3_links": "相關連結",
+  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo 文件",
+  "text_link_mediainfo_official": "MediaInfo 官方專案",
+  "text_link_mediainfolib_official": "MediaInfoLib 官方專案",
+  "text_link_mediainfo_android": "MediaInfoLib Android 專案"
+}

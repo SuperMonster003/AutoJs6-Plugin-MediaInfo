@@ -1,0 +1,16 @@
+******
+
+### 发行历史
+
+******
+
+# v1.0.0
+
+###### 2026/07/15
+
+* `新增` MediaInfo 插件服务, 插件 ID 为 `mediainfo`, 引擎为 `mediainfo`
+* `新增` 支持通过 `org.autojs.plugin.MEDIAINFO` 发现并调用插件
+* `新增` 支持 `inform`/`get`/`snapshot` 能力, 可生成完整媒体报告, 查询单个参数, 输出结构化 JSON 快照
+* `新增` 内置 `arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 的 `libmediainfo.so`, 并支持 `universal` 通用包
+* `新增` 插件运行时信息上报支持的 ABI 列表, 发布 APK 文件名包含版本号/ABI 变体和 CRC32 摘要
+* `新增` 插件信息, 使用说明, README 与 CHANGELOG 的多语言资源: 西班牙语/法语/俄语/阿拉伯语/日语/韩语/英语/简体中文/香港繁体/台湾繁体

@@ -1,0 +1,39 @@
+{
+  "$name": "العربية",
+  "text_current_lowercase": "الحالية",
+  "text_plugin_synopsis": "مكون MediaInfo الإضافي لقراءة معلومات ملفات الوسائط",
+  "h3_languages_with_ascii": "اللغات",
+  "p_languages_all_supported_for_readme": "يدعم README.md الحالي اللغات التالية",
+  "h3_introduction": "مقدمة",
+  "p_introduction": "يوفر مكون AutoJs6 MediaInfo الإضافي قدرة قراءة بيانات الوسائط الوصفية في AutoJs6 اعتمادا على MediaInfo, مع دعم التقارير الكاملة, واستعلام المعلمات الفردية, ولقطات JSON المنظمة.",
+  "h3_functions": "الميزات",
+  "features": [
+    "يوفر خدمة المكون الإضافي `mediainfo` مع معرف المكون `mediainfo`.",
+    "يدعم `mediainfo.read(path, options)` و `mediainfo.get(path, streamKind, parameter, options)` في بيئة AutoJs6 Node.",
+    "يدعم الاكتشاف والاستدعاء من المضيف عبر `org.autojs.plugin.MEDIAINFO`, مع كشف `inform` و `get` و `snapshot` عبر واجهة AIDL الأساسية.",
+    "يتضمن `libmediainfo.so` من أجل `arm64-v8a` و `armeabi-v7a` و `x86_64` و `x86`.",
+    "تمت ترجمة بيانات المكون الإضافي, وتعليمات الاستخدام, و README, و changelog إلى الإسبانية والفرنسية والروسية والعربية واليابانية والكورية والإنجليزية والصينية المبسطة والصينية التقليدية لهونغ كونغ والصينية التقليدية لتايوان."
+  ],
+  "h3_usage": "الاستخدام",
+  "p_usage_path_note": "يجب أن يشير المسار إلى ملف وسائط يستطيع المضيف الوصول إليه. في بيئة Node, تدعم المسارات النسبية داخل دليل العمل",
+  "h3_stream_kinds": "أنواع التدفقات",
+  "p_stream_kinds": "تشمل أنواع تدفقات MediaInfo المدعومة",
+  "p_stream_kinds_note": "`streamKind` في `mediainfo.get()` غير حساس لحالة الأحرف ويرتبط بأنواع تدفقات MediaInfo الأصلية",
+  "h3_snapshot_options": "خيارات اللقطة",
+  "snapshot_options": [
+    "`includeInform`: تضمين تقرير MediaInfo النصي في اللقطة, الافتراضي `true`.",
+    "`includeSections`: تحليل التقرير إلى `sections`, الافتراضي `true`."
+  ],
+  "h3_release_history": "سجل الإصدارات",
+  "h5_for_more_release_history": "لمزيد من سجل الإصدارات",
+  "h3_build": "البناء",
+  "text_release_build": "بناء Release",
+  "p_build_params": "تأتي معاملات البناء من `version.properties`; الحد الأدنى الحالي من SDK هو 24 و SDK الهدف هو 36",
+  "h3_resource_layout": "هيكل الموارد",
+  "p_resource_layout": "يحتوي `strings.xml` على أوصاف المكون الإضافي ورسائل الخطأ المترجمة; ويحتوي `plugin_instruction.md` على تعليمات الاستخدام التي يعرضها المضيف. يتم إنشاء ملفات README و CHANGELOG من مصادر JSON بواسطة `.python/generate_markdown.py`",
+  "h3_links": "روابط",
+  "text_link_autojs6_mediainfo_docs": "وثائق AutoJs6 MediaInfo",
+  "text_link_mediainfo_official": "مشروع MediaInfo الرسمي",
+  "text_link_mediainfolib_official": "مشروع MediaInfoLib الرسمي",
+  "text_link_mediainfo_android": "مشروع MediaInfoLib Android"
+}

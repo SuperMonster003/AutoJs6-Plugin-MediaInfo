@@ -1,0 +1,39 @@
+{
+  "$name": "日本語",
+  "text_current_lowercase": "現在",
+  "text_plugin_synopsis": "メディアファイル情報を読み取る MediaInfo プラグイン",
+  "h3_languages_with_ascii": "言語 (Languages)",
+  "p_languages_all_supported_for_readme": "現在の README.md は次の言語をサポートしています",
+  "h3_introduction": "概要",
+  "p_introduction": "AutoJs6 MediaInfo プラグインは AutoJs6 に MediaInfo ベースのメディアメタデータ読み取り機能を提供し, 完全なレポート, 単一パラメータ検索, 構造化 JSON スナップショットを出力できます.",
+  "h3_functions": "機能",
+  "features": [
+    "`mediainfo` プラグインサービスを提供し, プラグイン ID は `mediainfo` です.",
+    "AutoJs6 Node 環境の `mediainfo.read(path, options)` と `mediainfo.get(path, streamKind, parameter, options)` をサポートします.",
+    "`org.autojs.plugin.MEDIAINFO` によるホスト検出と呼び出しをサポートし, 下位 AIDL インターフェースは `inform`/`get`/`snapshot` を公開します.",
+    "`arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 向けの `libmediainfo.so` を同梱します.",
+    "プラグイン情報, 使用説明, README, CHANGELOG はスペイン語/フランス語/ロシア語/アラビア語/日本語/韓国語/英語/簡体字中国語/香港繁体字/台湾繁体字をサポートします."
+  ],
+  "h3_usage": "使用例",
+  "p_usage_path_note": "パスはホストがアクセスできるメディアファイルを指す必要があります, Node 環境では作業ディレクトリ内の相対パスを使用できます",
+  "h3_stream_kinds": "ストリーム種別",
+  "p_stream_kinds": "サポートされる MediaInfo ストリーム種別は次のとおりです",
+  "p_stream_kinds_note": "`mediainfo.get()` の `streamKind` は大文字小文字を区別せず, MediaInfo のネイティブストリーム種別にマップされます",
+  "h3_snapshot_options": "スナップショットオプション",
+  "snapshot_options": [
+    "`includeInform`: スナップショットに MediaInfo テキストレポートを含めるかどうか, 既定値は `true`.",
+    "`includeSections`: レポートを解析して `sections` に書き込むかどうか, 既定値は `true`."
+  ],
+  "h3_release_history": "リリース履歴",
+  "h5_for_more_release_history": "その他のリリース履歴",
+  "h3_build": "ビルド",
+  "text_release_build": "Release ビルド",
+  "p_build_params": "ビルドパラメータは `version.properties` から取得されます, 現在の最小 SDK は 24, ターゲット SDK は 36 です",
+  "h3_resource_layout": "リソース構成",
+  "p_resource_layout": "`strings.xml` はローカライズされたプラグイン説明とエラーメッセージを提供します; `plugin_instruction.md` はホスト側に表示されるプラグイン使用説明を提供します. README と CHANGELOG は `.python/generate_markdown.py` により JSON ソースから生成されます",
+  "h3_links": "関連リンク",
+  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo ドキュメント",
+  "text_link_mediainfo_official": "MediaInfo 公式プロジェクト",
+  "text_link_mediainfolib_official": "MediaInfoLib 公式プロジェクト",
+  "text_link_mediainfo_android": "MediaInfoLib Android プロジェクト"
+}

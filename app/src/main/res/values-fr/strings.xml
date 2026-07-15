@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plugin_description">Plugin MediaInfo pour lire les informations des fichiers multimédias</string>
+    <string name="error_media_file_descriptor_null">Le descripteur de fichier MediaInfo est null</string>
+    <string name="error_unsupported_stream_kind">Type de flux MediaInfo non pris en charge: %1$s</string>
+</resources>

@@ -1,0 +1,39 @@
+{
+  "$name": "Français",
+  "text_current_lowercase": "actuel",
+  "text_plugin_synopsis": "Plugin MediaInfo pour lire les informations des fichiers multimédias",
+  "h3_languages_with_ascii": "Langues",
+  "p_languages_all_supported_for_readme": "Le README.md actuel prend en charge les langues suivantes",
+  "h3_introduction": "Introduction",
+  "p_introduction": "Le plugin AutoJs6 MediaInfo fournit a AutoJs6 une lecture des métadonnées multimédias basée sur MediaInfo. Il peut produire des rapports complets, interroger des paramètres individuels et sortir des instantanés JSON structurés.",
+  "h3_functions": "Fonctions",
+  "features": [
+    "Fournit le service de plugin `mediainfo` avec l'ID de plugin `mediainfo`.",
+    "Prend en charge `mediainfo.read(path, options)` et `mediainfo.get(path, streamKind, parameter, options)` dans l'environnement AutoJs6 Node.",
+    "Prend en charge la découverte et l'appel par l'hôte via `org.autojs.plugin.MEDIAINFO`, avec `inform`, `get` et `snapshot` exposés par l'interface AIDL sous-jacente.",
+    "Inclut `libmediainfo.so` pour `arm64-v8a`, `armeabi-v7a`, `x86_64` et `x86`.",
+    "Les métadonnées du plugin, les instructions d'utilisation, le README et le changelog sont localisés en espagnol, français, russe, arabe, japonais, coréen, anglais, chinois simplifié, chinois traditionnel de Hong Kong et chinois traditionnel de Taiwan."
+  ],
+  "h3_usage": "Utilisation",
+  "p_usage_path_note": "Le chemin doit pointer vers un fichier multimédia accessible par l'hôte. Dans l'environnement Node, les chemins relatifs du répertoire de travail sont pris en charge",
+  "h3_stream_kinds": "Types De Flux",
+  "p_stream_kinds": "Les types de flux MediaInfo pris en charge incluent",
+  "p_stream_kinds_note": "`streamKind` dans `mediainfo.get()` n'est pas sensible a la casse et correspond aux types de flux natifs de MediaInfo",
+  "h3_snapshot_options": "Options D'instantané",
+  "snapshot_options": [
+    "`includeInform`: inclut le rapport texte MediaInfo dans l'instantané, valeur par défaut `true`.",
+    "`includeSections`: analyse le rapport dans `sections`, valeur par défaut `true`."
+  ],
+  "h3_release_history": "Historique Des Versions",
+  "h5_for_more_release_history": "Pour plus d'historique des versions",
+  "h3_build": "Compilation",
+  "text_release_build": "Compilation Release",
+  "p_build_params": "Les paramètres de compilation proviennent de `version.properties`; le SDK minimal actuel est 24 et le SDK cible est 36",
+  "h3_resource_layout": "Structure Des Ressources",
+  "p_resource_layout": "`strings.xml` contient les descriptions localisées du plugin et les messages d'erreur; `plugin_instruction.md` contient les instructions d'utilisation affichées par l'hôte. Les fichiers README et CHANGELOG sont générés depuis des sources JSON par `.python/generate_markdown.py`",
+  "h3_links": "Liens",
+  "text_link_autojs6_mediainfo_docs": "Documentation AutoJs6 MediaInfo",
+  "text_link_mediainfo_official": "Projet officiel MediaInfo",
+  "text_link_mediainfolib_official": "Projet officiel MediaInfoLib",
+  "text_link_mediainfo_android": "Projet MediaInfoLib Android"
+}

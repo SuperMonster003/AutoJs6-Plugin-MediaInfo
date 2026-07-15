@@ -1,0 +1,8 @@
+{
+  "repo_url": "https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo",
+  "docs_mediainfo_url": "https://docs.autojs6.com/#/mediainfo",
+  "mediainfo_official_url": "https://mediaarea.net/en/MediaInfo",
+  "mediainfolib_url": "https://github.com/MediaArea/MediaInfoLib",
+  "mediainfo_android_url": "https://github.com/olegazyx/MediaInfoLib-android",
+  "stream_kinds": "general, video, audio, text, other,\nimage, menu"
+}

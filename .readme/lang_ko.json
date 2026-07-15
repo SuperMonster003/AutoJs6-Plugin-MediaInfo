@@ -1,0 +1,39 @@
+{
+  "$name": "한국어",
+  "text_current_lowercase": "현재",
+  "text_plugin_synopsis": "미디어 파일 정보를 읽는 MediaInfo 플러그인",
+  "h3_languages_with_ascii": "언어 (Languages)",
+  "p_languages_all_supported_for_readme": "현재 README.md 는 다음 언어를 지원합니다",
+  "h3_introduction": "소개",
+  "p_introduction": "AutoJs6 MediaInfo 플러그인은 AutoJs6에 MediaInfo 기반 미디어 메타데이터 읽기 기능을 제공하며, 전체 보고서, 단일 매개변수 조회, 구조화된 JSON 스냅샷 출력을 지원합니다.",
+  "h3_functions": "기능",
+  "features": [
+    "`mediainfo` 플러그인 서비스를 제공하며, 플러그인 ID 는 `mediainfo` 입니다.",
+    "AutoJs6 Node 환경의 `mediainfo.read(path, options)` 및 `mediainfo.get(path, streamKind, parameter, options)` 를 지원합니다.",
+    "`org.autojs.plugin.MEDIAINFO` 를 통한 호스트 검색 및 호출을 지원하며, 하위 AIDL 인터페이스는 `inform`/`get`/`snapshot` 을 노출합니다.",
+    "`arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 용 `libmediainfo.so` 를 포함합니다.",
+    "플러그인 메타데이터, 사용 설명, README 및 CHANGELOG 는 스페인어/프랑스어/러시아어/아랍어/일본어/한국어/영어/중국어 간체/홍콩 번체/대만 번체를 지원합니다."
+  ],
+  "h3_usage": "사용 예시",
+  "p_usage_path_note": "경로는 호스트가 접근할 수 있는 미디어 파일을 가리켜야 하며, Node 환경에서는 작업 디렉터리 안의 상대 경로를 사용할 수 있습니다",
+  "h3_stream_kinds": "스트림 종류",
+  "p_stream_kinds": "지원되는 MediaInfo 스트림 종류는 다음과 같습니다",
+  "p_stream_kinds_note": "`mediainfo.get()` 의 `streamKind` 는 대소문자를 구분하지 않으며 MediaInfo 네이티브 스트림 종류로 매핑됩니다",
+  "h3_snapshot_options": "스냅샷 옵션",
+  "snapshot_options": [
+    "`includeInform`: 스냅샷에 MediaInfo 텍스트 보고서를 포함할지 여부, 기본값은 `true` 입니다.",
+    "`includeSections`: 보고서를 파싱해 `sections` 에 기록할지 여부, 기본값은 `true` 입니다."
+  ],
+  "h3_release_history": "릴리스 기록",
+  "h5_for_more_release_history": "더 많은 릴리스 기록",
+  "h3_build": "빌드",
+  "text_release_build": "Release 빌드",
+  "p_build_params": "빌드 매개변수는 `version.properties` 에서 가져오며, 현재 최소 SDK 는 24, 대상 SDK 는 36 입니다",
+  "h3_resource_layout": "리소스 구조",
+  "p_resource_layout": "`strings.xml` 은 현지화된 플러그인 설명과 오류 메시지를 제공합니다; `plugin_instruction.md` 는 호스트에 표시되는 플러그인 사용 설명을 제공합니다. README 와 CHANGELOG 는 `.python/generate_markdown.py` 가 JSON 소스에서 생성합니다",
+  "h3_links": "관련 링크",
+  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo 문서",
+  "text_link_mediainfo_official": "MediaInfo 공식 프로젝트",
+  "text_link_mediainfolib_official": "MediaInfoLib 공식 프로젝트",
+  "text_link_mediainfo_android": "MediaInfoLib Android 프로젝트"
+}

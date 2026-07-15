@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plugin_description">مكون MediaInfo الإضافي لقراءة معلومات ملفات الوسائط</string>
+    <string name="error_media_file_descriptor_null">واصف ملف MediaInfo فارغ</string>
+    <string name="error_unsupported_stream_kind">نوع تدفق MediaInfo غير مدعوم: %1$s</string>
+</resources>

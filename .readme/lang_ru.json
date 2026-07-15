@@ -1,0 +1,39 @@
+{
+  "$name": "Русский",
+  "text_current_lowercase": "текущий",
+  "text_plugin_synopsis": "Плагин MediaInfo для чтения информации о медиафайлах",
+  "h3_languages_with_ascii": "Языки",
+  "p_languages_all_supported_for_readme": "Текущий README.md поддерживает следующие языки",
+  "h3_introduction": "Введение",
+  "p_introduction": "Плагин AutoJs6 MediaInfo предоставляет AutoJs6 чтение медиа метаданных на базе MediaInfo. Он может создавать полные отчеты, запрашивать отдельные параметры и выводить структурированные JSON снимки.",
+  "h3_functions": "Возможности",
+  "features": [
+    "Предоставляет сервис плагина `mediainfo` с ID плагина `mediainfo`.",
+    "Поддерживает `mediainfo.read(path, options)` и `mediainfo.get(path, streamKind, parameter, options)` в среде AutoJs6 Node.",
+    "Поддерживает обнаружение и вызов хостом через `org.autojs.plugin.MEDIAINFO`, а нижний интерфейс AIDL предоставляет `inform`, `get` и `snapshot`.",
+    "Включает `libmediainfo.so` для `arm64-v8a`, `armeabi-v7a`, `x86_64` и `x86`.",
+    "Метаданные плагина, инструкции по использованию, README и changelog локализованы на испанский, французский, русский, арабский, японский, корейский, английский, упрощенный китайский, традиционный китайский Гонконга и традиционный китайский Тайваня."
+  ],
+  "h3_usage": "Использование",
+  "p_usage_path_note": "Путь должен указывать на медиафайл, доступный хосту. В среде Node поддерживаются относительные пути внутри рабочего каталога",
+  "h3_stream_kinds": "Типы Потоков",
+  "p_stream_kinds": "Поддерживаемые типы потоков MediaInfo включают",
+  "p_stream_kinds_note": "`streamKind` в `mediainfo.get()` не зависит от регистра и сопоставляется с нативными типами потоков MediaInfo",
+  "h3_snapshot_options": "Параметры Снимка",
+  "snapshot_options": [
+    "`includeInform`: включает текстовый отчет MediaInfo в снимок, по умолчанию `true`.",
+    "`includeSections`: разбирает отчет в `sections`, по умолчанию `true`."
+  ],
+  "h3_release_history": "История Выпусков",
+  "h5_for_more_release_history": "Больше истории выпусков",
+  "h3_build": "Сборка",
+  "text_release_build": "Release сборка",
+  "p_build_params": "Параметры сборки берутся из `version.properties`; текущий минимальный SDK равен 24, целевой SDK равен 36",
+  "h3_resource_layout": "Структура Ресурсов",
+  "p_resource_layout": "`strings.xml` содержит локализованные описания плагина и сообщения об ошибках; `plugin_instruction.md` содержит инструкции по использованию, отображаемые хостом. Файлы README и CHANGELOG генерируются из JSON источников с помощью `.python/generate_markdown.py`",
+  "h3_links": "Ссылки",
+  "text_link_autojs6_mediainfo_docs": "Документация AutoJs6 MediaInfo",
+  "text_link_mediainfo_official": "Официальный проект MediaInfo",
+  "text_link_mediainfolib_official": "Официальный проект MediaInfoLib",
+  "text_link_mediainfo_android": "Проект MediaInfoLib Android"
+}

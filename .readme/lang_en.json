@@ -1,0 +1,39 @@
+{
+  "$name": "English",
+  "text_current_lowercase": "current",
+  "text_plugin_synopsis": "MediaInfo plugin for reading media file information",
+  "h3_languages_with_ascii": "Languages",
+  "p_languages_all_supported_for_readme": "The current README.md supports the following languages",
+  "h3_introduction": "Introduction",
+  "p_introduction": "The AutoJs6 MediaInfo Plugin provides MediaInfo-powered media metadata reading for AutoJs6. It can produce full reports, query individual parameters, and output structured JSON snapshots.",
+  "h3_functions": "Features",
+  "features": [
+    "Provides the `mediainfo` plugin service with plugin ID `mediainfo`.",
+    "Supports `mediainfo.read(path, options)` and `mediainfo.get(path, streamKind, parameter, options)` in the AutoJs6 Node environment.",
+    "Supports host discovery and invocation through `org.autojs.plugin.MEDIAINFO`, with `inform`, `get`, and `snapshot` exposed through the underlying AIDL interface.",
+    "Bundles `libmediainfo.so` for `arm64-v8a`, `armeabi-v7a`, `x86_64`, and `x86`.",
+    "Plugin metadata, usage instructions, README, and changelog are localized for Spanish, French, Russian, Arabic, Japanese, Korean, English, Simplified Chinese, Hong Kong Traditional Chinese, and Taiwan Traditional Chinese."
+  ],
+  "h3_usage": "Usage",
+  "p_usage_path_note": "The path must point to a media file the host can access. In the Node environment, relative paths inside the working directory are supported",
+  "h3_stream_kinds": "Stream Kinds",
+  "p_stream_kinds": "Supported MediaInfo stream kinds include",
+  "p_stream_kinds_note": "`streamKind` in `mediainfo.get()` is case-insensitive and maps to native MediaInfo stream kinds",
+  "h3_snapshot_options": "Snapshot Options",
+  "snapshot_options": [
+    "`includeInform`: include the MediaInfo text report in the snapshot, default `true`.",
+    "`includeSections`: parse the report into `sections`, default `true`."
+  ],
+  "h3_release_history": "Release History",
+  "h5_for_more_release_history": "For more release history",
+  "h3_build": "Build",
+  "text_release_build": "Release build",
+  "p_build_params": "Build parameters come from `version.properties`; the current minimum SDK is 24 and target SDK is 36",
+  "h3_resource_layout": "Resource Layout",
+  "p_resource_layout": "`strings.xml` contains localized plugin descriptions and error messages; `plugin_instruction.md` contains usage instructions displayed by the host. README and CHANGELOG files are generated from JSON sources by `.python/generate_markdown.py`",
+  "h3_links": "Links",
+  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo documentation",
+  "text_link_mediainfo_official": "MediaInfo official project",
+  "text_link_mediainfolib_official": "MediaInfoLib official project",
+  "text_link_mediainfo_android": "MediaInfoLib Android project"
+}

@@ -1,0 +1,20 @@
+{
+  "changelog_label_hint": "힌트",
+  "changelog_label_feature": "추가",
+  "changelog_label_fix": "수정",
+  "changelog_label_improvement": "개선",
+  "changelog_label_dependency": "의존성",
+  "$data": {
+    "v1.0.0": {
+      "released_date": "2026/07/15",
+      "feature": [
+        "플러그인 ID `mediainfo`, 엔진 `mediainfo` 인 MediaInfo 플러그인 서비스 추가",
+        "`org.autojs.plugin.MEDIAINFO` 를 통한 호스트 검색 및 호출 추가",
+        "전체 미디어 보고서, 단일 매개변수 조회, 구조화된 JSON 스냅샷을 위한 `inform`/`get`/`snapshot` 기능 추가",
+        "`arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 용 `libmediainfo.so` 와 `universal` APK 변형 포함",
+        "플러그인 런타임 정보에 지원 ABI 메타데이터를 추가하고 릴리스 APK 파일명에 버전, ABI 변형, CRC32 요약 포함",
+        "스페인어/프랑스어/러시아어/아랍어/일본어/한국어/영어/중국어 간체/홍콩 번체/대만 번체용 플러그인 메타데이터, 사용 설명, README, changelog 추가"
+      ]
+    }
+  }
+}
