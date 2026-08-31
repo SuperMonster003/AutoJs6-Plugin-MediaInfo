@@ -146,6 +146,15 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 - [x] 对同一批真实样本审阅 v1.1.0 与 v2 候选的字段、完整报告与 sections 差异; 容器和核心流保持兼容, 合理的上游解析变化已记录为脱敏证据. (落点: `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`)
 - [x] 实际 minified Release APK 通过公开 AIDL 原生加载与读取冒烟测试; CI 同时构建、审计并在模拟器安装 release 变体, 防止 JNI 精确类名再次被 R8 改写. (落点: `app/proguard-rules.pro`, `MediainfoReleaseSmokeTest.kt`, `.github/workflows/build.yml`)
 - [x] MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和来源锁随源码与 APK 保留.
-- [ ] v2.0.0 版本号, 最终发布说明与五个 release APK 尚未生成; draft Release 只会在全部运行门禁通过后创建.
+- [x] 版本提升为 v2.0.0 code 10, 2026/08/31; 十语言发布说明与五个生产签名 Release APK 已由干净源码树生成, 签名证书与 v1.1.0 连续一致. 最终 ARM64 / ARM32 包在 QV710AF65F 上的安装字节哈希与主机相同, 公开 AIDL / JNI 冒烟测试通过, 两个测试包均已卸载. (落点: `.changelog/`, `version.properties`, `benchmark/results/2026-08-31-v2.0.0-release.json`)
+- [ ] 推送分支并等待全部 GitHub Actions 通过后创建 Draft Release, 一次性上传并复核下列五个资产; 不将 PR 转为 Ready, 不合并, 不正式发布.
 
-v2 功能分支已经从其构建图移除旧预编译库, 这是验证官方源码为唯一输入所必需的可审阅改动; 在上述门禁全部满足并人工合并前, `master` 仍保持 v1.1.0 可发布基线. 解析差异已经审阅并接受, 当前授权范围仅包括提升插件版本至 v2.0.0、生成最终资产和创建 Draft Release; 不包括将 PR 转为 Ready、合并或正式发布.
+| ABI | Release 资产 | 字节数 | SHA-256 |
+|---|---|---:|---|
+| `arm64-v8a` | `autojs6-plugin-mediainfo-v2.0.0-arm64-v8a-69e544cf.apk` | 2,951,111 | `d8d7c289c78f61aabbe459196475d5630618ca9b0e9d8ab865995a8d8d84bc7f` |
+| `armeabi-v7a` | `autojs6-plugin-mediainfo-v2.0.0-armeabi-v7a-40397d24.apk` | 2,721,393 | `c1ea25922acbef6fc290a18520555c580f2ed917b2c76936735960447ccba25c` |
+| `universal` | `autojs6-plugin-mediainfo-v2.0.0-universal-69a8a908.apk` | 11,715,225 | `f33bb09fad708635bee0776ba2a0a00220761d280f25e72fe07cb710efc6c3f8` |
+| `x86` | `autojs6-plugin-mediainfo-v2.0.0-x86-70ec1b9b.apk` | 3,338,929 | `83ab907437f3736cc84cb411f1624aefef814ca391b01ca5942bd13a627ef3f6` |
+| `x86_64` | `autojs6-plugin-mediainfo-v2.0.0-x86_64-9cd62670.apk` | 3,073,544 | `eadfd1f89047017e7459aa0865875cbff0b1fb31cb08d19978e27ceb5e563f5b` |
+
+v2 功能分支已经从其构建图移除旧预编译库, 这是验证官方源码为唯一输入所必需的可审阅改动; 在上述门禁全部满足并人工合并前, `master` 仍保持 v1.1.0 可发布基线. 本地发布门禁现已全部通过, 当前授权范围仅余推送、CI 复核和创建 Draft Release; 不包括将 PR 转为 Ready、合并或正式发布.
