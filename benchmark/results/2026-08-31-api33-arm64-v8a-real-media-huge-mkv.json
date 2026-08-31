@@ -1,0 +1,41 @@
+{
+  "schema": "autojs6-plugin-mediainfo-real-media-v1",
+  "generatedAtUtc": "2026-08-31T07:40:48.154Z",
+  "device": {
+    "manufacturer": "Sony",
+    "model": "XQ-DQ72",
+    "sdk": 33,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "armeabi"
+    ]
+  },
+  "files": [
+    {
+      "stagedName": "000-Blade.Runner.2049.2017.PROPER.2160p.US.BluRay.REMUX.HEVC.DTS-HD.MA.TrueHD.7.1.Atmos-FGT.mkv",
+      "sizeBytes": 83723155593,
+      "informLength": 14955,
+      "informHasGeneral": true,
+      "informHasVideo": true,
+      "informHasAudio": true,
+      "informHasImage": false,
+      "generalFormat": "Matroska",
+      "snapshotSectionCount": 17,
+      "coldInformNanos": 177211145,
+      "cachedInformNanos": 480469,
+      "coldGetNanos": 62652031,
+      "cachedGetNanos": 405417,
+      "coldSnapshotNanos": 17157604,
+      "cachedSnapshotNanos": 168021,
+      "sourceLabel": "huge/Blade.Runner.2049.2017.PROPER.2160p.US.BluRay.REMUX.HEVC.DTS-HD.MA.TrueHD.7.1.Atmos-FGT.mkv",
+      "sha256": "fb7402bde0428f697acbca73ddbf79820db9d01ac63c799d86fdd5d0254986e2"
+    }
+  ],
+  "failureCount": 0,
+  "source": {
+    "revision": "8df63902293dca59a2298496fc5d1eeeff26cc92",
+    "dirty": true,
+    "benchmarkInputsSha256": "8c310444b2239ee6e5aaf6d903a5507a2050fd728f311568bc8cc91a2de18295"
+  }
+}

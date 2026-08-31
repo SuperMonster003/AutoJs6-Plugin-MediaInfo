@@ -1,8 +1,27 @@
 {
   "repo_url": "https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo",
+  "repo_slug": "SuperMonster003/AutoJs6-Plugin-MediaInfo",
+  "icon_alt": "autojs6-plugin-mediainfo-ic-launcher",
+  "license_url": "https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE",
+  "roadmap_url": "https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md",
   "docs_mediainfo_url": "https://docs.autojs6.com/#/mediainfo",
   "mediainfo_official_url": "https://mediaarea.net/en/MediaInfo",
   "mediainfolib_url": "https://github.com/MediaArea/MediaInfoLib",
   "mediainfo_android_url": "https://github.com/olegazyx/MediaInfoLib-android",
-  "stream_kinds": "general, video, audio, text, other,\nimage, menu"
+  "plugin_application_id": "io.github.supermonster003.autojs6.plugin.mediainfo",
+  "plugin_id": "mediainfo",
+  "plugin_engine": "mediainfo",
+  "plugin_variant": "default",
+  "discovery_action": "org.autojs.plugin.MEDIAINFO",
+  "discovery_category": "mediainfo",
+  "wake_action": "org.autojs.plugin.action.WAKE",
+  "binder_interface": "IMediainfoPlugin",
+  "required_host_version_code": "3923",
+  "native_library_file": "libmediainfo.so",
+  "snapshot_schema_plugin": "autojs6-plugin-mediainfo-snapshot-v1",
+  "snapshot_schema_node": "autojs6-node-mediainfo-snapshot-v1",
+  "android_min_sdk": "24",
+  "android_target_sdk": "36",
+  "min_android_version": "7.0",
+  "stream_kinds": "general, video, audio, text, other, image, menu"
 }

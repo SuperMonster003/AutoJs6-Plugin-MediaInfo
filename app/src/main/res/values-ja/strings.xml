@@ -2,5 +2,6 @@
 <resources>
     <string name="plugin_description">メディアファイル情報を読み取る MediaInfo プラグイン</string>
     <string name="error_media_file_descriptor_null">MediaInfo ファイルディスクリプタが null です</string>
+    <string name="error_media_parse_timeout">MEDIAINFO_TIMEOUT: MediaInfo の解析が %1$d 秒を超えました</string>
     <string name="error_unsupported_stream_kind">サポートされていない MediaInfo ストリーム種別: %1$s</string>
 </resources>

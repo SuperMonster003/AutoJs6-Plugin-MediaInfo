@@ -2,38 +2,122 @@
   "$name": "Français",
   "text_current_lowercase": "actuel",
   "text_plugin_synopsis": "Plugin MediaInfo pour lire les informations des fichiers multimédias",
-  "h3_languages_with_ascii": "Langues",
+  "h3_languages_with_ascii": "Langues (Languages)",
   "p_languages_all_supported_for_readme": "Le README.md actuel prend en charge les langues suivantes",
   "h3_introduction": "Introduction",
-  "p_introduction": "Le plugin AutoJs6 MediaInfo fournit a AutoJs6 une lecture des métadonnées multimédias basée sur MediaInfo. Il peut produire des rapports complets, interroger des paramètres individuels et sortir des instantanés JSON structurés.",
-  "h3_functions": "Fonctions",
+  "p_introduction_what": "Le plugin MediaInfo (MediaInfo Plugin) apporte a AutoJs6 la lecture des informations des fichiers multimédias. Une fois installé, une seule ligne de script suffit pour obtenir des centaines de paramètres techniques des fichiers vidéo, audio et image, tels que le format du conteneur, le codec, la durée, la résolution, le débit et les canaux; la boite de dialogue d'informations multimédias de la liste de fichiers d'AutoJs6 affiche également le rapport complet fourni par ce plugin. L'analyse repose sur MediaInfoLib, la bibliothèque open source qui anime l'application MediaInfo de bureau.",
+  "p_introduction_how": "Le plugin s'exécute dans son propre processus et est découvert automatiquement par AutoJs6, sans aucune configuration. Pour lire un fichier, l'hôte transmet le contenu multimédia au plugin sous forme de descripteur en lecture seule. Les descripteurs de fichiers ordinaires positionnables sont lus directement par MediaInfoLib via `/proc/self/fd`; les descripteurs non positionnables comme les tubes, ou un échec d'analyse directe, utilisent une copie temporaire dans le cache privé, supprimée dès la fin de l'appel. Aucun accès réseau n'est utilisé et aucune permission système sensible n'est demandée.",
+  "h3_features": "Points Forts",
   "features": [
-    "Fournit le service de plugin `mediainfo` avec l'ID de plugin `mediainfo`.",
-    "Prend en charge `mediainfo.read(path, options)` et `mediainfo.get(path, streamKind, parameter, options)` dans l'environnement AutoJs6 Node.",
-    "Prend en charge la découverte et l'appel par l'hôte via `org.autojs.plugin.MEDIAINFO`, avec `inform`, `get` et `snapshot` exposés par l'interface AIDL sous-jacente.",
-    "Inclut `libmediainfo.so` pour `arm64-v8a`, `armeabi-v7a`, `x86_64` et `x86`.",
-    "Les métadonnées du plugin, les instructions d'utilisation, le README et le changelog sont localisés en espagnol, français, russe, arabe, japonais, coréen, anglais, chinois simplifié, chinois traditionnel de Hong Kong et chinois traditionnel de Taiwan."
+    "Prêt a l'emploi: aucune configuration requise; AutoJs6 découvre le plugin automatiquement, et les scripts comme la boite de dialogue d'informations multimédias de la liste de fichiers peuvent l'utiliser immédiatement.",
+    "Informations complètes: format du conteneur, codec, durée, résolution, fréquence d'images, débit, canaux, fréquence d'échantillonnage et plus encore, en un seul appel.",
+    "Trois modes de lecture: rapport texte complet (`inform`), requête de paramètre unique (`get`) et instantané JSON structuré (`read`/`snapshot`), selon le besoin.",
+    "Deux moteurs de script: l'environnement Node appelle de manière asynchrone via `require(\"mediainfo\")`; l'environnement Rhino utilise le module global `mediainfo(path)` qui renvoie de manière synchrone un objet analysé accessible par propriétés.",
+    "Large couverture de formats: l'analyse est assurée par MediaInfoLib, la bibliothèque du MediaInfo de bureau, prenant en charge de très nombreux formats vidéo, audio et image, courants comme rares.",
+    "Cinq paquets APK: quatre paquets mono-architecture (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) plus un paquet `universal` tout-en-un, pour n'installer que le nécessaire.",
+    "Respect de la vie privée: l'analyse se déroule dans un processus isolé qui ne reçoit que des descripteurs de fichier en lecture seule de l'hôte, sans permission réseau ni permission système sensible.",
+    "Multilingue: métadonnées du plugin, instructions, README et journal des modifications disponibles en 10 langues."
   ],
   "h3_usage": "Utilisation",
-  "p_usage_path_note": "Le chemin doit pointer vers un fichier multimédia accessible par l'hôte. Dans l'environnement Node, les chemins relatifs du répertoire de travail sont pris en charge",
-  "h3_stream_kinds": "Types De Flux",
-  "p_stream_kinds": "Les types de flux MediaInfo pris en charge incluent",
-  "p_stream_kinds_note": "`streamKind` dans `mediainfo.get()` n'est pas sensible a la casse et correspond aux types de flux natifs de MediaInfo",
-  "h3_snapshot_options": "Options D'instantané",
-  "snapshot_options": [
-    "`includeInform`: inclut le rapport texte MediaInfo dans l'instantané, valeur par défaut `true`.",
-    "`includeSections`: analyse le rapport dans `sections`, valeur par défaut `true`."
+  "usage_steps": [
+    "Téléchargez l'APK du plugin correspondant a l'appareil depuis la page [Releases]({{ repo_url }}/releases) et installez-le sur l'appareil exécutant AutoJs6; en cas de doute, choisissez le paquet `universal` ou consultez `Choisir un APK` ci-dessous.",
+    "Ouvrez le centre de plugins d'AutoJs6 et vérifiez que le plugin `MediaInfo` est reconnu et activé.",
+    "Appelez le module `mediainfo` dans les scripts comme montré dans `API De Script` ci-dessous, ou ouvrez la boite de dialogue d'informations multimédias d'un fichier dans la liste de fichiers d'AutoJs6 pour consulter directement le rapport complet."
   ],
+  "p_usage_note": "Si le plugin n'apparait pas dans le centre de plugins, mettez d'abord AutoJs6 a niveau vers une version récente (build interne {{ required_host_version_code }} ou supérieur). Le plugin lui-même prend en charge les appareils sous Android {{ min_android_version }} (API {{ android_min_sdk }}) et supérieur.",
+  "h3_choose_apk": "Choisir Un APK",
+  "p_choose_apk_intro": "Chaque version publie 5 APK qui ne diffèrent que par les architectures de bibliothèque native incluses",
+  "th_apk_variant": "Paquet",
+  "th_apk_target": "Convient a",
+  "td_abi_arm64": "La grande majorité des téléphones et tablettes Android modernes (ARM 64 bits); premier choix",
+  "td_abi_arm32": "Appareils ARM 32 bits plus anciens",
+  "td_abi_x86_64": "Emulateurs x86 64 bits et quelques appareils x86",
+  "td_abi_x86": "Emulateurs x86 32 bits et quelques appareils x86",
+  "td_abi_universal": "Inclut les 4 architectures et est le plus volumineux; fonctionne sur tout appareil, choix sur en cas de doute",
+  "p_choose_apk_note": "Le plugin charge la bibliothèque native dans son propre processus. Si un paquet mono-architecture ne correspondant pas a l'appareil a été installé par erreur, les appels échouent avec `MediaInfo library is not available`; passer au paquet `universal` résout le problème.",
+  "h3_script_api": "API De Script",
+  "p_script_api_node": "Dans l'environnement Node (scripts commençant par la directive `\"nodejs\"`), obtenez le module via `require(\"mediainfo\")`; toutes les méthodes renvoient une Promise",
+  "p_script_api_node_note": "`read(path, options?)` renvoie un objet instantané structuré (voir `Structure De L'instantané Et Options` ci-dessous); `get(path, streamKind?, parameter)` renvoie le texte brut du paramètre, `streamKind` valant `general` par défaut. Par sécurité, les scripts Node ne peuvent accéder qu'aux fichiers du répertoire du projet, et les chemins relatifs sont résolus depuis la racine du projet.",
+  "p_script_api_rhino": "Dans l'environnement Rhino (moteur de script par défaut d'AutoJs6), `mediainfo` est un module global; `mediainfo(path)` et `mediainfo.read(path)` sont équivalents et renvoient de manière synchrone un objet analysé",
+  "p_script_api_rhino_note": "Sur l'objet renvoyé, `path` et `inform` contiennent le chemin résolu et le rapport texte complet; chaque type de flux (comme `general`, `video`, `audio`) fonctionne a la fois comme propriété exposant les champs analysés (comme `mi.video.width`, noms de champs en camelCase) et comme fonction pour interroger en direct les paramètres bruts (comme `mi.audio(\"BitRate\")`). Les scripts Rhino peuvent accéder a tout chemin que l'hôte est autorisé a lire.",
+  "h3_snapshot": "Structure De L'instantané Et Options",
+  "p_snapshot_intro": "L'instantané renvoyé par `read()` dans l'environnement Node ressemble a ceci (le JSON renvoyé par la méthode AIDL `snapshot` du plugin est identique, sauf que son `schema` est `{{ snapshot_schema_plugin }}` et qu'il n'a pas de champ `path`)",
+  "snapshot_options": [
+    "`includeInform`: inclure ou non le rapport texte `inform`, `true` par défaut; mettre a `false` pour obtenir une chaine vide et une charge plus légère.",
+    "`includeSections`: analyser ou non le rapport en `sections`, `true` par défaut; mettre a `false` pour obtenir un objet vide."
+  ],
+  "p_snapshot_sections_note": "`sections` utilise comme clés les noms de sections du rapport en minuscules (avec plusieurs flux d'un même type, les noms de sections peuvent porter un indice comme `audio #1`), et chaque valeur est un tableau d'objets; les noms de champs sont convertis en camelCase tandis que les valeurs conservent le texte MediaInfo original, unités et espaces de séparation des milliers compris, comme `1 920 pixels`.",
+  "h3_stream_kinds": "Types De Flux",
+  "p_stream_kinds": "Le paramètre `streamKind` de `get()` prend en charge les types de flux suivants",
+  "p_stream_kinds_note": "`streamKind` est insensible a la casse et correspond aux types de flux natifs de MediaInfo; interroger un flux inexistant ou un paramètre sans valeur renvoie une chaine vide.",
+  "h3_faq": "FAQ",
+  "faq": [
+    {
+      "q": "Comment vérifier que le plugin fonctionne?",
+      "a": "Ouvrez le centre de plugins d'AutoJs6; si le plugin `MediaInfo` y apparait, l'hôte l'a reconnu. Exécutez ensuite n'importe quel exemple de script `mediainfo`; un résultat renvoyé normalement signifie que le plugin fonctionne."
+    },
+    {
+      "q": "Pourquoi n'y a-t-il pas d'icône de plugin dans la liste des applications?",
+      "a": "C'est normal. Le plugin n'a pas d'interface autonome et ne crée pas d'icône de lanceur; après installation, il est découvert et piloté entièrement par AutoJs6 en arrière-plan, et toute interaction se fait dans AutoJs6."
+    },
+    {
+      "q": "Un script Node échoue avec `path must stay inside the scoped working directory`?",
+      "a": "Par sécurité, le moteur Node n'autorise l'accès qu'aux fichiers du répertoire du projet. Déplacez ou copiez le fichier multimédia dans le répertoire du projet avant de le lire; pour accéder a d'autres emplacements (galerie ou téléchargements), utilisez plutôt un script du moteur Rhino."
+    },
+    {
+      "q": "`get()` a renvoyé une chaine vide?",
+      "a": "Le nom du paramètre doit être un paramètre MediaInfo natif (comme `Format`, `Duration`, `Width`, `BitRate`, `FileSize`), et le flux cible doit réellement exister. Utilisez d'abord `read()` pour inspecter les champs réellement disponibles dans `sections`, ou consultez le rapport `inform` complet."
+    },
+    {
+      "q": "La lecture de gros fichiers est lente?",
+      "a": "Les fichiers ordinaires sont désormais analysés directement sans copie intégrale dans le cache, ce qui évite aux gros fichiers un temps de copie linéaire avec leur taille. Les descripteurs non positionnables comme les tubes, ou les formats dont l'analyse directe échoue, utilisent encore une copie temporaire dont le cout dépend des octets reçus; le temps d'analyse propre à MediaInfoLib reste lié au format et au contenu."
+    },
+    {
+      "q": "Les résultats d'analyse sont-ils mis en cache et que se passe-t-il en cas de délai dépassé?",
+      "a": "Oui. Sous Android 8.1 (API 27) et versions ultérieures, pour un fichier ordinaire dont l'identité reste stable et le contenu inchangé, le plugin met en cache dans le processus courant le rapport, les requêtes et les instantanés: au plus 32 fichiers, 64 requêtes par fichier, une durée de vie glissante de 10 minutes et environ 2 MiB de texte au total. Le cache est désactivé par prudence sur API 24-26, où les horodatages de fichiers à la nanoseconde sont indisponibles; il est vidé en cas de mémoire faible ou à l'arrêt du processus. Chaque appel AIDL est limité à 30 secondes; au-delà, l'analyse native ou la copie de repli est annulée de façon coopérative, le fichier temporaire est supprimé et l'exception contient `MEDIAINFO_TIMEOUT`."
+    },
+    {
+      "q": "Le fichier a plusieurs pistes audio ou sous-titres; comment lire la deuxième piste et les suivantes?",
+      "a": "L'instantané `sections` conserve toutes les sections du rapport (avec plusieurs flux, les noms de sections portent un indice comme `audio #2`), lisez-les donc directement; `get()` interroge actuellement toujours le premier flux d'un type, et la sélection par indice de flux est prévue dans [ROADMAP.md]({{ roadmap_url }})."
+    },
+    {
+      "q": "Le plugin accède-t-il au réseau ou demande-t-il des permissions sensibles?",
+      "a": "Non. Son manifeste ne contient aucune permission réseau, stockage, caméra ni autre permission système sensible; il ne déclare que la permission de plugin utilisée pour communiquer avec AutoJs6. Le contenu multimédia arrive de l'hôte sous forme de descripteur en lecture seule, et la copie temporaire créée pour l'analyse est supprimée aussitôt."
+    }
+  ],
+  "h3_security": "Permissions Et Sécurité",
+  "p_security_intro": "Les fichiers multimédias peuvent provenir de sources non fiables, la conception place donc plusieurs lignes de défense autour de l'analyse:",
+  "security_points": [
+    "Isolation de processus: l'analyse se déroule dans le propre processus du plugin et la bibliothèque native n'est jamais injectée dans le processus hôte, si bien qu'un échec d'analyse laisse AutoJs6 fonctionner normalement.",
+    "Surface de données minimale: le plugin ne peut pas lire le stockage de l'appareil par lui-même; il ne reçoit qu'un descripteur de fichier en lecture seule ouvert par l'hôte et un nom d'affichage.",
+    "Lecture directe si possible, purge en cas de repli: les descripteurs ordinaires positionnables ne créent aucune copie du média; seul le repli de compatibilité écrit dans le cache privé, puis supprime le fichier temporaire dès la fin de l'appel.",
+    "Permissions minimales: aucune permission réseau, stockage, caméra ni autre permission système sensible; le service et le point d'éveil sont protégés par la permission de plugin AutoJs6 (`org.autojs.permission.PLUGIN`), les applications tierces ne peuvent donc pas les appeler directement.",
+    "Ouvert et auditable: le code du plugin, les scripts de build et la chaine de génération de documentation sont entièrement open source, et l'origine de la bibliothèque native et de l'enveloppe JNI est indiquée dans la section licence."
+  ],
+  "p_security_permission": "N'installez le plugin que depuis la page officielle [Releases]({{ repo_url }}/releases) ou d'autres canaux de confiance; des paquets d'origine inconnue peuvent être altérés même si le nom et le numéro de version semblent identiques.",
+  "h3_plugin_interface": "Interface Du Plugin",
+  "p_plugin_interface": "Les informations suivantes s'adressent aux développeurs de l'hôte AutoJs6 et de plugins; l'hôte utilise ces identifiants pour découvrir le plugin et négocier les capacités",
+  "p_contract_service": "`MediainfoPluginService` expose quatre méthodes, `getInfo`/`inform`/`get`/`snapshot`, via l'interface AIDL `IMediainfoPlugin`; le contenu multimédia est transmis sous forme de `ParcelFileDescriptor` en lecture seule plus un nom d'affichage, et `snapshot` accepte en outre un `Bundle` d'options portant `includeInform`/`includeSections`. Le service et `WakeActivity` sont tous deux protégés par la permission `org.autojs.permission.PLUGIN`.",
+  "p_abi_reporting": "Le plugin analyse les APK base / split installés et rapporte dynamiquement les ABI qui contiennent réellement `libmediainfo.so`; un paquet mono-architecture ne rapporte que son ABI, tandis que `universal` rapporte les 4. Si les chemins APK sont illisibles, il se replie en toute sécurité sur l'architecture du processus courant lorsqu'une bibliothèque native extraite est présente.",
+  "h3_roadmap": "Feuille De Route",
+  "p_roadmap": "Les capacités prévues du plugin et leur état d'avancement sont maintenus sous forme de liste cochable dans ROADMAP.md, organisée par jalons avec critères d'acceptation, couvrant les requêtes par indice de flux, l'analyse sans copie, le rapport ABI dynamique, l'évolution de la bibliothèque native et l'intégration continue. Les éléments non cochés sont des intentions et non des capacités livrées; les discussions via Issues sont bienvenues.",
+  "text_link_roadmap": "Voir ROADMAP.md",
   "h3_release_history": "Historique Des Versions",
   "h5_for_more_release_history": "Pour plus d'historique des versions",
   "h3_build": "Compilation",
-  "text_release_build": "Compilation Release",
-  "p_build_params": "Les paramètres de compilation proviennent de `version.properties`; le SDK minimal actuel est 24 et le SDK cible est 36",
-  "h3_resource_layout": "Structure Des Ressources",
-  "p_resource_layout": "`strings.xml` contient les descriptions localisées du plugin et les messages d'erreur; `plugin_instruction.md` contient les instructions d'utilisation affichées par l'hôte. Les fichiers README et CHANGELOG sont générés depuis des sources JSON par `.python/generate_markdown.py`",
+  "p_build_intro": "Cette section s'adresse aux développeurs souhaitant compiler le plugin depuis les sources.",
+  "p_build_debug": "Compiler les APK debug",
+  "p_build_release": "Compiler les APK release (les splits ABI sont activés, produisant 4 paquets mono-architecture plus 1 paquet `universal` en une fois; configurez le fichier non suivi `sign.properties` pour la signature automatique)",
+  "p_build_artifacts": "Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v{{ version_name }}-<abi>-<crc32>.apk`.",
+  "p_build_params": "Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal {{ android_min_sdk }} (Android {{ min_android_version }}), SDK cible {{ android_target_sdk }}, version actuelle {{ version_name }}.",
+  "h3_resource_layout": "Localisation Et Génération De Docs",
+  "p_resource_layout": "`strings.xml` contient la description localisée du plugin et les messages d'erreur, et `plugin_instruction.md` contient les instructions affichées dans le centre de plugins de l'hôte. README, journal des modifications et instructions sont tous générés depuis des sources JSON: modifiez les sources sous `.readme/` et `.changelog/`, puis exécutez `py .python/generate_markdown.py` pour régénérer chaque artefact; les artefacts générés ne sont jamais édités a la main. Exécutez `py .python/generate_markdown.py --check` pour vérifier que sources et artefacts sont synchronisés (la CI le vérifie aussi automatiquement).",
+  "h3_license": "Licence",
+  "p_license": "Le code du projet est sous licence [Mozilla Public License 2.0]({{ license_url }}). Le `libmediainfo.so` inclus est construit a partir de [MediaInfoLib]({{ mediainfolib_url }}) (MediaArea.net SARL, licence de style BSD), avec une enveloppe JNI dérivée du projet [MediaInfoLib-android]({{ mediainfo_android_url }}).",
   "h3_links": "Liens",
-  "text_link_autojs6_mediainfo_docs": "Documentation AutoJs6 MediaInfo",
-  "text_link_mediainfo_official": "Projet officiel MediaInfo",
-  "text_link_mediainfolib_official": "Projet officiel MediaInfoLib",
-  "text_link_mediainfo_android": "Projet MediaInfoLib Android"
+  "text_link_autojs6_docs_mediainfo": "Documentation AutoJs6 MediaInfo",
+  "text_link_mediainfo_official": "Site officiel MediaInfo",
+  "text_link_mediainfolib_official": "Projet MediaInfoLib",
+  "text_link_mediainfo_android": "Enveloppe MediaInfoLib Android",
+  "p_instruction_docs": "Pour plus de détails d'utilisation et la référence des champs, consultez la [documentation AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) et la [page du projet]({{ repo_url }})."
 }

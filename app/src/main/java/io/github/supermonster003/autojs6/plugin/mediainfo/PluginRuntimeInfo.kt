@@ -19,7 +19,7 @@ internal fun Context.pluginInfo(name: String, description: String): PluginInfo {
         versionName = packageInfo.versionName ?: ""
         versionCode = packageInfo.versionCodeCompat()
         versionDate = appContext.stringResource("plugin_version_date", "")
-        supportedAbis = arrayOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        supportedAbis = NativeLibraryInventory.supportedAbis(appContext)
         capabilities = android.os.Bundle().apply {
             putInt(PluginCapabilityKeys.REQUIRES_HOST_VERSION, 3923)
         }

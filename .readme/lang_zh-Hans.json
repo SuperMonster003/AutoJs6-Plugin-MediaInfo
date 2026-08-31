@@ -5,35 +5,119 @@
   "h3_languages_with_ascii": "语言 (Languages)",
   "p_languages_all_supported_for_readme": "当前 README.md 支持以下语言",
   "h3_introduction": "简介",
-  "p_introduction": "AutoJs6 MediaInfo 插件为 AutoJs6 提供基于 MediaInfo 的媒体元数据读取能力, 可生成完整报告, 查询单个参数, 并输出结构化 JSON 快照.",
-  "h3_functions": "功能",
+  "p_introduction_what": "MediaInfo 插件 (MediaInfo Plugin) 为 AutoJs6 提供媒体文件信息读取能力. 安装后, 脚本只需一行代码即可获取视频, 音频, 图片等文件的容器格式, 编码, 时长, 分辨率, 码率, 声道等上百项技术参数, AutoJs6 文件列表中的媒体信息对话框也将由本插件提供完整解析报告. 解析能力来自与桌面端 MediaInfo 同源的开源库 MediaInfoLib.",
+  "p_introduction_how": "插件运行在独立进程中, 由 AutoJs6 自动发现, 无需任何手动配置. 读取文件时, 宿主将媒体内容以只读文件描述符交给插件; 对可随机访问的常规文件描述符, 插件通过 `/proc/self/fd` 交由 MediaInfoLib 直接读取, 遇到管道等不可随机访问描述符或直读解析失败时, 才回退到私有缓存临时副本并在调用结束立即删除. 全程无需网络, 也不申请任何敏感系统权限.",
+  "h3_features": "功能亮点",
   "features": [
-    "提供 `mediainfo` 插件服务, 插件 ID 为 `mediainfo`.",
-    "支持 AutoJs6 Node 环境中的 `mediainfo.read(path, options)` 和 `mediainfo.get(path, streamKind, parameter, options)`.",
-    "支持通过 `org.autojs.plugin.MEDIAINFO` 发现并调用插件, 底层 AIDL 暴露 `inform`/`get`/`snapshot`.",
-    "内置 `arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 的 `libmediainfo.so`.",
-    "插件信息, 使用说明, README 与 CHANGELOG 均支持西班牙语/法语/俄语/阿拉伯语/日语/韩语/英语/简体中文/香港繁体/台湾繁体."
+    "开箱即用: 安装后无需任何配置, AutoJs6 自动发现插件, 脚本与文件列表的媒体信息对话框即可直接使用.",
+    "信息全面: 容器格式, 编码, 时长, 分辨率, 帧率, 码率, 声道, 采样率等技术参数一次调用全部获取.",
+    "三种读取方式: 完整文本报告 (`inform`), 单项参数查询 (`get`), 结构化 JSON 快照 (`read`/`snapshot`), 按需选用.",
+    "双引擎支持: Node 环境通过 `require(\"mediainfo\")` 异步调用; Rhino 环境通过全局模块 `mediainfo(path)` 同步返回可属性访问的解析对象.",
+    "格式覆盖广: 解析能力来自与桌面端 MediaInfo 同源的 MediaInfoLib, 支持视频, 音频, 图片等大量常见与小众格式.",
+    "五种安装包: 提供 `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` 四种单架构包与包含全部架构的 `universal` 包, 按设备按需选择.",
+    "隐私友好: 插件在独立进程中解析, 仅接收宿主传入的只读文件描述符, 不申请网络与任何敏感系统权限.",
+    "多语言: 插件信息, 使用说明, README 与更新日志覆盖 10 种语言."
   ],
-  "h3_usage": "使用示例",
-  "p_usage_path_note": "路径应为宿主允许访问的媒体文件路径, Node 环境可使用工作目录内的相对路径",
-  "h3_stream_kinds": "流类型",
-  "p_stream_kinds": "支持的 MediaInfo 流类型包括",
-  "p_stream_kinds_note": "`mediainfo.get()` 的 `streamKind` 不区分大小写, 会映射到 MediaInfo 原生流类型",
-  "h3_snapshot_options": "快照选项",
+  "h3_usage": "使用方法",
+  "usage_steps": [
+    "从 [Releases]({{ repo_url }}/releases) 页面下载与设备匹配的插件 APK 并安装到运行 AutoJs6 的设备上; 拿不准选哪个时, 可直接选 `universal` 包, 或参考下方 `如何选择安装包`.",
+    "打开 AutoJs6 的插件中心, 确认 `MediaInfo` 插件已被识别并处于启用状态.",
+    "在脚本中按下方 `脚本 API` 的示例调用 `mediainfo` 模块; 也可以在 AutoJs6 文件列表中打开媒体文件的媒体信息对话框直接查看完整报告."
+  ],
+  "p_usage_note": "若插件中心未显示该插件, 请先将 AutoJs6 升级到较新版本 (内部版本号 {{ required_host_version_code }} 及以上). 插件自身支持 Android {{ min_android_version }} (API {{ android_min_sdk }}) 及以上的设备.",
+  "h3_choose_apk": "如何选择安装包",
+  "p_choose_apk_intro": "每个发行版本包含 5 个 APK, 差别仅在于内置了哪些架构的原生库",
+  "th_apk_variant": "安装包",
+  "th_apk_target": "适用对象",
+  "td_abi_arm64": "绝大多数现代 Android 手机与平板 (64 位 ARM), 优先选择",
+  "td_abi_arm32": "较早期的 32 位 ARM 设备",
+  "td_abi_x86_64": "64 位 x86 模拟器与少数 x86 设备",
+  "td_abi_x86": "32 位 x86 模拟器与少数 x86 设备",
+  "td_abi_universal": "内置全部 4 种架构, 体积最大; 适用于任何设备, 也是拿不准架构时的稳妥选择",
+  "p_choose_apk_note": "插件在自身进程中加载原生库. 若误装了与设备架构不匹配的单架构包, 调用时会提示 MediaInfo 库不可用 (`MediaInfo library is not available`), 换装 `universal` 包即可解决.",
+  "h3_script_api": "脚本 API",
+  "p_script_api_node": "Node 环境 (脚本首行声明 `\"nodejs\"`) 中通过 `require(\"mediainfo\")` 获取模块, 全部方法返回 Promise",
+  "p_script_api_node_note": "`read(path, options?)` 返回结构化快照对象 (见下方 `快照结构与选项`); `get(path, streamKind?, parameter)` 返回参数原始文本, `streamKind` 缺省为 `general`. 出于安全限制, Node 脚本只能访问工程目录内的文件, 相对路径基于工程根目录解析.",
+  "p_script_api_rhino": "Rhino 环境 (AutoJs6 默认脚本引擎) 中 `mediainfo` 为全局模块, `mediainfo(path)` 与 `mediainfo.read(path)` 等价, 同步返回解析对象",
+  "p_script_api_rhino_note": "返回对象上, `path` 与 `inform` 分别为解析后的路径与完整文本报告; 各流类型 (如 `general`, `video`, `audio`) 既可作为属性读取已解析字段 (如 `mi.video.width`, 字段名为 camelCase), 也可作为函数实时查询原始参数 (如 `mi.audio(\"BitRate\")`). Rhino 脚本可访问宿主有权读取的任意路径.",
+  "h3_snapshot": "快照结构与选项",
+  "p_snapshot_intro": "Node 环境 `read()` 返回的快照结构如下 (插件 AIDL `snapshot` 方法返回的 JSON 与之一致, 但 `schema` 为 `{{ snapshot_schema_plugin }}` 且不含 `path` 字段)",
   "snapshot_options": [
-    "`includeInform`: 是否在快照中包含 MediaInfo 文本报告, 默认 `true`.",
-    "`includeSections`: 是否解析报告并写入 `sections`, 默认 `true`."
+    "`includeInform`: 是否包含 `inform` 文本报告, 默认 `true`; 置为 `false` 时 `inform` 为空字符串, 可减小返回体积.",
+    "`includeSections`: 是否解析报告并生成 `sections`, 默认 `true`; 置为 `false` 时 `sections` 为空对象."
   ],
+  "p_snapshot_sections_note": "`sections` 以报告小节名的小写形式作为键 (存在多条同类流时, 小节名可能带编号, 如 `audio #1`), 值一律为对象数组; 字段名转换为 camelCase, 字段值保留 MediaInfo 原始文本 (含单位与千位分隔空格, 如 `1 920 pixels`).",
+  "h3_stream_kinds": "流类型",
+  "p_stream_kinds": "`get()` 的 `streamKind` 参数支持以下流类型",
+  "p_stream_kinds_note": "`streamKind` 不区分大小写, 会映射到 MediaInfo 原生流类型; 查询不存在的流或无值参数时返回空字符串.",
+  "h3_faq": "常见问题",
+  "faq": [
+    {
+      "q": "如何确认插件已经生效?",
+      "a": "打开 AutoJs6 的插件中心, 能看到 `MediaInfo` 插件即表示宿主已识别. 随后运行任意 `mediainfo` 脚本示例, 能正常返回结果即说明插件工作正常."
+    },
+    {
+      "q": "为什么应用列表里没有插件的图标?",
+      "a": "这是正常现象. 插件没有独立界面, 也不在桌面创建启动图标, 安装后由 AutoJs6 在后台自动发现和调用, 全部交互都在 AutoJs6 内完成."
+    },
+    {
+      "q": "Node 脚本提示路径必须位于工作目录内 (path must stay inside the scoped working directory)?",
+      "a": "Node 引擎出于安全限制只允许访问工程目录内的文件. 请将媒体文件放入工程目录内再读取; 若需要访问其他路径 (如相册或下载目录), 可改用 Rhino 引擎脚本."
+    },
+    {
+      "q": "`get()` 返回了空字符串?",
+      "a": "参数名需使用 MediaInfo 原生参数 (如 `Format`, `Duration`, `Width`, `BitRate`, `FileSize`), 且目标流需实际存在. 可先用 `read()` 查看 `sections` 中实际可用的字段, 或直接查看 `inform` 完整报告."
+    },
+    {
+      "q": "读取大文件时比较慢?",
+      "a": "常规文件现已免整文件复制直接解析, 大文件可避开与文件大小线性相关的复制开销. 管道等不可随机访问描述符或直读失败的格式仍会使用临时副本, 此回退路径耗时仍与传入字节数相关; MediaInfoLib 自身解析耗时则取决于格式与内容."
+    },
+    {
+      "q": "解析结果会缓存吗, 超时如何处理?",
+      "a": "会. 在 Android 8.1 (API 27) 及以上系统中, 对身份稳定且未变化的常规文件, 插件在当前进程内缓存报告, 查询与快照: 最多 32 个文件, 每个文件 64 个查询, 10 分钟滑动有效期, 文本总量约 2 MiB. API 24-26 因无法取得纳秒级文件时间戳而保守禁用缓存; 低内存或进程结束时也会清空. 每次 AIDL 调用上限为 30 秒; 超时会协作取消原生解析或中断回退复制, 删除临时文件, 并返回包含 `MEDIAINFO_TIMEOUT` 的异常."
+    },
+    {
+      "q": "文件有多条音轨或字幕, 如何读取第二条及之后的流?",
+      "a": "快照 `sections` 会完整保留报告中的全部小节 (多流时小节名带编号, 如 `audio #2`), 可直接从中读取; `get()` 目前固定查询同类流中的第 1 条, 指定流序号的能力已列入 [ROADMAP.md]({{ roadmap_url }})."
+    },
+    {
+      "q": "插件会联网或申请敏感权限吗?",
+      "a": "不会. 插件清单不含网络, 存储, 相机等任何敏感系统权限, 仅声明与 AutoJs6 通信所需的插件权限. 媒体内容由宿主以只读描述符传入, 解析产生的临时副本随即删除."
+    }
+  ],
+  "h3_security": "权限与安全",
+  "p_security_intro": "媒体文件可能来自不可信来源, 插件在设计上为解析过程设置了多道防线:",
+  "security_points": [
+    "进程隔离: 解析在插件自身进程中完成, 原生库不注入宿主进程, 即使解析异常也不影响 AutoJs6 稳定运行.",
+    "最小数据面: 插件自身无法读取设备存储, 仅接收宿主打开的只读文件描述符与文件显示名.",
+    "能直读则直读, 回退即用即清: 可随机访问的常规描述符不产生媒体副本; 仅兼容回退写入私有缓存, 调用结束立即删除.",
+    "最小权限: 不申请网络, 存储, 相机等任何敏感系统权限; 服务与唤醒入口均受 AutoJs6 插件权限 (`org.autojs.permission.PLUGIN`) 保护, 第三方应用无法直接调用.",
+    "开源可审计: 插件代码, 构建脚本与文档生成链路全部开源, 原生库来源与 JNI 封装出处在许可章节明确标注."
+  ],
+  "p_security_permission": "请仅从官方 [Releases]({{ repo_url }}/releases) 页面或其他可信渠道获取插件安装包; 来源不明的安装包即使名称与版本号相同, 也可能被篡改.",
+  "h3_plugin_interface": "插件接口",
+  "p_plugin_interface": "以下信息面向 AutoJs6 宿主与插件开发者, 宿主通过这些标识发现插件并完成能力协商",
+  "p_contract_service": "`MediainfoPluginService` 通过 AIDL 接口 `IMediainfoPlugin` 暴露 `getInfo`/`inform`/`get`/`snapshot` 四个方法; 媒体内容以只读 `ParcelFileDescriptor` 加显示名传参, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 选项. 服务与 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 权限保护.",
+  "p_abi_reporting": "插件扫描已安装的 base / split APK 中实际包含的 `libmediainfo.so` 并动态上报 ABI; 单架构包仅上报对应 ABI, `universal` 包上报全部 4 种. 若 APK 路径不可读, 则根据当前进程位数和已解压的原生库安全回退.",
+  "h3_roadmap": "开发路线图",
+  "p_roadmap": "插件的能力规划与完成情况以可勾选清单维护在 ROADMAP.md 中, 按里程碑组织并附验收条件, 涵盖跨流查询, 免拷贝解析, 动态 ABI 上报, 原生库演进与持续集成等方向. 未勾选条目表示规划意向而非当前版本能力, 欢迎通过 Issues 参与讨论.",
+  "text_link_roadmap": "查看 ROADMAP.md",
   "h3_release_history": "发行历史",
   "h5_for_more_release_history": "更多发行历史可参阅",
   "h3_build": "构建",
-  "text_release_build": "Release 构建",
-  "p_build_params": "构建参数来自 `version.properties`, 当前最低 SDK 为 24, 目标 SDK 为 36",
-  "h3_resource_layout": "资源结构",
-  "p_resource_layout": "`strings.xml` 提供插件描述和错误信息本地化; `plugin_instruction.md` 提供宿主侧展示的插件使用说明. README 与 CHANGELOG 由 `.python/generate_markdown.py` 根据 JSON 源文件生成",
+  "p_build_intro": "本节面向希望从源码构建插件的开发者.",
+  "p_build_debug": "构建 debug APK",
+  "p_build_release": "构建 release APK (已启用 ABI 拆分, 一次产出 4 个单架构包与 1 个 `universal` 包; 在不入库的 `sign.properties` 中配置签名后自动签名)",
+  "p_build_artifacts": "发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v{{ version_name }}-<abi>-<crc32>.apk` 形式.",
+  "p_build_params": "构建参数集中于 `version.properties`: 最低 SDK {{ android_min_sdk }} (Android {{ min_android_version }}), 目标 SDK {{ android_target_sdk }}, 当前版本 {{ version_name }}.",
+  "h3_resource_layout": "本地化与文档生成",
+  "p_resource_layout": "`strings.xml` 提供本地化插件描述与错误信息, `plugin_instruction.md` 提供宿主插件中心展示的使用说明. README, 更新日志与使用说明均由 JSON 源生成: 修改 `.readme/` 与 `.changelog/` 下的源文件后运行 `py .python/generate_markdown.py` 重新生成全部产物, 生成产物不手工编辑; 运行 `py .python/generate_markdown.py --check` 可校验源文件与产物是否同步 (CI 亦会自动校验).",
+  "h3_license": "许可",
+  "p_license": "项目代码使用 [Mozilla Public License 2.0]({{ license_url }}). 内置的 `libmediainfo.so` 基于 [MediaInfoLib]({{ mediainfolib_url }}) (MediaArea.net SARL, BSD 风格许可) 构建, JNI 封装源自 [MediaInfoLib-android]({{ mediainfo_android_url }}) 项目.",
   "h3_links": "相关链接",
-  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo 文档",
-  "text_link_mediainfo_official": "MediaInfo 官方项目",
-  "text_link_mediainfolib_official": "MediaInfoLib 官方项目",
-  "text_link_mediainfo_android": "MediaInfoLib Android 项目"
+  "text_link_autojs6_docs_mediainfo": "AutoJs6 MediaInfo 文档",
+  "text_link_mediainfo_official": "MediaInfo 官方网站",
+  "text_link_mediainfolib_official": "MediaInfoLib 项目",
+  "text_link_mediainfo_android": "MediaInfoLib Android 封装",
+  "p_instruction_docs": "更多用法与字段说明可参阅 [AutoJs6 MediaInfo 文档]({{ docs_mediainfo_url }}) 与 [项目主页]({{ repo_url }})."
 }

@@ -5,15 +5,33 @@
   "changelog_label_improvement": "优化",
   "changelog_label_dependency": "依赖",
   "$data": {
+    "v1.1.0": {
+      "released_date": "2026/08/31",
+      "feature": [
+        "免整文件拷贝解析: 可随机访问的常规文件描述符通过 `/proc/self/fd` 交由 MediaInfoLib 直读, 管道或直读失败时才使用私有临时副本",
+        "进程内结果缓存: API 27+ 对完整报告, 字段查询与快照采用稳定文件身份, LRU, 10 分钟滑动有效期及低内存清理, 避免重复解析",
+        "协作取消与超时: 每次 AIDL 调用设有 30 秒上限, 超时中止原生解析或回退复制, 释放临时资源并返回 `MEDIAINFO_TIMEOUT`"
+      ],
+      "improvement": [
+        "ABI 上报按已安装 base / split APK 中实际存在的 `libmediainfo.so` 动态生成, 并保留安全的进程 ABI 回退",
+        "增强快照小节解析, 正确处理重复和编号流, 畸形行, 值内冒号, 重复字段与独立输出选项",
+        "加入可复现的合成基准与真实媒体验证工具, 并记录 x86, x86_64 与 ARM64 的完整性能基线",
+        "重建 10 语言 README, 插件使用说明与更新日志生成链路, 加入漂移校验和 GitHub Actions 门禁"
+      ],
+      "fix": [
+        "修复大文件常规描述符被不必要地整文件复制的问题, 并保证成功, 失败, 参数校验, 取消和超时路径均关闭描述符与回退文件",
+        "修复缓存对快速文件修改的识别精度: 使用纳秒级 mtime / ctime, 并在 API 24-26 保守禁用缓存复用"
+      ]
+    },
     "v1.0.0": {
       "released_date": "2026/07/15",
       "feature": [
-        "MediaInfo 插件服务, 插件 ID 为 `mediainfo`, 引擎为 `mediainfo`",
-        "支持通过 `org.autojs.plugin.MEDIAINFO` 发现并调用插件",
-        "支持 `inform`/`get`/`snapshot` 能力, 可生成完整媒体报告, 查询单个参数, 输出结构化 JSON 快照",
-        "内置 `arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 的 `libmediainfo.so`, 并支持 `universal` 通用包",
-        "插件运行时信息上报支持的 ABI 列表, 发布 APK 文件名包含版本号/ABI 变体和 CRC32 摘要",
-        "插件信息, 使用说明, README 与 CHANGELOG 的多语言资源: 西班牙语/法语/俄语/阿拉伯语/日语/韩语/英语/简体中文/香港繁体/台湾繁体"
+        "首个正式版本: 为 AutoJs6 提供基于 MediaInfoLib 的媒体文件信息读取能力, 一次调用即可获取容器格式, 编码, 时长, 分辨率, 码率, 声道等技术参数",
+        "脚本 API: Node 环境 `require(\"mediainfo\")` 提供异步 `read`/`get`; Rhino 环境全局模块 `mediainfo(path)` 同步返回可属性访问的解析对象",
+        "三种读取能力: 完整文本报告 (`inform`), 单项参数查询 (`get`), 结构化 JSON 快照 (`snapshot`, schema 为 `autojs6-plugin-mediainfo-snapshot-v1`)",
+        "支持被 AutoJs6 通过 `org.autojs.plugin.MEDIAINFO` 自动发现; 插件在独立进程中以只读文件描述符接收并解析媒体内容, 不申请网络与任何敏感系统权限",
+        "提供 `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` 四种单架构安装包与包含全部架构的 `universal` 包, 发布文件名含版本号, 架构与 CRC32 摘要",
+        "插件信息, 使用说明, README 与更新日志覆盖 10 种语言: 简体中文, 香港繁体, 台湾繁体, 英语, 法语, 西班牙语, 日语, 韩语, 俄语与阿拉伯语"
       ]
     }
   }

@@ -2,5 +2,6 @@
 <resources>
     <string name="plugin_description">用於讀取媒體檔案資訊的 MediaInfo 外掛</string>
     <string name="error_media_file_descriptor_null">MediaInfo 檔案描述符為空</string>
+    <string name="error_media_parse_timeout">MEDIAINFO_TIMEOUT: MediaInfo 解析超過 %1$d 秒</string>
     <string name="error_unsupported_stream_kind">不支援的 MediaInfo 串流類型: %1$s</string>
 </resources>

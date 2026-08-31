@@ -16,6 +16,7 @@ package org.mediainfo.android
 @Suppress("unused")
 class MediaInfo {
 
+    @Volatile
     private var mIsCanceled: Int = 0
     private var mIsAvailable = false
 
@@ -117,6 +118,11 @@ class MediaInfo {
     }
 
     fun getIsCanceled() = mIsCanceled
+
+    /** Requests cooperative cancellation from the JNI buffer loop. */
+    fun cancel() {
+        mIsCanceled = 1
+    }
 
     fun getMediaInfoTrimmed(filename: String): String = checkAvailability {
         var result = getMediaInfo(filename)

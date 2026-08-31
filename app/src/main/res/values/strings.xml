@@ -2,5 +2,6 @@
 <resources>
     <string name="plugin_description">MediaInfo plugin for reading media file information</string>
     <string name="error_media_file_descriptor_null">MediaInfo file descriptor is null</string>
+    <string name="error_media_parse_timeout">MEDIAINFO_TIMEOUT: MediaInfo parsing exceeded %1$d seconds</string>
     <string name="error_unsupported_stream_kind">Unsupported MediaInfo stream kind: %1$s</string>
 </resources>

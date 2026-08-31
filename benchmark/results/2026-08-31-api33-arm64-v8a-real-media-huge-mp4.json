@@ -1,0 +1,41 @@
+{
+  "schema": "autojs6-plugin-mediainfo-real-media-v1",
+  "generatedAtUtc": "2026-08-31T07:53:23.961Z",
+  "device": {
+    "manufacturer": "Sony",
+    "model": "XQ-DQ72",
+    "sdk": 33,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "armeabi"
+    ]
+  },
+  "files": [
+    {
+      "stagedName": "000-Reset.2022.S01E15.WEB-DL.2160p.H264.AAC.Mandarin-OPS.mp4",
+      "sizeBytes": 20793938734,
+      "informLength": 3172,
+      "informHasGeneral": true,
+      "informHasVideo": true,
+      "informHasAudio": true,
+      "informHasImage": false,
+      "generalFormat": "MPEG-4",
+      "snapshotSectionCount": 4,
+      "coldInformNanos": 137416614,
+      "cachedInformNanos": 258021,
+      "coldGetNanos": 39426719,
+      "cachedGetNanos": 311354,
+      "coldSnapshotNanos": 5654948,
+      "cachedSnapshotNanos": 145469,
+      "sourceLabel": "huge/Reset.2022.S01E15.WEB-DL.2160p.H264.AAC.Mandarin-OPS.mp4",
+      "sha256": "edf05fc46d94e8075cb74ebc22d68ae7ab435072630d3435c7e267d424e4dd27"
+    }
+  ],
+  "failureCount": 0,
+  "source": {
+    "revision": "8df63902293dca59a2298496fc5d1eeeff26cc92",
+    "dirty": true,
+    "benchmarkInputsSha256": "8c310444b2239ee6e5aaf6d903a5507a2050fd728f311568bc8cc91a2de18295"
+  }
+}

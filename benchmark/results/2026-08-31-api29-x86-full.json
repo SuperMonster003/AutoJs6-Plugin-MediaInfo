@@ -1,0 +1,384 @@
+{
+  "schema": "autojs6-plugin-mediainfo-benchmark-v1",
+  "generatedAtUtc": "2026-08-31T07:54:04.212Z",
+  "profile": "full",
+  "device": {
+    "manufacturer": "Google",
+    "model": "Android SDK built for x86",
+    "sdk": 29,
+    "abis": [
+      "x86"
+    ],
+    "availableProcessors": 4
+  },
+  "configuration": {
+    "formats": [
+      "wave_pcm",
+      "bitmap_rgb"
+    ],
+    "directSizesMiB": [
+      1,
+      64,
+      256,
+      1024
+    ],
+    "fallbackSizesMiB": [
+      1,
+      16,
+      64,
+      256
+    ],
+    "warmupIterations": 1,
+    "measureIterations": 3,
+    "pipeBufferBytes": 262144
+  },
+  "measurements": [
+    {
+      "format": "wave_pcm",
+      "mode": "direct_descriptor",
+      "sizeBytes": 1048576,
+      "samplesNanos": [
+        8931866,
+        8841088,
+        11551094
+      ],
+      "medianNanos": 8931866,
+      "minNanos": 8841088,
+      "maxNanos": 11551094,
+      "throughputMiBPerSecond": 111.95868813974593
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "memory_cache",
+      "sizeBytes": 1048576,
+      "samplesNanos": [
+        251062,
+        101011,
+        113792
+      ],
+      "medianNanos": 113792,
+      "minNanos": 101011,
+      "maxNanos": 251062,
+      "throughputMiBPerSecond": 8787.964004499438
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "pipe_fallback",
+      "sizeBytes": 1048576,
+      "samplesNanos": [
+        11629163,
+        13858098,
+        13725883
+      ],
+      "medianNanos": 13725883,
+      "minNanos": 11629163,
+      "maxNanos": 13858098,
+      "throughputMiBPerSecond": 72.85505784946587
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "pipe_fallback",
+      "sizeBytes": 16777216,
+      "samplesNanos": [
+        121763464,
+        80229463,
+        82882982
+      ],
+      "medianNanos": 82882982,
+      "minNanos": 80229463,
+      "maxNanos": 121763464,
+      "throughputMiBPerSecond": 193.04324740632524
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "direct_descriptor",
+      "sizeBytes": 67108864,
+      "samplesNanos": [
+        30548434,
+        31909193,
+        35815309
+      ],
+      "medianNanos": 31909193,
+      "minNanos": 30548434,
+      "maxNanos": 35815309,
+      "throughputMiBPerSecond": 2005.6915886277661
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "memory_cache",
+      "sizeBytes": 67108864,
+      "samplesNanos": [
+        329652,
+        129505,
+        74943
+      ],
+      "medianNanos": 129505,
+      "minNanos": 74943,
+      "maxNanos": 329652,
+      "throughputMiBPerSecond": 494189.4135361569
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "pipe_fallback",
+      "sizeBytes": 67108864,
+      "samplesNanos": [
+        269688158,
+        276817347,
+        231288676
+      ],
+      "medianNanos": 269688158,
+      "minNanos": 231288676,
+      "maxNanos": 276817347,
+      "throughputMiBPerSecond": 237.31112435422543
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "direct_descriptor",
+      "sizeBytes": 268435456,
+      "samplesNanos": [
+        27480901,
+        30255416,
+        23684687
+      ],
+      "medianNanos": 27480901,
+      "minNanos": 23684687,
+      "maxNanos": 30255416,
+      "throughputMiBPerSecond": 9315.5606506497
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "memory_cache",
+      "sizeBytes": 268435456,
+      "samplesNanos": [
+        244895,
+        95875,
+        1880021
+      ],
+      "medianNanos": 244895,
+      "minNanos": 95875,
+      "maxNanos": 1880021,
+      "throughputMiBPerSecond": 1045345.9645970721
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "pipe_fallback",
+      "sizeBytes": 268435456,
+      "samplesNanos": [
+        2880276389,
+        1225031618,
+        939887257
+      ],
+      "medianNanos": 1225031618,
+      "minNanos": 939887257,
+      "maxNanos": 2880276389,
+      "throughputMiBPerSecond": 208.97419808473873
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "direct_descriptor",
+      "sizeBytes": 1073741824,
+      "samplesNanos": [
+        31924564,
+        48881144,
+        28462097
+      ],
+      "medianNanos": 31924564,
+      "minNanos": 28462097,
+      "maxNanos": 48881144,
+      "throughputMiBPerSecond": 32075.614251145293
+    },
+    {
+      "format": "wave_pcm",
+      "mode": "memory_cache",
+      "sizeBytes": 1073741824,
+      "samplesNanos": [
+        248731,
+        115841,
+        84836
+      ],
+      "medianNanos": 115841,
+      "minNanos": 84836,
+      "maxNanos": 248731,
+      "throughputMiBPerSecond": 8839702.695936672
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "direct_descriptor",
+      "sizeBytes": 1048576,
+      "samplesNanos": [
+        79578920,
+        57845216,
+        67888089
+      ],
+      "medianNanos": 67888089,
+      "minNanos": 57845216,
+      "maxNanos": 79578920,
+      "throughputMiBPerSecond": 14.730124455263427
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "memory_cache",
+      "sizeBytes": 1048576,
+      "samplesNanos": [
+        302323,
+        99842,
+        73728
+      ],
+      "medianNanos": 99842,
+      "minNanos": 73728,
+      "maxNanos": 302323,
+      "throughputMiBPerSecond": 10015.825003505539
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "pipe_fallback",
+      "sizeBytes": 1048576,
+      "samplesNanos": [
+        66616977,
+        89988360,
+        69781609
+      ],
+      "medianNanos": 69781609,
+      "minNanos": 66616977,
+      "maxNanos": 89988360,
+      "throughputMiBPerSecond": 14.33042336412736
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "pipe_fallback",
+      "sizeBytes": 16777216,
+      "samplesNanos": [
+        158542360,
+        193728765,
+        153503807
+      ],
+      "medianNanos": 158542360,
+      "minNanos": 153503807,
+      "maxNanos": 193728765,
+      "throughputMiBPerSecond": 100.91940097271166
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "direct_descriptor",
+      "sizeBytes": 67108864,
+      "samplesNanos": [
+        110035597,
+        123921377,
+        89525674
+      ],
+      "medianNanos": 110035597,
+      "minNanos": 89525674,
+      "maxNanos": 123921377,
+      "throughputMiBPerSecond": 581.6299610752328
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "memory_cache",
+      "sizeBytes": 67108864,
+      "samplesNanos": [
+        305709,
+        113508,
+        92308
+      ],
+      "medianNanos": 113508,
+      "minNanos": 92308,
+      "maxNanos": 305709,
+      "throughputMiBPerSecond": 563836.9101737322
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "pipe_fallback",
+      "sizeBytes": 67108864,
+      "samplesNanos": [
+        316823121,
+        300794476,
+        313979528
+      ],
+      "medianNanos": 313979528,
+      "minNanos": 300794476,
+      "maxNanos": 316823121,
+      "throughputMiBPerSecond": 203.83494557008189
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "direct_descriptor",
+      "sizeBytes": 268435456,
+      "samplesNanos": [
+        75722042,
+        75294873,
+        73362965
+      ],
+      "medianNanos": 75294873,
+      "minNanos": 73362965,
+      "maxNanos": 75722042,
+      "throughputMiBPerSecond": 3399.9658914359284
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "memory_cache",
+      "sizeBytes": 268435456,
+      "samplesNanos": [
+        892673,
+        317840,
+        138464
+      ],
+      "medianNanos": 317840,
+      "minNanos": 138464,
+      "maxNanos": 892673,
+      "throughputMiBPerSecond": 805436.6977095393
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "pipe_fallback",
+      "sizeBytes": 268435456,
+      "samplesNanos": [
+        1182133347,
+        968914344,
+        980626558
+      ],
+      "medianNanos": 980626558,
+      "minNanos": 968914344,
+      "maxNanos": 1182133347,
+      "throughputMiBPerSecond": 261.057583961539
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "direct_descriptor",
+      "sizeBytes": 1073741824,
+      "samplesNanos": [
+        80131477,
+        74924779,
+        75119755
+      ],
+      "medianNanos": 75119755,
+      "minNanos": 74924779,
+      "maxNanos": 80131477,
+      "throughputMiBPerSecond": 13631.567355351466
+    },
+    {
+      "format": "bitmap_rgb",
+      "mode": "memory_cache",
+      "sizeBytes": 1073741824,
+      "samplesNanos": [
+        1066887,
+        239127,
+        143669
+      ],
+      "medianNanos": 239127,
+      "minNanos": 143669,
+      "maxNanos": 1066887,
+      "throughputMiBPerSecond": 4282243.326767785
+    }
+  ],
+  "source": {
+    "revision": "8df63902293dca59a2298496fc5d1eeeff26cc92",
+    "dirty": true,
+    "benchmarkInputsSha256": "8c310444b2239ee6e5aaf6d903a5507a2050fd728f311568bc8cc91a2de18295"
+  },
+  "runner": {
+    "schemaVersion": 1,
+    "profile": "full",
+    "deviceWasEmulator": true,
+    "python": "3.13.0"
+  }
+}

@@ -2,5 +2,6 @@
 <resources>
     <string name="plugin_description">Plugin MediaInfo para leer información de archivos multimedia</string>
     <string name="error_media_file_descriptor_null">El descriptor de archivo MediaInfo es null</string>
+    <string name="error_media_parse_timeout">MEDIAINFO_TIMEOUT: el análisis de MediaInfo superó %1$d segundos</string>
     <string name="error_unsupported_stream_kind">Tipo de flujo MediaInfo no compatible: %1$s</string>
 </resources>

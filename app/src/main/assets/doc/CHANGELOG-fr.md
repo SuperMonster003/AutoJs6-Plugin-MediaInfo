@@ -4,13 +4,27 @@
 
 ******
 
+# v1.1.0
+
+###### 2026/08/31
+
+* `Nouveauté` Analyse sans copie intégrale: les descripteurs de fichiers ordinaires positionnables sont lus directement par MediaInfoLib via /proc/self/fd; seuls les tubes ou les échecs de lecture directe utilisent une copie temporaire privée
+* `Nouveauté` Cache de résultats dans le processus: sur API 27+, les rapports complets, requêtes de champs et instantanés utilisent une identité de fichier stable, un LRU, une durée glissante de 10 minutes et une purge en cas de mémoire faible
+* `Nouveauté` Annulation coopérative et délai: chaque appel AIDL est limité à 30 secondes; le dépassement arrête l'analyse native ou la copie de repli, libère les ressources temporaires et renvoie MEDIAINFO_TIMEOUT
+* `Correction` Suppression de la copie systématique du fichier multimédia complet et fermeture fiable des descripteurs, analyseurs natifs, flux et fichiers temporaires sur tous les chemins d'erreur
+* `Correction` L'identité du cache conserve les horodatages à la nanoseconde et le cache est désactivé sur API 24 a 26, ou ces informations ne peuvent pas être validées en toute sécurité
+* `Amélioration` L'inventaire dynamique des ABI vérifie les bibliothèques MediaInfoLib réellement empaquetées et maintient cohérents le rapport d'exécution, les métadonnées et les cinq variantes APK
+* `Amélioration` L'analyseur d'instantané tolère mieux les libellés localisés, les groupes répétés, les champs inconnus et les sorties partielles de MediaInfoLib
+* `Amélioration` Ajout d'outils de benchmark reproductibles pour les appels à froid et à chaud, la concurrence, les délais et la validation sur de vrais médias, avec manifeste de sources et résumé SHA-256
+* `Amélioration` La génération documentaire validée couvre désormais 10 langues et produit de façon déterministe README, instructions intégrées et journaux des modifications
+
 # v1.0.0
 
 ###### 2026/07/15
 
-* `Nouveauté` Ajout du service de plugin MediaInfo avec l'ID de plugin `mediainfo` et le moteur `mediainfo`
-* `Nouveauté` Ajout de la découverte et de l'appel par l'hôte via `org.autojs.plugin.MEDIAINFO`
-* `Nouveauté` Ajout des capacités `inform`, `get` et `snapshot` pour les rapports multimédias complets, la recherche de paramètre unique et les instantanés JSON structurés
-* `Nouveauté` Ajout de `libmediainfo.so` pour `arm64-v8a`, `armeabi-v7a`, `x86_64` et `x86`, avec une variante APK `universal`
-* `Nouveauté` Ajout des métadonnées ABI prises en charge dans les informations d'exécution du plugin et de noms APK de publication avec version, variante ABI et résumé CRC32
-* `Nouveauté` Ajout des métadonnées du plugin, instructions d'utilisation, README et changelog localisés en espagnol, français, russe, arabe, japonais, coréen, anglais, chinois simplifié, chinois traditionnel de Hong Kong et chinois traditionnel de Taiwan
+* `Nouveauté` Première version stable: apporte a AutoJs6 la lecture des informations de fichiers multimédias via MediaInfoLib, obtenant format du conteneur, codec, durée, résolution, débit, canaux et plus en un seul appel
+* `Nouveauté` API de script: l'environnement Node reçoit `read`/`get` asynchrones via `require("mediainfo")`; l'environnement Rhino reçoit le module global `mediainfo(path)` renvoyant de manière synchrone un objet analysé accessible par propriétés
+* `Nouveauté` Trois capacités de lecture: rapport texte complet (`inform`), requête de paramètre unique (`get`) et instantané JSON structuré (`snapshot`, schéma `autojs6-plugin-mediainfo-snapshot-v1`)
+* `Nouveauté` Découvert automatiquement par AutoJs6 via `org.autojs.plugin.MEDIAINFO`; le plugin reçoit et analyse le contenu multimédia dans son propre processus via des descripteurs de fichier en lecture seule, sans permission réseau ni permission système sensible
+* `Nouveauté` Fournit quatre paquets mono-architecture (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) plus un paquet `universal` toutes architectures, avec des noms de fichiers de publication portant version, ABI et résumé CRC32
+* `Nouveauté` Métadonnées du plugin, instructions, README et journal des modifications couvrent 10 langues: chinois simplifié, chinois traditionnel de Hong Kong, chinois traditionnel de Taiwan, anglais, français, espagnol, japonais, coréen, russe et arabe

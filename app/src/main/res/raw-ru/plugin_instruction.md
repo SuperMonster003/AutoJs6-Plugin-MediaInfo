@@ -1,19 +1,53 @@
-Читайте метаданные MediaInfo из медиафайла:
+Плагин MediaInfo (MediaInfo Plugin) добавляет в AutoJs6 чтение информации о медиафайлах. После установки одна строка скрипта получает сотни технических параметров видео, аудио и изображений: формат контейнера, кодек, длительность, разрешение, битрейт, каналы и многое другое; диалог медиаинформации в списке файлов AutoJs6 также показывает полный отчет, подготовленный этим плагином. Разбор выполняет MediaInfoLib, та же библиотека с открытым исходным кодом, что лежит в основе настольного MediaInfo.
 
-```js
+### Использование
+
+1. Скачайте APK плагина, подходящий устройству, со страницы [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) и установите его на устройство с AutoJs6; если не уверены, возьмите пакет `universal` или смотрите `Выбор APK` ниже.
+2. Откройте центр плагинов AutoJs6 и убедитесь, что плагин `MediaInfo` распознан и включен.
+3. Вызывайте модуль `mediainfo` в скриптах, как показано в разделе `API Скриптов` ниже, или откройте диалог медиаинформации любого медиафайла в списке файлов AutoJs6, чтобы сразу увидеть полный отчет.
+
+Если плагин не появляется в центре плагинов, сначала обновите AutoJs6 до свежей версии (внутренняя сборка 3923 или выше). Сам плагин поддерживает устройства с Android 7.0 (API 24) и выше.
+
+### API Скриптов
+
+В среде Node (скрипты, начинающиеся с директивы `"nodejs"`) модуль получают через `require("mediainfo")`; все методы возвращают Promise:
+
+```javascript
 "nodejs";
 
 const mediainfo = require("mediainfo");
 
 (async () => {
-  const snapshot = await mediainfo.read("sample.mp4", { includeInform: false });
-  console.log(snapshot.fileName);
-  console.log(await mediainfo.get("sample.mp4", "general", "Format"));
+  const snapshot = await mediainfo.read("sample.mp4");
+  console.log(snapshot.sections.general[0].format);
+
+  const duration = await mediainfo.get("sample.mp4", "general", "Duration");
+  console.log(duration);
 })();
 ```
 
-Поддерживаемые типы потоков: `general`, `video`, `audio`, `text`, `other`, `image` и `menu`.
+`read(path, options?)` возвращает структурированный объект снимка (см. `Структура Снимка И Параметры` ниже); `get(path, streamKind?, parameter)` возвращает исходный текст параметра, `streamKind` по умолчанию равен `general`. В целях безопасности скрипты Node имеют доступ только к файлам внутри каталога проекта, а относительные пути разрешаются от корня проекта.
 
-`includeInform` управляет текстовым отчетом. `includeSections` управляет разобранным объектом `sections`.
+В среде Rhino (скриптовый движок AutoJs6 по умолчанию) `mediainfo` является глобальным модулем; `mediainfo(path)` и `mediainfo.read(path)` эквивалентны и синхронно возвращают разобранный объект:
 
-Дополнительные примеры см. в разделе [MediaInfo](https://docs.autojs6.com/#/mediainfo) документации AutoJs6.
+```javascript
+const mi = mediainfo("/sdcard/Download/sample.mp4");
+
+console.log(mi.general.format);
+console.log(mi.video.width);
+console.log(mi.audio("BitRate"));
+```
+
+У возвращаемого объекта `path` и `inform` содержат разрешенный путь и полный текстовый отчет; каждый тип потока (например `general`, `video`, `audio`) работает и как свойство с разобранными полями (например `mi.video.width`, имена полей в camelCase), и как функция для живого запроса исходных параметров (например `mi.audio("BitRate")`). Скрипты Rhino могут обращаться к любому пути, доступному хосту для чтения.
+
+### Типы Потоков
+
+Параметр `streamKind` метода `get()` поддерживает следующие типы потоков:
+
+```text
+general, video, audio, text, other, image, menu
+```
+
+`streamKind` не зависит от регистра и сопоставляется с нативными типами потоков MediaInfo; запрос несуществующего потока или параметра без значения возвращает пустую строку.
+
+Подробности использования и справку по полям смотрите в [документации AutoJs6 MediaInfo](https://docs.autojs6.com/#/mediainfo) и на [странице проекта](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo).

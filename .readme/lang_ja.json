@@ -3,37 +3,121 @@
   "text_current_lowercase": "現在",
   "text_plugin_synopsis": "メディアファイル情報を読み取る MediaInfo プラグイン",
   "h3_languages_with_ascii": "言語 (Languages)",
-  "p_languages_all_supported_for_readme": "現在の README.md は次の言語をサポートしています",
+  "p_languages_all_supported_for_readme": "現在の README.md は次の言語に対応しています",
   "h3_introduction": "概要",
-  "p_introduction": "AutoJs6 MediaInfo プラグインは AutoJs6 に MediaInfo ベースのメディアメタデータ読み取り機能を提供し, 完全なレポート, 単一パラメータ検索, 構造化 JSON スナップショットを出力できます.",
-  "h3_functions": "機能",
+  "p_introduction_what": "MediaInfo プラグイン (MediaInfo Plugin) は AutoJs6 にメディアファイル情報の読み取り機能を提供します. インストール後は, スクリプト 1 行で動画, 音声, 画像ファイルのコンテナ形式, コーデック, 再生時間, 解像度, ビットレート, チャンネル数など数百項目の技術情報を取得でき, AutoJs6 のファイル一覧にあるメディア情報ダイアログも本プラグインによる完全な解析レポートを表示します. 解析エンジンには, デスクトップ版 MediaInfo と同じオープンソースライブラリ MediaInfoLib を採用しています.",
+  "p_introduction_how": "プラグインは独立したプロセスで動作し, AutoJs6 が自動的に検出するため設定は一切不要です. ファイル読み取り時, ホストはメディア内容を読み取り専用ファイルディスクリプタとして渡します. ランダムアクセス可能な通常ファイルは MediaInfoLib が `/proc/self/fd` 経由で直接読み取り, パイプなどランダムアクセスできないディスクリプタや直接解析の失敗時だけ私有キャッシュの一時コピーへフォールバックし, 呼び出し終了時に直ちに削除します. 全過程でネットワークを使用せず, 機密性の高いシステム権限も要求しません.",
+  "h3_features": "機能ハイライト",
   "features": [
-    "`mediainfo` プラグインサービスを提供し, プラグイン ID は `mediainfo` です.",
-    "AutoJs6 Node 環境の `mediainfo.read(path, options)` と `mediainfo.get(path, streamKind, parameter, options)` をサポートします.",
-    "`org.autojs.plugin.MEDIAINFO` によるホスト検出と呼び出しをサポートし, 下位 AIDL インターフェースは `inform`/`get`/`snapshot` を公開します.",
-    "`arm64-v8a`/`armeabi-v7a`/`x86_64`/`x86` 向けの `libmediainfo.so` を同梱します.",
-    "プラグイン情報, 使用説明, README, CHANGELOG はスペイン語/フランス語/ロシア語/アラビア語/日本語/韓国語/英語/簡体字中国語/香港繁体字/台湾繁体字をサポートします."
+    "すぐに使える: 設定不要で, AutoJs6 がプラグインを自動検出し, スクリプトとファイル一覧のメディア情報ダイアログからすぐに利用できます.",
+    "情報が充実: コンテナ形式, コーデック, 再生時間, 解像度, フレームレート, ビットレート, チャンネル数, サンプリングレートなどを 1 回の呼び出しで取得できます.",
+    "3 つの読み取り方式: 完全なテキストレポート (`inform`), 単一パラメータ検索 (`get`), 構造化 JSON スナップショット (`read`/`snapshot`) を用途に応じて選べます.",
+    "2 つのスクリプトエンジンに対応: Node 環境では `require(\"mediainfo\")` で非同期に呼び出し, Rhino 環境ではグローバルモジュール `mediainfo(path)` がプロパティアクセス可能な解析オブジェクトを同期的に返します.",
+    "幅広い形式に対応: 解析はデスクトップ版 MediaInfo と同源の MediaInfoLib によるもので, 一般的な形式からマイナーな形式まで多数の動画, 音声, 画像形式をサポートします.",
+    "5 種類のインストールパッケージ: 4 種類の単一アーキテクチャ版 (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) と全アーキテクチャ同梱の `universal` 版から, 端末に合わせて選択できます.",
+    "プライバシーに配慮: 解析は独立プロセス内で行われ, ホストから渡される読み取り専用ファイルディスクリプタのみを受け取り, ネットワーク権限や機密性の高いシステム権限を要求しません.",
+    "多言語対応: プラグイン情報, 使用説明, README, 更新履歴が 10 言語で提供されます."
   ],
-  "h3_usage": "使用例",
-  "p_usage_path_note": "パスはホストがアクセスできるメディアファイルを指す必要があります, Node 環境では作業ディレクトリ内の相対パスを使用できます",
-  "h3_stream_kinds": "ストリーム種別",
-  "p_stream_kinds": "サポートされる MediaInfo ストリーム種別は次のとおりです",
-  "p_stream_kinds_note": "`mediainfo.get()` の `streamKind` は大文字小文字を区別せず, MediaInfo のネイティブストリーム種別にマップされます",
-  "h3_snapshot_options": "スナップショットオプション",
+  "h3_usage": "使用方法",
+  "usage_steps": [
+    "[Releases]({{ repo_url }}/releases) ページから端末に合ったプラグイン APK をダウンロードし, AutoJs6 が動作する端末にインストールします. 迷ったときは `universal` 版を選ぶか, 下の `インストールパッケージの選び方` を参照してください.",
+    "AutoJs6 のプラグインセンターを開き, `MediaInfo` プラグインが認識され有効になっていることを確認します.",
+    "下の `スクリプト API` の例に従ってスクリプトから `mediainfo` モジュールを呼び出します. AutoJs6 のファイル一覧でメディアファイルのメディア情報ダイアログを開き, 完全なレポートを直接確認することもできます."
+  ],
+  "p_usage_note": "プラグインセンターにプラグインが表示されない場合は, まず AutoJs6 を新しいバージョン (内部ビルド {{ required_host_version_code }} 以上) に更新してください. プラグイン自体は Android {{ min_android_version }} (API {{ android_min_sdk }}) 以上の端末をサポートします.",
+  "h3_choose_apk": "インストールパッケージの選び方",
+  "p_choose_apk_intro": "各リリースには 5 つの APK が含まれ, 違いは同梱するネイティブライブラリのアーキテクチャだけです",
+  "th_apk_variant": "パッケージ",
+  "th_apk_target": "適した対象",
+  "td_abi_arm64": "現代のほとんどの Android スマートフォンとタブレット (64 ビット ARM), 第一候補",
+  "td_abi_arm32": "やや古い 32 ビット ARM 端末",
+  "td_abi_x86_64": "64 ビット x86 エミュレータと一部の x86 端末",
+  "td_abi_x86": "32 ビット x86 エミュレータと一部の x86 端末",
+  "td_abi_universal": "全 4 アーキテクチャを同梱し最も大きい, どの端末でも動作し, 迷ったときの無難な選択",
+  "p_choose_apk_note": "プラグインは自身のプロセス内でネイティブライブラリをロードします. 端末のアーキテクチャに合わない単一アーキテクチャ版を誤ってインストールすると, 呼び出し時に `MediaInfo library is not available` と表示されます. `universal` 版に入れ替えれば解決します.",
+  "h3_script_api": "スクリプト API",
+  "p_script_api_node": "Node 環境 (スクリプト先頭で `\"nodejs\"` を宣言) では `require(\"mediainfo\")` でモジュールを取得し, すべてのメソッドが Promise を返します",
+  "p_script_api_node_note": "`read(path, options?)` は構造化スナップショットオブジェクトを返します (下の `スナップショットの構造とオプション` を参照). `get(path, streamKind?, parameter)` はパラメータの生テキストを返し, `streamKind` の既定値は `general` です. 安全上の制限により, Node スクリプトはプロジェクトディレクトリ内のファイルのみアクセスでき, 相対パスはプロジェクトルートを基準に解決されます.",
+  "p_script_api_rhino": "Rhino 環境 (AutoJs6 の既定スクリプトエンジン) では `mediainfo` はグローバルモジュールで, `mediainfo(path)` と `mediainfo.read(path)` は等価であり, 解析オブジェクトを同期的に返します",
+  "p_script_api_rhino_note": "返されたオブジェクトの `path` と `inform` はそれぞれ解決済みパスと完全なテキストレポートです. 各ストリーム種別 (`general`, `video`, `audio` など) は, 解析済みフィールドを公開するプロパティ (例: `mi.video.width`, フィールド名は camelCase) としても, 生パラメータをリアルタイムに問い合わせる関数 (例: `mi.audio(\"BitRate\")`) としても機能します. Rhino スクリプトはホストが読み取り可能な任意のパスにアクセスできます.",
+  "h3_snapshot": "スナップショットの構造とオプション",
+  "p_snapshot_intro": "Node 環境の `read()` が返すスナップショットは次のとおりです (プラグイン AIDL の `snapshot` メソッドが返す JSON も同一ですが, `schema` は `{{ snapshot_schema_plugin }}` で `path` フィールドを含みません)",
   "snapshot_options": [
-    "`includeInform`: スナップショットに MediaInfo テキストレポートを含めるかどうか, 既定値は `true`.",
-    "`includeSections`: レポートを解析して `sections` に書き込むかどうか, 既定値は `true`."
+    "`includeInform`: `inform` テキストレポートを含めるかどうか, 既定値は `true`. `false` にすると空文字列になり, 返却サイズを抑えられます.",
+    "`includeSections`: レポートを解析して `sections` を生成するかどうか, 既定値は `true`. `false` にすると空オブジェクトになります."
   ],
+  "p_snapshot_sections_note": "`sections` のキーはレポートのセクション名を小文字化したものです (同種のストリームが複数ある場合, セクション名に `audio #1` のような番号が付くことがあります). 値はすべてオブジェクトの配列で, フィールド名は camelCase に変換され, フィールド値は単位や `1 920 pixels` のような千位区切りスペースを含む MediaInfo の元テキストを保持します.",
+  "h3_stream_kinds": "ストリーム種別",
+  "p_stream_kinds": "`get()` の `streamKind` パラメータは次のストリーム種別をサポートします",
+  "p_stream_kinds_note": "`streamKind` は大文字小文字を区別せず, MediaInfo のネイティブストリーム種別にマップされます. 存在しないストリームや値のないパラメータを問い合わせると空文字列が返ります.",
+  "h3_faq": "よくある質問",
+  "faq": [
+    {
+      "q": "プラグインが有効になったことをどう確認できますか?",
+      "a": "AutoJs6 のプラグインセンターを開き, `MediaInfo` プラグインが表示されていればホストに認識されています. その後, 任意の `mediainfo` スクリプト例を実行し, 正常に結果が返ればプラグインは動作しています."
+    },
+    {
+      "q": "アプリ一覧にプラグインのアイコンがないのはなぜですか?",
+      "a": "正常な動作です. プラグインには独立した画面がなく, ランチャーアイコンも作成しません. インストール後は AutoJs6 がバックグラウンドで自動検出して呼び出し, すべての操作は AutoJs6 内で完結します."
+    },
+    {
+      "q": "Node スクリプトで `path must stay inside the scoped working directory` と表示されます?",
+      "a": "Node エンジンは安全上の制限により, プロジェクトディレクトリ内のファイルのみアクセスを許可します. メディアファイルをプロジェクトディレクトリ内に置いてから読み取ってください. 他のパス (アルバムやダウンロードフォルダなど) にアクセスする必要がある場合は, Rhino エンジンのスクリプトをご利用ください."
+    },
+    {
+      "q": "`get()` が空文字列を返しました?",
+      "a": "パラメータ名は MediaInfo のネイティブパラメータ (`Format`, `Duration`, `Width`, `BitRate`, `FileSize` など) を使用し, 対象ストリームが実在する必要があります. まず `read()` で `sections` 内の実際に利用可能なフィールドを確認するか, `inform` の完全なレポートを参照してください."
+    },
+    {
+      "q": "大きなファイルの読み取りが遅いのですが?",
+      "a": "通常ファイルはキャッシュへの全体コピーなしで直接解析されるため, 大きなファイルでもサイズに比例するコピー時間を回避できます. パイプなどランダムアクセスできないディスクリプタや直接解析に失敗する形式では一時コピーへフォールバックし, その所要時間は受信バイト数に比例します. MediaInfoLib 自体の解析時間は形式と内容に依存します."
+    },
+    {
+      "q": "解析結果はキャッシュされますか, タイムアウト時はどうなりますか?",
+      "a": "はい. Android 8.1 (API 27) 以降では, ID が安定し変更されていない通常ファイルについて, プラグインは現在のプロセス内でレポート, クエリ, スナップショットをキャッシュします. 上限は 32 ファイル, ファイルごとに 64 クエリ, 10 分のスライド有効期限, 合計約 2 MiB のテキストです. API 24-26 ではナノ秒精度のファイル時刻を取得できないため, 安全側に倒してキャッシュを無効にします. また低メモリ時またはプロセス終了時に消去されます. 各 AIDL 呼び出しは 30 秒で制限され, 超過するとネイティブ解析またはフォールバックコピーを協調的にキャンセルし, 一時ファイルを削除して `MEDIAINFO_TIMEOUT` を含む例外を返します."
+    },
+    {
+      "q": "複数の音声トラックや字幕がある場合, 2 番目以降のストリームをどう読み取りますか?",
+      "a": "スナップショットの `sections` はレポートの全セクションを保持します (複数ストリームの場合, セクション名に `audio #2` のような番号が付きます) ので, そこから直接読み取れます. `get()` は現在, 同種ストリームの 1 番目のみを検索します. ストリーム番号指定は [ROADMAP.md]({{ roadmap_url }}) で計画されています."
+    },
+    {
+      "q": "プラグインはネットワークにアクセスしたり機密権限を要求したりしますか?",
+      "a": "いいえ. マニフェストにはネットワーク, ストレージ, カメラなどの機密性の高いシステム権限は含まれず, AutoJs6 との通信に必要なプラグイン権限のみを宣言します. メディア内容はホストから読み取り専用ディスクリプタとして渡され, 解析用の一時コピーは直ちに削除されます."
+    }
+  ],
+  "h3_security": "権限とセキュリティ",
+  "p_security_intro": "メディアファイルは信頼できない提供元から届く可能性があるため, 設計上, 解析には複数の防御層を設けています:",
+  "security_points": [
+    "プロセス分離: 解析はプラグイン自身のプロセスで行われ, ネイティブライブラリがホストプロセスに注入されることはないため, 解析に失敗しても AutoJs6 は正常に動作し続けます.",
+    "最小のデータ面: プラグイン自身は端末ストレージを読み取れず, ホストが開いた読み取り専用ファイルディスクリプタと表示名のみを受け取ります.",
+    "可能なら直接読み取り, フォールバック時は即削除: ランダムアクセス可能な通常ディスクリプタはメディアコピーを作成せず, 互換フォールバックだけが私有キャッシュへ書き込み, 呼び出し終了時に一時ファイルを削除します.",
+    "最小権限: ネットワーク, ストレージ, カメラなどの機密性の高いシステム権限を要求しません. サービスとウェイクエントリはいずれも AutoJs6 プラグイン権限 (`org.autojs.permission.PLUGIN`) で保護され, サードパーティアプリから直接呼び出せません.",
+    "オープンで監査可能: プラグインコード, ビルドスクリプト, ドキュメント生成パイプラインはすべてオープンソースで, ネイティブライブラリと JNI ラッパーの出所はライセンスの節に明記されています."
+  ],
+  "p_security_permission": "プラグインは公式の [Releases]({{ repo_url }}/releases) ページまたは信頼できる経路からのみ入手してください. 出所不明のパッケージは, 名前とバージョン番号が同じでも改ざんされている可能性があります.",
+  "h3_plugin_interface": "プラグインインターフェース",
+  "p_plugin_interface": "以下の情報は AutoJs6 ホストとプラグイン開発者向けです. ホストはこれらの識別子でプラグインを検出し, 機能ネゴシエーションを行います",
+  "p_contract_service": "`MediainfoPluginService` は AIDL インターフェース `IMediainfoPlugin` を通じて `getInfo`/`inform`/`get`/`snapshot` の 4 メソッドを公開します. メディア内容は読み取り専用 `ParcelFileDescriptor` と表示名で渡され, `snapshot` はさらに `includeInform`/`includeSections` を含む `Bundle` オプションを受け取ります. サービスと `WakeActivity` はいずれも `org.autojs.permission.PLUGIN` 権限で保護されています.",
+  "p_abi_reporting": "プラグインはインストール済みの base / split APK を走査し, `libmediainfo.so` を実際に含む ABI を動的に報告します. 単一 ABI 版は該当 ABI のみ, `universal` 版は全 4 種類を報告します. APK パスを読み取れない場合は, 展開済みネイティブライブラリが存在するときに現在のプロセスのビット数へ安全にフォールバックします.",
+  "h3_roadmap": "開発ロードマップ",
+  "p_roadmap": "プラグインの機能計画と完了状況は, マイルストーンごとに受け入れ条件付きで整理されたチェック可能なリストとして ROADMAP.md で管理されています. ストリーム番号指定, コピー不要解析, 動的 ABI 報告, ネイティブライブラリの進化, 継続的インテグレーションなどを扱います. 未チェックの項目は計画中の意向であり, 現行バージョンの機能ではありません. Issues での議論を歓迎します.",
+  "text_link_roadmap": "ROADMAP.md を見る",
   "h3_release_history": "リリース履歴",
   "h5_for_more_release_history": "その他のリリース履歴",
   "h3_build": "ビルド",
-  "text_release_build": "Release ビルド",
-  "p_build_params": "ビルドパラメータは `version.properties` から取得されます, 現在の最小 SDK は 24, ターゲット SDK は 36 です",
-  "h3_resource_layout": "リソース構成",
-  "p_resource_layout": "`strings.xml` はローカライズされたプラグイン説明とエラーメッセージを提供します; `plugin_instruction.md` はホスト側に表示されるプラグイン使用説明を提供します. README と CHANGELOG は `.python/generate_markdown.py` により JSON ソースから生成されます",
+  "p_build_intro": "この節はソースからプラグインをビルドしたい開発者向けです.",
+  "p_build_debug": "debug APK をビルド",
+  "p_build_release": "release APK をビルド (ABI 分割が有効で, 4 つの単一アーキテクチャ版と 1 つの `universal` 版を一度に生成します. バージョン管理外の `sign.properties` を設定すると自動署名されます)",
+  "p_build_artifacts": "リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v{{ version_name }}-<abi>-<crc32>.apk` 形式にリネームします.",
+  "p_build_params": "ビルドパラメータは `version.properties` に集約されています: 最小 SDK {{ android_min_sdk }} (Android {{ min_android_version }}), ターゲット SDK {{ android_target_sdk }}, 現在のバージョン {{ version_name }}.",
+  "h3_resource_layout": "ローカライズとドキュメント生成",
+  "p_resource_layout": "`strings.xml` はローカライズされたプラグイン説明とエラーメッセージを, `plugin_instruction.md` はホストのプラグインセンターに表示される使用説明を提供します. README, 更新履歴, 使用説明はすべて JSON ソースから生成されます: `.readme/` と `.changelog/` 配下のソースを編集した後, `py .python/generate_markdown.py` を実行して全成果物を再生成してください. 生成物は手動で編集しません. `py .python/generate_markdown.py --check` でソースと成果物の同期を検証できます (CI でも自動検証されます).",
+  "h3_license": "ライセンス",
+  "p_license": "プロジェクトコードは [Mozilla Public License 2.0]({{ license_url }}) の下でライセンスされています. 同梱の `libmediainfo.so` は [MediaInfoLib]({{ mediainfolib_url }}) (MediaArea.net SARL, BSD スタイルライセンス) からビルドされ, JNI ラッパーは [MediaInfoLib-android]({{ mediainfo_android_url }}) プロジェクトに由来します.",
   "h3_links": "関連リンク",
-  "text_link_autojs6_mediainfo_docs": "AutoJs6 MediaInfo ドキュメント",
-  "text_link_mediainfo_official": "MediaInfo 公式プロジェクト",
-  "text_link_mediainfolib_official": "MediaInfoLib 公式プロジェクト",
-  "text_link_mediainfo_android": "MediaInfoLib Android プロジェクト"
+  "text_link_autojs6_docs_mediainfo": "AutoJs6 MediaInfo ドキュメント",
+  "text_link_mediainfo_official": "MediaInfo 公式サイト",
+  "text_link_mediainfolib_official": "MediaInfoLib プロジェクト",
+  "text_link_mediainfo_android": "MediaInfoLib Android ラッパー",
+  "p_instruction_docs": "より詳しい使い方とフィールドの説明は [AutoJs6 MediaInfo ドキュメント]({{ docs_mediainfo_url }}) と [プロジェクトホームページ]({{ repo_url }}) を参照してください."
 }

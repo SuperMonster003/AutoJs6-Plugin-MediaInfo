@@ -2,5 +2,6 @@
 <resources>
     <string name="plugin_description">Плагин MediaInfo для чтения информации о медиафайлах</string>
     <string name="error_media_file_descriptor_null">Файловый дескриптор MediaInfo равен null</string>
+    <string name="error_media_parse_timeout">MEDIAINFO_TIMEOUT: анализ MediaInfo превысил %1$d секунд</string>
     <string name="error_unsupported_stream_kind">Неподдерживаемый тип потока MediaInfo: %1$s</string>
 </resources>

@@ -20,6 +20,8 @@ desktop.ini
 .git/
 .gradle/
 .hprof/
+__pycache__/
+*.py[cod]
 
 !.run
 

@@ -2,5 +2,6 @@
 <resources>
     <string name="plugin_description">用于读取媒体文件信息的 MediaInfo 插件</string>
     <string name="error_media_file_descriptor_null">MediaInfo 文件描述符为空</string>
+    <string name="error_media_parse_timeout">MEDIAINFO_TIMEOUT: MediaInfo 解析超过 %1$d 秒</string>
     <string name="error_unsupported_stream_kind">不支持的 MediaInfo 流类型: %1$s</string>
 </resources>

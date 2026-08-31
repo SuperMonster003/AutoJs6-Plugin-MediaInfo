@@ -1,0 +1,98 @@
+{
+  "schema": "autojs6-plugin-mediainfo-real-media-v1",
+  "generatedAtUtc": "2026-08-31T07:43:33.258Z",
+  "device": {
+    "manufacturer": "Sony",
+    "model": "XQ-AT72",
+    "sdk": 31,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "armeabi"
+    ]
+  },
+  "files": [
+    {
+      "stagedName": "000-crop-tool.mp4",
+      "sizeBytes": 189397,
+      "informLength": 3131,
+      "informHasGeneral": true,
+      "informHasVideo": true,
+      "informHasAudio": true,
+      "informHasImage": false,
+      "generalFormat": "MPEG-4",
+      "snapshotSectionCount": 4,
+      "coldInformNanos": 22785625,
+      "cachedInformNanos": 429635,
+      "coldGetNanos": 3554792,
+      "cachedGetNanos": 283438,
+      "coldSnapshotNanos": 16824427,
+      "cachedSnapshotNanos": 235677,
+      "sourceLabel": "normal/crop-tool.mp4",
+      "sha256": "3284f48609f64f2c2f2e870b6aac64e74011e8d30a5fd5668bb8add03d42ed81"
+    },
+    {
+      "stagedName": "001-EdrCalibration.mkv",
+      "sizeBytes": 897810,
+      "informLength": 1220,
+      "informHasGeneral": true,
+      "informHasVideo": true,
+      "informHasAudio": false,
+      "informHasImage": false,
+      "generalFormat": "WebM",
+      "snapshotSectionCount": 3,
+      "coldInformNanos": 7206667,
+      "cachedInformNanos": 206927,
+      "coldGetNanos": 4731302,
+      "cachedGetNanos": 235625,
+      "coldSnapshotNanos": 5704687,
+      "cachedSnapshotNanos": 146875,
+      "sourceLabel": "normal/EdrCalibration.mkv",
+      "sha256": "a806a68a6605d37aef448101299fc7f06acb6020ff6b21d39d09101bd1a16cdf"
+    },
+    {
+      "stagedName": "002-Marika Takeuchi - Night Photography.flac",
+      "sizeBytes": 6654332,
+      "informLength": 2085,
+      "informHasGeneral": true,
+      "informHasVideo": false,
+      "informHasAudio": true,
+      "informHasImage": false,
+      "generalFormat": "FLAC",
+      "snapshotSectionCount": 3,
+      "coldInformNanos": 48964166,
+      "cachedInformNanos": 287917,
+      "coldGetNanos": 40661406,
+      "cachedGetNanos": 323489,
+      "coldSnapshotNanos": 4989687,
+      "cachedSnapshotNanos": 138958,
+      "sourceLabel": "normal/Marika Takeuchi - Night Photography.flac",
+      "sha256": "3c5776362b8d2e5f71fc7928451a24ad46ba6bcaa611eff86395b8e0a6f87023"
+    },
+    {
+      "stagedName": "003-20240726.mp4",
+      "sizeBytes": 588251136,
+      "informLength": 350,
+      "informHasGeneral": true,
+      "informHasVideo": false,
+      "informHasAudio": false,
+      "informHasImage": false,
+      "generalFormat": "MPEG-4",
+      "snapshotSectionCount": 2,
+      "coldInformNanos": 3873125,
+      "cachedInformNanos": 261302,
+      "coldGetNanos": 3330417,
+      "cachedGetNanos": 288854,
+      "coldSnapshotNanos": 1159166,
+      "cachedSnapshotNanos": 136406,
+      "sourceLabel": "bad/20240726.mp4",
+      "sha256": "8984e343d9d986680e55ca752df47fc3a949965a7d0b368f0937417a52b439e6"
+    }
+  ],
+  "failureCount": 0,
+  "source": {
+    "revision": "8df63902293dca59a2298496fc5d1eeeff26cc92",
+    "dirty": true,
+    "benchmarkInputsSha256": "8c310444b2239ee6e5aaf6d903a5507a2050fd728f311568bc8cc91a2de18295"
+  }
+}
