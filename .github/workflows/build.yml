@@ -104,28 +104,6 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_7
-          script: |
-            chmod +x gradlew
-            ./gradlew \
-              -Pmediainfo.releaseSmokeDebugSigning=true \
-              :app:assembleRelease \
-              :app:assembleDebugAndroidTest \
-              --stacktrace
-            release_apk="app/build/outputs/apk/release/app-x86_64-release.apk"
-            test_apk="app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
-            test -f "$release_apk"
-            test -f "$test_apk"
-            cleanup_release_smoke() {
-              adb uninstall io.github.supermonster003.autojs6.plugin.mediainfo.test >/dev/null 2>&1 || true
-              adb uninstall io.github.supermonster003.autojs6.plugin.mediainfo >/dev/null 2>&1 || true
-            }
-            trap cleanup_release_smoke EXIT
-            adb install -t "$release_apk"
-            adb install -t "$test_apk"
-            release_output="$(adb shell am instrument -w -r \
-              -e class io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoReleaseSmokeTest \
-              io.github.supermonster003.autojs6.plugin.mediainfo.test/androidx.test.runner.AndroidJUnitRunner)"
-            printf '%s\n' "$release_output"
-            printf '%s\n' "$release_output" | grep -q 'OK (1 test)'
-            cleanup_release_smoke
-            ./gradlew :app:connectedDebugAndroidTest --stacktrace
+          # The action executes each script input line in a separate shell.
+          # Keep stateful variables, traps, and assertions inside one driver.
+          script: bash scripts/run_ci_service_validation.sh
