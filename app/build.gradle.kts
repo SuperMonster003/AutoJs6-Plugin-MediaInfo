@@ -5,6 +5,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import java.util.Properties
 import javax.inject.Inject
 
@@ -158,6 +159,12 @@ androidComponents {
     }
 }
 
+val standaloneAndroidTestKotlinRuntime by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    isTransitive = true
+}
+
 dependencies {
     implementation(files("$rootDir/libs/common-plugin-api.aar"))
     implementation(files("$rootDir/libs/mediainfo-api.aar"))
@@ -165,6 +172,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.test.ext.junit)
     androidTestImplementation(libs.test.runner)
+
+    // The version-difference test deliberately instruments a minified published
+    // release instead of this module's debug APK. Treat the Kotlin runtime as a
+    // file collection so AGP packages it in the test APK rather than assuming
+    // that every tested APK contains the complete unminified runtime.
+    standaloneAndroidTestKotlinRuntime(
+        "org.jetbrains.kotlin:kotlin-stdlib:${KotlinCompilerVersion.VERSION}",
+    )
+    androidTestImplementation(files(standaloneAndroidTestKotlinRuntime))
 }
 
 tasks {
