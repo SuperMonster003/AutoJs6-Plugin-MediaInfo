@@ -304,6 +304,16 @@ _2026/07/15_
 
 本節面向希望從原始碼建置外掛的開發者.
 
+建置前遞迴簽出儲存庫及兩個固定提交的官方子模組:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 建置 debug APK:
 
 ```powershell
@@ -347,7 +357,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-專案程式碼使用 [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). 內建的 `libmediainfo.so` 基於 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, BSD 風格授權) 建置, JNI 封裝源自 [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android) 專案.
+專案程式碼使用 [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). v2 官方原始碼建置線的 `libmediainfo.so` 來自 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) 與 [ZenLib](https://github.com/MediaArea/ZenLib) (zlib 授權), 相容 JNI 橋由本儲存庫維護. 已凍結的 v1.1.0 二進位來源另行記錄.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

@@ -1,0 +1,6 @@
+[submodule "native/upstream/MediaInfoLib"]
+	path = native/upstream/MediaInfoLib
+	url = https://github.com/MediaArea/MediaInfoLib.git
+[submodule "native/upstream/ZenLib"]
+	path = native/upstream/ZenLib
+	url = https://github.com/MediaArea/ZenLib.git

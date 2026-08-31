@@ -304,6 +304,16 @@ _2026/07/15_
 
 이 절은 소스에서 플러그인을 빌드하려는 개발자를 위한 것입니다.
 
+빌드 전에 저장소와 고정된 두 공식 하위 모듈을 재귀적으로 가져옵니다:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 debug APK 빌드:
 
 ```powershell
@@ -347,7 +357,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-프로젝트 코드는 [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE) 라이선스를 따릅니다. 내장된 `libmediainfo.so` 는 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, BSD 스타일 라이선스) 로부터 빌드되었으며, JNI 래퍼는 [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android) 프로젝트에서 유래했습니다.
+프로젝트 코드는 [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE) 라이선스를 따릅니다. v2 소스 빌드에서는 공식 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) 와 [ZenLib](https://github.com/MediaArea/ZenLib) (zlib 라이선스) 에서 `libmediainfo.so` 를 빌드하며, 호환 JNI 브리지는 이 저장소에서 유지합니다. 동결된 v1.1.0 바이너리의 출처는 별도로 기록됩니다.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

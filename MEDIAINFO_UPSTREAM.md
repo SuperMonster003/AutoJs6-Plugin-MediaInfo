@@ -54,19 +54,25 @@ GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/A
 
 ******
 
-## ARM64 源码构建验证
+## 四 ABI 集成构建与运行验证
 
 ******
 
-2026-08-31 已在不改动插件 APK 和 `app/src/main/jniLibs` 的前提下完成一次独立验证:
+2026-08-31 先完成了与插件隔离的 ARM64 源码构建证明, 随后已把同一规则正式接入 Gradle / CMake. 从干净构建图一次生成四种 ABI 与五个 debug APK, 旧 `app/src/main/jniLibs` 二进制仅在 v2 功能分支中删除, v1.1.0 标签与 Release 资产未发生任何变化.
 
-- 官方源码分别精确检出到 `T:\backups\idea-projects\MediaInfoLib` (`v26.05`) 和 `T:\backups\idea-projects\ZenLib` (`v0.4.41`), 两个工作树均为 detached HEAD 且无本地修改.
-- 使用 NDK `29.0.14206865`, CMake `3.22.1`, Android API 24, `arm64-v8a`, Release 与 `c++_static` 配置, 并沿用官方 Android 工程的精简 feature flags; 大文件支持显式开启.
-- ZenLib 的 CMake 最低版本策略会在未指定时把它意外构建成共享库. 验证通过 `CMAKE_POLICY_DEFAULT_CMP0077=NEW` 使 MediaInfoLib 保持共享库, ZenLib 静态并入, 最终 `libmediainfo.so` 不依赖额外的 `libzen.so`.
-- 最终未剥离产物为 AArch64 ELF, SHA-256 为 `a91944ef787ac911e482002f1bc546596e9a8fdf6f46cbe4088fa2f62a8e3a32`, 三个 LOAD segment 对齐均为 `0x4000`; 动态依赖仅为 Android 系统的 `libz.so`, `libm.so`, `libdl.so` 与 `libc.so`.
-- `JNI_OnLoad`, `MediaInfo_Open`, `MediaInfo_Inform`, `MediaInfo_Get`, `MediaInfo_Option` 等入口均已导出; 源码版本常量为 `MediaInfoLib - v26.05`. `llvm-strip --strip-unneeded` 后的验证副本为 10,048,424 字节.
+| ABI | 剥离后字节数 | SHA-256 |
+|---|---:|---|
+| `arm64-v8a` | 11,227,272 | `a689212b294f2e7f1504bd67c733584f19b2c2a04dac28f9b1753fb7e5fd4ae6` |
+| `armeabi-v7a` | 6,903,216 | `e09db8de0a45bf482d39b7cce9141eff32f6ae17bca54d7ffb84c1e97a4bb22e` |
+| `x86` | 12,476,056 | `a0dcab8f0fee822e6938e215153886fa97cbe533c9f101a845ed4b4172c9106c` |
+| `x86_64` | 11,118,472 | `431b666ec6079c6e284f5e27e9c2dc47596f2385c0c840a15bac7a49df39b2e4` |
 
-验证产物保留在 `T:\backups\idea-projects\MediaInfo-v2-build-proof\arm64-v8a`. 它不是发布输入, 也没有复制进本仓库; 正式 v2 构建仍需把相同规则纳入 Gradle / CMake, CI 和四 ABI 回归.
+- 四个 ELF 的全部 LOAD segment 均为 `0x4000` 对齐, SONAME 均为 `libmediainfo.so`, 动态依赖严格只有 Android 系统 `libz.so`, `libm.so`, `libdl.so`, `libc.so`; ZenLib 与 C++ 运行时均静态并入.
+- 本地 version script 将动态导出面限制为唯一的 `JNI_OnLoad`; Kotlin 需要的旧类名和方法签名在 `JNI_OnLoad` 中显式注册, 不暴露上游 C API.
+- 五个 APK 均通过逐项审计: 四个 split APK 只含目标 ABI, `universal` 含全部四种 ABI; APK 内库哈希与已审计的剥离产物一致, 来源锁和两份许可也逐字核对.
+- 核心 JNI / AIDL 测试已在 API 24 x86_64 (4 KB), API 29 x86, API 36 x86_64 与 API 37 x86_64 (16 KB) 通过. API 24 的停滞管道于 30.128 秒超时并验证无临时文件泄漏; API 37 实际页大小为 16384.
+- x86_64 已通过 MP4, WebM, FLAC 与 561 MiB 问题样本回归, 包括 regular FD, pipe, 冷 / 热缓存和清理验证. 清理脚本现会正确引用含空格路径并在删除后复核文件不存在.
+- v2 ARM64 实机运行, ARM32 运行时以及两份显式授权超大文件仍属于发布门禁; 当前两台 ARM64 实机离线, 因而不会据此合并或发布 v2.
 
 ******
 
@@ -74,7 +80,7 @@ GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/A
 
 ******
 
-v2 实现时采用以下职责分离:
+v2 实现采用以下职责分离:
 
 ```text
 native/
@@ -82,14 +88,15 @@ native/
 |   |-- MediaInfoLib/  # 固定提交的官方源码
 |   `-- ZenLib/        # 固定提交的官方源码
 |-- bridge/            # 本项目维护的最小 JNI 兼容与取消桥
-`-- upstream.lock      # 仓库, 标签, 提交, 工具链与编译选项
+|-- CMakeLists.txt     # 固定 feature profile 与 Android 链接规则
+`-- upstream.lock.json # 仓库, 标签, 提交, 许可, 工具链与编译选项
 ```
 
-- 上游目录使用固定提交的 Git 子模块或等价的内容寻址检出; 两个上游目录保持同级, 以符合官方 CMake 的相对路径布局.
+- 上游目录使用固定提交的 Git 子模块; 两个上游目录保持同级, 以符合官方 CMake 的相对路径布局. 干净检出必须使用 `--recurse-submodules` 或随后执行 `git submodule update --init --recursive`.
 - 本项目的补丁只放在 `native/bridge` 或显式补丁文件中. 不在上游子模块工作树内直接提交混合修改, 这样每次升级都能清楚审阅本地差异.
 - APK 中的 `libmediainfo.so` 由 Gradle / CMake 构建图生成, 不再从个人仓库复制预编译文件.
 - CMake 入口固定 `CMP0077=NEW`, 让 ZenLib 静态并入 MediaInfoLib; CI 拒绝 `DT_NEEDED` 中出现非 Android 系统库, 防止漏打包的共享依赖.
-- 来源清单同时进入 APK 元数据或资源, 使运行时诊断, Release 说明和可复现构建使用同一来源.
+- 来源清单以 `assets/mediainfo-upstream.lock.json` 进入每个 APK, 使运行时诊断, Release 说明和可复现构建使用同一来源; MediaInfoLib / ZenLib 许可原文也随 APK 打包.
 
 ******
 
@@ -111,9 +118,9 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 
 ******
 
-1. 每周检查一次 MediaInfoLib 的非 draft, 非 prerelease GitHub Release; 手动触发同样可用.
-2. 新稳定版高于 `upstream.lock` 时, 自动创建或刷新一个更新 PR, 只改变官方固定引用, 来源清单与必要的许可归档.
-3. PR 构建四种 ABI, 验证标签到提交的映射, 运行 ELF 架构 / 依赖 / 16 KB 对齐检查, 并在 APK 内核对 `Info_Version`.
+1. `.github/workflows/update-mediainfo-upstream.yml` 每周一检查 MediaInfoLib 与 ZenLib 的非 draft, 非 prerelease GitHub Release; `workflow_dispatch` 手动触发同样可用.
+2. 新稳定版高于 `native/upstream.lock.json` 时, 自动创建或刷新 `automation/update-mediainfo-upstream` Draft PR, 只改变官方固定引用, 来源清单与许可归档. 相同版本号解析到不同提交时直接作为安全错误停止, 不静默接受标签移动.
+3. 更新分支推送后显式 `workflow_dispatch` 完整 Build integrity 流程, 构建四种 ABI, 验证标签到提交的映射, 运行 ELF 架构 / 依赖 / 16 KB 对齐检查, 并在 APK 内核对 `Info_Version`; 即使机器人 PR 的普通事件等待批准, 也会立即产生候选提交的 CI 证据.
 4. 运行 JVM, 模拟器和 ARM64 实体机测试; 对同一批真实样本保存 v1.1.0 与候选版本的字段 / 报告差异, 将合理的上游解析变化作为可审阅产物.
 5. 对 regular FD, pipe 回退, 缓存命中, 30 秒超时 / 取消和大文件分别回归; 19.37 GiB MP4 与 77.97 GiB MKV 只在获得 `--allow-large-transfer` 明确授权时执行, 测试后立即删除设备副本.
 6. Release 先以 draft 创建并一次性上传全部 APK, 校验标签, 资产名, 大小与 SHA-256 后才发布; 发布后由已启用的 GitHub Release immutability 锁定标签和资产.
@@ -127,13 +134,13 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 
 ******
 
-- 从不含本地缓存的干净检出可构建五个 APK, 二次构建的来源清单和输入提交一致.
-- 四个 `libmediainfo.so` 的 ELF 架构正确, 无缺失依赖, LOAD segment 对齐至少为 `0x4000`, 并可在 4 KB / 16 KB 页设备加载.
-- API 24 最低版本, 当前目标 API, 四种 ABI 模拟器 / 设备的核心 AIDL 往返测试通过.
-- `Info_Version` 返回 MediaInfoLib 26.05, 且与锁文件, APK 元数据和 Release 说明一致.
-- v1.1.0 的免拷贝路径, 缓存, 30 秒超时 / 取消与清理保证全部保留.
-- 合成样本, `T:\media-samples-for-autojs6-plugin-mediainfo` 真实样本, 多流样本和显式授权的大文件回归通过; 解析差异经过人工审阅.
-- MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和修改说明随源码与发布包完整保留.
-- draft Release 在发布前已包含全部五个 APK 与最终说明; 发布后 `gh release verify` 可验证 immutable 状态及本地资产.
+- [x] 从固定子模块和不含个人预编译库的构建图生成五个 APK; 锁文件完整记录输入提交与工具链.
+- [x] 四个 `libmediainfo.so` 的 ELF 架构, SONAME, 依赖, 导出面与 LOAD segment `0x4000` 对齐通过自动校验, 并在 4 KB / 16 KB 页模拟器加载.
+- [ ] API 24 最低版本和当前目标 API 已通过; x86 / x86_64 已运行, ARM64 / ARM32 候选 APK 仍需在实体设备运行核心 AIDL 回归.
+- [x] `Info_Version` 返回 MediaInfoLib 26.05, 且与锁文件和 APK 元数据一致; Release 说明在 v2 发布时补齐.
+- [x] v1.1.0 的免拷贝路径, 缓存, 30 秒超时 / 取消与清理保证已在 JVM 与模拟器回归中保留.
+- [ ] 合成样本与四份非超大真实样本已通过; ARM64 实机真实样本, 多流差异审阅及显式授权的 19.37 GiB MP4 / 77.97 GiB MKV 候选版本回归待完成.
+- [x] MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和来源锁随源码与 APK 保留.
+- [ ] v2.0.0 版本号, 最终发布说明与五个 release APK 尚未生成; draft Release 只会在全部运行门禁通过后创建.
 
-只有以上门禁全部满足, 才删除 v2 构建图中的旧预编译 `app/src/main/jniLibs/<abi>/libmediainfo.so`, 提升插件版本至 v2.0.0 并创建 Release. 在此之前, master 上的 v1.1.0 产物仍是可发布基线.
+v2 功能分支已经从其构建图移除旧预编译库, 这是验证官方源码为唯一输入所必需的可审阅改动; 在上述门禁全部满足并人工合并前, `master` 仍保持 v1.1.0 可发布基线. 只有通过 ARM 实机和超大文件回归后才提升插件版本至 v2.0.0 并创建 Release.

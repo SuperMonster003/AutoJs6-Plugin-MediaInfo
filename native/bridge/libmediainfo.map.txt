@@ -1,0 +1,6 @@
+AUTOJS6_MEDIAINFO_PLUGIN {
+    global:
+        JNI_OnLoad;
+    local:
+        *;
+};

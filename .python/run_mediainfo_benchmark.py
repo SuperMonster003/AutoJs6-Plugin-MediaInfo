@@ -38,8 +38,11 @@ BENCHMARK_INPUT_PATTERNS = (
     "app/build.gradle.kts",
     "app/src/main/AndroidManifest.xml",
     "app/src/main/java/**/*.kt",
-    "app/src/main/jniLibs/**/*.so",
     "app/src/androidTest/**/*.kt",
+    ".gitmodules",
+    "native/CMakeLists.txt",
+    "native/upstream.lock.json",
+    "native/bridge/**/*",
     "libs/*.aar",
     "version.properties",
 )

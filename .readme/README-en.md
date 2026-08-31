@@ -304,6 +304,16 @@ _2026/07/15_
 
 This section targets developers who want to build the plugin from source.
 
+Clone the repository together with both pinned official submodules before building:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 Build debug APKs:
 
 ```powershell
@@ -347,7 +357,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-Project code is licensed under the [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). The bundled `libmediainfo.so` is built from [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, BSD-style license), with the JNI wrapper derived from the [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android) project.
+Project code is licensed under the [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). On the v2 source-build line, `libmediainfo.so` is built from the official [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) and [ZenLib](https://github.com/MediaArea/ZenLib) (zlib license) sources, while the compatibility JNI bridge is maintained in this repository. The frozen v1.1.0 binary provenance remains documented separately.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

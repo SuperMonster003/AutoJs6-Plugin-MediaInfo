@@ -304,6 +304,16 @@ _2026/07/15_
 
 Этот раздел предназначен разработчикам, желающим собрать плагин из исходников.
 
+Перед сборкой клонируйте репозиторий вместе с двумя закрепленными официальными подмодулями:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 Собрать debug APK:
 
 ```powershell
@@ -347,7 +357,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-Код проекта распространяется под лицензией [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). Встроенный `libmediainfo.so` собран из [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, лицензия в стиле BSD), а JNI обертка происходит из проекта [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android).
+Код проекта распространяется под лицензией [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). В ветке v2 `libmediainfo.so` собирается из официальных исходников [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) и [ZenLib](https://github.com/MediaArea/ZenLib) (лицензия zlib), а совместимый JNI-мост поддерживается в этом репозитории. Происхождение замороженного бинарного файла v1.1.0 описано отдельно.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

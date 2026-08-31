@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -103,26 +104,36 @@ def staged_paths(samples: list[Path]) -> list[str]:
 
 
 def cleanup_staged_samples(adb_executable: str, serial: str, samples: list[Path]) -> None:
+    cleanup_failures: list[str] = []
     for remote_path in staged_paths(samples):
         if not remote_path.startswith(f"{REMOTE_DIRECTORY}/"):
             raise common.BenchmarkRunnerError(f"Refusing unsafe staged path: {remote_path}")
+        quoted_path = shlex.quote(remote_path)
         result = common.adb(
             adb_executable,
             serial,
             "shell",
-            "rm",
-            "-f",
-            "--",
-            remote_path,
+            f"rm -f -- {quoted_path}",
             check=False,
             timeout=120,
         )
         if result.returncode != 0:
-            print(
-                f"WARNING: could not remove staged sample {remote_path}: "
-                f"{result.stdout} {result.stderr}",
-                file=sys.stderr,
+            cleanup_failures.append(
+                f"could not remove {remote_path}: {result.stdout.strip()} {result.stderr.strip()}"
             )
+            continue
+        verification = common.adb(
+            adb_executable,
+            serial,
+            "shell",
+            f"test ! -e {quoted_path}",
+            check=False,
+            timeout=30,
+        )
+        if verification.returncode != 0:
+            cleanup_failures.append(f"staged sample still exists after removal: {remote_path}")
+    if cleanup_failures:
+        raise common.BenchmarkRunnerError("Real-media cleanup failed:\n" + "\n".join(cleanup_failures))
 
 
 def run_validation(adb_executable: str, serial: str) -> None:

@@ -1,4 +1,12 @@
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
 import java.util.Properties
+import javax.inject.Inject
 
 plugins {
     id("org.autojs.build.utils")
@@ -10,11 +18,33 @@ plugins {
 
 val globalApplicationId = "io.github.supermonster003.autojs6.plugin.mediainfo"
 
+abstract class GenerateMediaInfoMetadataTask : DefaultTask() {
+
+    @get:InputFile
+    abstract val sourceFile: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDirectory: DirectoryProperty
+
+    @get:Inject
+    abstract val fileSystemOperations: FileSystemOperations
+
+    @TaskAction
+    fun generate() {
+        fileSystemOperations.sync {
+            from(sourceFile)
+            into(outputDirectory)
+            rename { "mediainfo-upstream.lock.json" }
+        }
+    }
+}
+
 var isSignsValid = false
 
 android {
     namespace = globalApplicationId
     compileSdk = versions.sdkVersionCompile
+    ndkVersion = "29.0.14206865"
 
     defaultConfig {
         applicationId = globalApplicationId
@@ -35,6 +65,13 @@ android {
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments += listOf("-DANDROID_STL=c++_static")
+                targets += listOf("mediainfo")
+            }
         }
     }
 
@@ -93,6 +130,31 @@ android {
 
     packaging {
         jniLibs.useLegacyPackaging = true
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("../native/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        val variantTaskSuffix = variant.name.replaceFirstChar { character ->
+            if (character.isLowerCase()) character.titlecase() else character.toString()
+        }
+        val metadataTask = tasks.register<GenerateMediaInfoMetadataTask>(
+            "generate${variantTaskSuffix}MediaInfoMetadata",
+        ) {
+            description = "Copies the pinned MediaInfo source manifest into the ${variant.name} APK"
+            sourceFile.set(rootProject.layout.projectDirectory.file("native/upstream.lock.json"))
+            outputDirectory.set(layout.buildDirectory.dir("generated/mediainfoMetadataAssets/${variant.name}"))
+        }
+        requireNotNull(variant.sources.assets).addGeneratedSourceDirectory(metadataTask) { task ->
+            task.outputDirectory
+        }
     }
 }
 

@@ -304,6 +304,16 @@ _2026/07/15_
 
 هذا القسم موجه للمطورين الراغبين في بناء المكون من المصدر.
 
+استنسخ المستودع مع الوحدتين الفرعيتين الرسميتين المثبتتين قبل البناء:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 بناء حزم APK بوضع debug:
 
 ```powershell
@@ -347,7 +357,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-كود المشروع مرخص بموجب [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). أما `libmediainfo.so` المضمن فمبني من [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, ترخيص بنمط BSD), مع غلاف JNI مشتق من مشروع [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android).
+كود المشروع مرخص بموجب [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). في مسار v2 المبني من المصدر, يبنى `libmediainfo.so` من المصدرين الرسميين [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) و [ZenLib](https://github.com/MediaArea/ZenLib) (ترخيص zlib), بينما تتم صيانة جسر JNI المتوافق في هذا المستودع. ويوثق أصل ملف v1.1.0 الثنائي المجمد بشكل منفصل.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

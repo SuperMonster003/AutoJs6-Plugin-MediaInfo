@@ -12,11 +12,18 @@ jobs:
   verify-build:
     name: Unit tests and debug APKs
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Verify pinned upstream sources
+        run: |
+          python3 scripts/update_mediainfo_upstream.py --fetch-locked
+          python3 scripts/verify_native_build.py
 
       - name: Set up Java
         uses: actions/setup-java@v5
@@ -24,21 +31,39 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: gradle
+
+      - name: Install pinned native toolchain
+        run: sdkmanager "ndk;29.0.14206865" "cmake;3.22.1"
 
       - name: Run unit tests and assemble debug APKs
         run: |
           chmod +x gradlew
           ./gradlew :app:testDebugUnitTest :app:assembleDebug --stacktrace
 
+      - name: Verify all packaged native architectures
+        run: >-
+          python3 scripts/verify_native_build.py
+          --library-root
+          app/build/intermediates/stripped_native_libs/debug/stripDebugDebugSymbols/out/lib
+          --apk-dir
+          app/build/outputs/apk/debug
+
   verify-service:
     name: Plugin service round trip
     needs: verify-build
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Verify pinned upstream sources
+        run: |
+          python3 scripts/update_mediainfo_upstream.py --fetch-locked
+          python3 scripts/verify_native_build.py
 
       - name: Set up Java
         uses: actions/setup-java@v5
@@ -46,6 +71,9 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: gradle
+
+      - name: Install pinned native toolchain
+        run: sdkmanager "ndk;29.0.14206865" "cmake;3.22.1"
 
       - name: Enable KVM
         run: |
