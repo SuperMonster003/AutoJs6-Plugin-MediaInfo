@@ -73,7 +73,9 @@ GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/A
 - 核心 JNI / AIDL 测试已在 API 24 x86_64 (4 KB), API 29 x86, API 36 x86_64 与 API 37 x86_64 (16 KB) 通过. API 24 的停滞管道于 30.128 秒超时并验证无临时文件泄漏; API 37 实际页大小为 16384.
 - QV710AF65F (API 31) 上的 v2 ARM64 与 ARM32 候选 APK 核心回归均为 4/4 通过; ARM64 停滞管道于 30.094 秒超时且无临时文件泄漏. 同一 ARM64 候选还通过 MP4, WebM, FLAC 与 561 MiB 问题样本的 regular FD、冷 / 热缓存和清理验证, 四份样本均为 `failureCount=0`.
 - QV770340J7 (API 33) 上的 v2 ARM64 候选使用显式 `--allow-large-transfer` 授权通过 19.37 GiB MP4 与 77.97 GiB MKV 回归. 两份样本的冷解析分别为 303.451 ms 与 548.698 ms, 缓存命中分别为 0.254 ms 与 0.406 ms, `inform`, `get` 与 `snapshot` 的冷 / 热结果一致. 每次测试后均独立确认设备副本和测试包已删除, 可用空间恢复至约 130 GiB; 最后以设备原 APK 的 SHA-256 逐字校验恢复 v1.1.0.
-- 至此 v2 的四 ABI、4 KB / 16 KB 页、最低 / 当前 API、ARM 实机、真实媒体、超时及超大文件运行门禁均已通过. 合并或发布前仍需审阅 v1.1.0 与 v2 候选的多流解析差异, 再决定 v2.0.0 版本提升与 Release 资产.
+- QV710AF65F (API 31) 上以同一批 MP4, WebM, FLAC 与 561 MiB 问题样本完成 0.7.83 / 26.05 双版本对照. 四份完整报告均变化, 共审阅 17 项直接查询变化, 1 项 section occurrence 变化与 63 项 section 字段变化; 容器格式及有效样本的 General / Video / Audio 核心流保持一致. 变化均属于上游解析演进: 日期与单位规范化、字段键名调整、更精确的 AAC 标识, 以及新增 H.264、VP9 HDR / 色彩、FLAC 校验和 / 压缩和封面图元数据. 561 MiB 畸形 MP4 在两版中均保持 General-only MPEG-4, 但 26.05 不再输出旧 `IsTruncated=Yes`; 该字段按非稳定诊断信息处理, 不增加兼容 shim. 脱敏证据见 `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`.
+- 已发布的 minified v1.1.0 Release 包在复核时暴露了旧包装层无法加载 JNI 的历史缺陷; 包内旧 `libmediainfo.so` 与可工作的已安装 v1.1.0 基线逐字相同, 因此差异审查使用同签名、版本号相同的已安装基线, 并在证据中明确标注来源与哈希. 按冻结策略不重建、不替换 v1.1.0. v2 已为 JNI 精确类名加入 R8 keep 规则, 并在 QV710AF65F 上安装实际 minified ARM64 Release APK, 通过只依赖公开 AIDL 的原生加载、服务发现和四类读取冒烟测试.
+- 至此 v2 的四 ABI、4 KB / 16 KB 页、最低 / 当前 API、ARM 实机、真实媒体、双版本解析差异、minified Release、超时及超大文件运行门禁均已通过. 剩余工作仅为提升 v2.0.0 版本、生成最终五个 Release APK、等待 CI 全绿并建立 Draft Release; 合并与正式发布仍需另行人工批准.
 
 ******
 
@@ -141,8 +143,9 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 - [x] `Info_Version` 返回 MediaInfoLib 26.05, 且与锁文件和 APK 元数据一致; Release 说明在 v2 发布时补齐.
 - [x] v1.1.0 的免拷贝路径, 缓存, 30 秒超时 / 取消与清理保证已在 JVM 与模拟器回归中保留.
 - [x] 合成样本、ARM64 实机上的四份非超大真实样本及显式授权的 19.37 GiB MP4 / 77.97 GiB MKV 候选版本回归均已通过; 设备副本和测试包已删除并复核.
-- [ ] 对同一批多流样本审阅 v1.1.0 与 v2 候选的字段、报告与 sections 差异, 将合理的上游解析变化记录为可审阅证据.
+- [x] 对同一批真实样本审阅 v1.1.0 与 v2 候选的字段、完整报告与 sections 差异; 容器和核心流保持兼容, 合理的上游解析变化已记录为脱敏证据. (落点: `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`)
+- [x] 实际 minified Release APK 通过公开 AIDL 原生加载与读取冒烟测试; CI 同时构建、审计并在模拟器安装 release 变体, 防止 JNI 精确类名再次被 R8 改写. (落点: `app/proguard-rules.pro`, `MediainfoReleaseSmokeTest.kt`, `.github/workflows/build.yml`)
 - [x] MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和来源锁随源码与 APK 保留.
 - [ ] v2.0.0 版本号, 最终发布说明与五个 release APK 尚未生成; draft Release 只会在全部运行门禁通过后创建.
 
-v2 功能分支已经从其构建图移除旧预编译库, 这是验证官方源码为唯一输入所必需的可审阅改动; 在上述门禁全部满足并人工合并前, `master` 仍保持 v1.1.0 可发布基线. ARM 实机和超大文件回归已经通过, 但仍需完成解析差异审阅并取得人工发布决定, 才会提升插件版本至 v2.0.0 并创建 Release.
+v2 功能分支已经从其构建图移除旧预编译库, 这是验证官方源码为唯一输入所必需的可审阅改动; 在上述门禁全部满足并人工合并前, `master` 仍保持 v1.1.0 可发布基线. 解析差异已经审阅并接受, 当前授权范围仅包括提升插件版本至 v2.0.0、生成最终资产和创建 Draft Release; 不包括将 PR 转为 Ready、合并或正式发布.

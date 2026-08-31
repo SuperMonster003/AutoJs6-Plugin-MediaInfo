@@ -1,0 +1,1072 @@
+{
+  "schema": "autojs6-plugin-mediainfo-version-diff-v1",
+  "generatedAtUtc": "2026-08-31T15:10:21.322Z",
+  "device": {
+    "manufacturer": "Sony",
+    "model": "XQ-AT72",
+    "sdk": 31,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "armeabi"
+    ]
+  },
+  "baseline": {
+    "label": "v1.1.0 frozen-engine installed baseline",
+    "pluginVersionName": "1.1.0",
+    "pluginVersionCode": 9,
+    "mediaInfoVersion": "0.7.83",
+    "apkFileName": "qv770-original-v1.1.0.apk",
+    "apkSizeBytes": 3762733,
+    "apkSha256": "ec08be5cd92f22b0b1c36aa7315a35aea665b2c8a39d5091ea1e2a8de36495fc",
+    "installedApkSha256": "ec08be5cd92f22b0b1c36aa7315a35aea665b2c8a39d5091ea1e2a8de36495fc"
+  },
+  "candidate": {
+    "label": "v2.0.0 official-source candidate",
+    "pluginVersionName": "1.1.0",
+    "pluginVersionCode": 9,
+    "mediaInfoVersion": "26.05",
+    "apkFileName": "app-arm64-v8a-debug.apk",
+    "apkSizeBytes": 5084180,
+    "apkSha256": "40dc5cd24dec1ecd412a3d9035cc8570298afeaf9b6bb1401ed4586e8c268692",
+    "installedApkSha256": "40dc5cd24dec1ecd412a3d9035cc8570298afeaf9b6bb1401ed4586e8c268692"
+  },
+  "files": [
+    {
+      "sourceLabel": "normal/crop-tool.mp4",
+      "sizeBytes": 189397,
+      "sha256": "3284f48609f64f2c2f2e870b6aac64e74011e8d30a5fd5668bb8add03d42ed81",
+      "baselineFormat": "MPEG-4",
+      "candidateFormat": "MPEG-4",
+      "baselineSectionCount": 4,
+      "candidateSectionCount": 4,
+      "changed": true,
+      "report": {
+        "changed": true,
+        "baselineLength": 3131,
+        "candidateLength": 3275,
+        "baselineLineCount": 64,
+        "candidateLineCount": 66,
+        "baselineSha256": "440f86122893de6e44a6aec7d56710305bc49c4dfb68c01bdc9ef5b725bfbbad",
+        "candidateSha256": "0a1ea787fee26212f7f0b38f4e17a0f0424d3274ed6a9d71046509a2ac88a809",
+        "insertedLineCount": 2,
+        "removedLineCount": 0,
+        "replacedBaselineLineCount": 21,
+        "replacedCandidateLineCount": 21,
+        "unifiedDiffSha256": "d2ee72473d61d30bf835d9a4728d5287a9fcd04ea5ffbfe7974dc7fd9d64cd60"
+      },
+      "queries": {
+        "baselineSha256": "0827029d72663331894128764168c5632acd676a6058ea81a626b33b492b9d6b",
+        "candidateSha256": "5630b25286b5b0e2eaf58207efdf96ebc18da789c7d7548193593361677c8b3b",
+        "changes": [
+          {
+            "path": "audio[0].CodecID",
+            "kind": "changed",
+            "baseline": {
+              "length": 2,
+              "sha256": "d59eced1ded07f84c145592f65bdf854358e009c5cd705f5215bf18697fed103",
+              "value": "40"
+            },
+            "candidate": {
+              "length": 9,
+              "sha256": "81e5a245db5a253a38034cf5a3b831e54da8fcabb4c2eaf6e86407e9c064b7b1",
+              "value": "mp4a-40-2"
+            }
+          },
+          {
+            "path": "audio[0].Format_Profile",
+            "kind": "removed",
+            "baseline": {
+              "length": 2,
+              "sha256": "0a980e2263735001c25089e83b967fb4156f3b1284d49e808c12c2d72cc0134e",
+              "value": "LC"
+            }
+          },
+          {
+            "path": "general[0].Encoded_Date",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          },
+          {
+            "path": "general[0].Tagged_Date",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          }
+        ]
+      },
+      "sections": {
+        "baselineSha256": "1088bff22ae529e1d2b3154ee689943501d401b3777967796319d7ef6e16e94a",
+        "candidateSha256": "b9008cc939ebc7cab32c147f54157546fef2c7d66b4887031a8539e3c0ad7e9d",
+        "addedOccurrences": [],
+        "removedOccurrences": [],
+        "fieldChanges": [
+          {
+            "path": "audio[0].bitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 9,
+              "sha256": "9f088d4999077137fe4354d94b0dc30e85825fd37cfddc072c20e6da8dfe8131",
+              "value": "2 250 bps"
+            },
+            "candidate": {
+              "length": 9,
+              "sha256": "46465fe0a22c371ba3f7661510e7ab507898801d3d9737b7ac0bcfcc28580646",
+              "value": "2 250 b/s"
+            }
+          },
+          {
+            "path": "audio[0].channelLayout",
+            "kind": "added",
+            "candidate": {
+              "length": 3,
+              "sha256": "be605116c4830a4fb713a371b82b04de03d4210c8fc8ce8b6bf6fbecbf105f95",
+              "value": "L R"
+            }
+          },
+          {
+            "path": "audio[0].channelPositions",
+            "kind": "removed",
+            "baseline": {
+              "length": 10,
+              "sha256": "ff4001fcf5065d3c186470f4b87786eb5b0da7eff9a9dacddc2916f95d2d8ebe",
+              "value": "Front: L R"
+            }
+          },
+          {
+            "path": "audio[0].codecId",
+            "kind": "changed",
+            "baseline": {
+              "length": 2,
+              "sha256": "d59eced1ded07f84c145592f65bdf854358e009c5cd705f5215bf18697fed103",
+              "value": "40"
+            },
+            "candidate": {
+              "length": 9,
+              "sha256": "81e5a245db5a253a38034cf5a3b831e54da8fcabb4c2eaf6e86407e9c064b7b1",
+              "value": "mp4a-40-2"
+            }
+          },
+          {
+            "path": "audio[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "e8d6256cbab57d6f2bdcd4ee03a852e580556f9bdef67b9cd89ed3fc4691132c",
+              "value": "8s 107ms"
+            },
+            "candidate": {
+              "length": 10,
+              "sha256": "cc64dad5bba3d18f90587a63aa26b924097ad448ed135fa90f598e7176dbe276",
+              "value": "8 s 107 ms"
+            }
+          },
+          {
+            "path": "audio[0].encodedDate",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          },
+          {
+            "path": "audio[0].format",
+            "kind": "changed",
+            "baseline": {
+              "length": 3,
+              "sha256": "d5ced0c0b64bf1582582acb55425f70c12991c397368a8bbad06bb0a5d2cfeb7",
+              "value": "AAC"
+            },
+            "candidate": {
+              "length": 6,
+              "sha256": "076661830094688bce7dc44f7cd379055d66ea42d47ec2372265ed7121995753",
+              "value": "AAC LC"
+            }
+          },
+          {
+            "path": "audio[0].formatInfo",
+            "kind": "changed",
+            "baseline": {
+              "length": 20,
+              "sha256": "4520ad1f3dc243b65d05771ef7566dcd5a3ce867c19e0a94d015bfb0ac0e6d3d",
+              "value": "Advanced Audio Codec"
+            },
+            "candidate": {
+              "length": 35,
+              "sha256": "5fb4f7424dab9c8cb3aa4495be16d01a6f0da6255f696212618dde70eeb733f6",
+              "value": "Advanced Audio Codec Low Complexity"
+            }
+          },
+          {
+            "path": "audio[0].formatProfile",
+            "kind": "removed",
+            "baseline": {
+              "length": 2,
+              "sha256": "0a980e2263735001c25089e83b967fb4156f3b1284d49e808c12c2d72cc0134e",
+              "value": "LC"
+            }
+          },
+          {
+            "path": "audio[0].frameRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 21,
+              "sha256": "c274fb551316c8a2e85f7aea10047ec5d9e9498300dae3b1576e3bd73ce10b8b",
+              "value": "46.875 fps (1024 spf)"
+            },
+            "candidate": {
+              "length": 21,
+              "sha256": "80af13f8d5c2d64f7905e3071bfe04e6594d8c9ebb28f0d000bc5e5c3b9c9137",
+              "value": "46.875 FPS (1024 SPF)"
+            }
+          },
+          {
+            "path": "audio[0].samplingRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "61a65e93b54f8b26d1794a665b7783c056c1e94dd327132b198544c3af0552b2",
+              "value": "48.0 KHz"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "52f6c78e3904617477abd54f500b82e58b53084c99d83af6373e42cc3e3e8425",
+              "value": "48.0 kHz"
+            }
+          },
+          {
+            "path": "audio[0].taggedDate",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          },
+          {
+            "path": "general[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "e8d6256cbab57d6f2bdcd4ee03a852e580556f9bdef67b9cd89ed3fc4691132c",
+              "value": "8s 107ms"
+            },
+            "candidate": {
+              "length": 10,
+              "sha256": "cc64dad5bba3d18f90587a63aa26b924097ad448ed135fa90f598e7176dbe276",
+              "value": "8 s 107 ms"
+            }
+          },
+          {
+            "path": "general[0].encodedDate",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          },
+          {
+            "path": "general[0].frameRate",
+            "kind": "added",
+            "candidate": {
+              "length": 10,
+              "sha256": "155228f3eb12bbc5a0109fdad06ce92b9cb4eb7497862eed6254bb8791fc2c7c",
+              "value": "30.000 FPS"
+            }
+          },
+          {
+            "path": "general[0].overallBitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "729c38fb77a2e4d59bb8bd2ca78c0404a96f95af06b3b4475123526173650a38",
+              "value": "187 Kbps"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "49bfbf6973c411d73bb791d2c9176fb406efc614fd00549a29fe7b6f0ffccc00",
+              "value": "187 kb/s"
+            }
+          },
+          {
+            "path": "general[0].taggedDate",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          },
+          {
+            "path": "video[0].bitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "07150e2dc19e420426d9b6547e6a07367c685b1f3ba065c931ba80b4770a2cd0",
+              "value": "177 Kbps"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "4b8b0224137b57283f318ab72a3deb0940f95cd501932295197b3844557f6b29",
+              "value": "177 kb/s"
+            }
+          },
+          {
+            "path": "video[0].codecConfigurationBox",
+            "kind": "added",
+            "candidate": {
+              "length": 4,
+              "sha256": "ceed14b5b7e7068963c2fdf339ed7df2e6884c64a6b205811df9e6336ec3641c",
+              "value": "avcC"
+            }
+          },
+          {
+            "path": "video[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 7,
+              "sha256": "911faaeac9a3190fd3c8c51df9a69b5d79504c3f510d19650ed07ada5e6299d0",
+              "value": "8s 34ms"
+            },
+            "candidate": {
+              "length": 9,
+              "sha256": "254e71331ae2f06a77d0775b6196b96ebd341092fe37e6c70d5b24a351969b36",
+              "value": "8 s 34 ms"
+            }
+          },
+          {
+            "path": "video[0].encodedDate",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          },
+          {
+            "path": "video[0].formatSettings",
+            "kind": "added",
+            "candidate": {
+              "length": 20,
+              "sha256": "228d3ca6ca893bba80969c5b795b43754bca831543b10a9c7ed72e2379fadb52",
+              "value": "CABAC / 4 Ref Frames"
+            }
+          },
+          {
+            "path": "video[0].formatSettingsReferenceFrames",
+            "kind": "added",
+            "candidate": {
+              "length": 8,
+              "sha256": "f1bcec954e9806554350de8575a5255e06dad5048ff494bb55d1874075260e89",
+              "value": "4 frames"
+            }
+          },
+          {
+            "path": "video[0].formatSettingsReframes",
+            "kind": "removed",
+            "baseline": {
+              "length": 8,
+              "sha256": "f1bcec954e9806554350de8575a5255e06dad5048ff494bb55d1874075260e89",
+              "value": "4 frames"
+            }
+          },
+          {
+            "path": "video[0].frameRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 10,
+              "sha256": "a194ee73b65b8ad432cccf06a4f90e7eeb98d1a5933989f7e53a0982bc4c585d",
+              "value": "30.000 fps"
+            },
+            "candidate": {
+              "length": 10,
+              "sha256": "155228f3eb12bbc5a0109fdad06ce92b9cb4eb7497862eed6254bb8791fc2c7c",
+              "value": "30.000 FPS"
+            }
+          },
+          {
+            "path": "video[0].taggedDate",
+            "kind": "changed",
+            "baseline": {
+              "length": 23,
+              "sha256": "c7fbcaab6d034c2fd6d1e3a0ed2f80ad55cb580356511b8073c7f7e1db868a1b"
+            },
+            "candidate": {
+              "length": 23,
+              "sha256": "412e64065c7e47e5eea5529d9bee830bc1068e4a7d10d38abd1e51d017e55a0c"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "sourceLabel": "normal/EdrCalibration.mkv",
+      "sizeBytes": 897810,
+      "sha256": "a806a68a6605d37aef448101299fc7f06acb6020ff6b21d39d09101bd1a16cdf",
+      "baselineFormat": "WebM",
+      "candidateFormat": "WebM",
+      "baselineSectionCount": 3,
+      "candidateSectionCount": 3,
+      "changed": true,
+      "report": {
+        "changed": true,
+        "baselineLength": 1220,
+        "candidateLength": 1990,
+        "baselineLineCount": 28,
+        "candidateLineCount": 42,
+        "baselineSha256": "8d0cba1ce9d6482b7972df9c26464654da5e0dcf2e434d92d906f9cb7d6732ab",
+        "candidateSha256": "bdd6a5ecb4602cdc8355b8765970840c2c9847897f889b2306762e70140c4c70",
+        "insertedLineCount": 10,
+        "removedLineCount": 0,
+        "replacedBaselineLineCount": 7,
+        "replacedCandidateLineCount": 11,
+        "unifiedDiffSha256": "a6ab64be3e2b31b5862f562fefd735b2df290be260b28c62c29a51045b89e679"
+      },
+      "queries": {
+        "baselineSha256": "9c6d73cadbc1797dadd87d1433ed9badfca43c05764f13bd52998890ef6ee0a1",
+        "candidateSha256": "5b7dca04310a002a9d7a45989d3bf8193111f4b4a93b3be79142ae6c9a4401f4",
+        "changes": [
+          {
+            "path": "video[0].BitDepth",
+            "kind": "added",
+            "candidate": {
+              "length": 2,
+              "sha256": "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
+              "value": "10"
+            }
+          },
+          {
+            "path": "video[0].ChromaSubsampling",
+            "kind": "added",
+            "candidate": {
+              "length": 5,
+              "sha256": "74198bd5204ba0ede3167c20bdde5b0438a9b0c687ebc536d494417887d6945f",
+              "value": "4:2:0"
+            }
+          },
+          {
+            "path": "video[0].ColorSpace",
+            "kind": "added",
+            "candidate": {
+              "length": 3,
+              "sha256": "34f83abc442a3a71d2c2737eb74ac7bf8573dcd41cf41110855734283207475a",
+              "value": "YUV"
+            }
+          },
+          {
+            "path": "video[0].Format_Profile",
+            "kind": "added",
+            "candidate": {
+              "length": 1,
+              "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+              "value": "2"
+            }
+          },
+          {
+            "path": "video[0].HDR_Format",
+            "kind": "added",
+            "candidate": {
+              "length": 13,
+              "sha256": "a536d49bd43483416371c025b122164fb1af92866261a676ef71a33f7d122bbe",
+              "value": "SMPTE ST 2086"
+            }
+          }
+        ]
+      },
+      "sections": {
+        "baselineSha256": "94600bb422c933937f1e3c451b781cc75a2d67e3ce90c09ae4fcc3cc2e8844fd",
+        "candidateSha256": "b888a7779a41b5cb012dd1005da8cef448c236e69a90f8b27fb5e037132f12fb",
+        "addedOccurrences": [],
+        "removedOccurrences": [],
+        "fieldChanges": [
+          {
+            "path": "general[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 9,
+              "sha256": "475b8ad0bb6249fdddabea26116cab855ce9cc705abd06dda779346596f4111c",
+              "value": "33s 266ms"
+            },
+            "candidate": {
+              "length": 11,
+              "sha256": "97570c7917185a51dffd07b2a8c27c35863169594f3b0c9d6ab1197a24409a98",
+              "value": "33 s 266 ms"
+            }
+          },
+          {
+            "path": "general[0].frameRate",
+            "kind": "added",
+            "candidate": {
+              "length": 10,
+              "sha256": "0e3e221ea23930009d03e60b0973f43837b56bc019913876f2169b2cc6ac8e0a",
+              "value": "30.068 FPS"
+            }
+          },
+          {
+            "path": "general[0].overallBitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "794adf58dfec190f12648bb8bded0a8a7897e3d7f22f4c68ef453ef275af9208",
+              "value": "216 Kbps"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "c4cb59ec199175b96581db21c71531c8112f33724748c72955ab0d76bf1ad53e",
+              "value": "216 kb/s"
+            }
+          },
+          {
+            "path": "general[0].writingApplication",
+            "kind": "changed",
+            "baseline": {
+              "length": 13,
+              "sha256": "d5ee449e99b401ed0ca6f40ace9d95cf20161e4fd41e430c2aa74fe1f8a53435"
+            },
+            "candidate": {
+              "length": 12,
+              "sha256": "9331293be64b12cf0f6f7d183f18b8366cafabe0e1a5a3b19ddbaf73fbd0d8b2"
+            }
+          },
+          {
+            "path": "general[0].writingLibrary",
+            "kind": "changed",
+            "baseline": {
+              "length": 15,
+              "sha256": "2ba38cfe0a33e3789b89519b64da19284a5d5345cec027b973ae067048e49755"
+            },
+            "candidate": {
+              "length": 15,
+              "sha256": "c5211e127a5c751ad7ddc382ac11c028431a6ee16888d5419078b881a897246d"
+            }
+          },
+          {
+            "path": "video[0].bitDepth",
+            "kind": "added",
+            "candidate": {
+              "length": 7,
+              "sha256": "66e58cfb6e77920c20a36b10f2b9a84daccc10b4fa999859477847e15c999c81",
+              "value": "10 bits"
+            }
+          },
+          {
+            "path": "video[0].bitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "c29740206a04540f947b08517ab20708d4d8065b59cacbdce8d1d110dfdca16d",
+              "value": "200 Kbps"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "1378b06d7cfc4974c39168383bd54509f61eb242141a49bcca9e8d2b1f2e0898",
+              "value": "200 kb/s"
+            }
+          },
+          {
+            "path": "video[0].chromaSubsampling",
+            "kind": "added",
+            "candidate": {
+              "length": 5,
+              "sha256": "74198bd5204ba0ede3167c20bdde5b0438a9b0c687ebc536d494417887d6945f",
+              "value": "4:2:0"
+            }
+          },
+          {
+            "path": "video[0].colorPrimaries",
+            "kind": "added",
+            "candidate": {
+              "length": 7,
+              "sha256": "caafb65cb37cde194f76e6d5db214e767d31149a6b7245deb5d26f7530f96c5b"
+            }
+          },
+          {
+            "path": "video[0].colorRange",
+            "kind": "added",
+            "candidate": {
+              "length": 7,
+              "sha256": "e5125d9f63d2947b5540a0f96b768bea4bcce632d9869d2a75749bbd513142c3"
+            }
+          },
+          {
+            "path": "video[0].colorSpace",
+            "kind": "added",
+            "candidate": {
+              "length": 3,
+              "sha256": "34f83abc442a3a71d2c2737eb74ac7bf8573dcd41cf41110855734283207475a",
+              "value": "YUV"
+            }
+          },
+          {
+            "path": "video[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 9,
+              "sha256": "a18a5fa44e7050d2e5a82f2298e8e9795435c937795068de07500a56aabcfc60",
+              "value": "33s 258ms"
+            },
+            "candidate": {
+              "length": 11,
+              "sha256": "17c903016f88843e430f503b71749bffb615ccdb97c0e8706d858df05c099888",
+              "value": "33 s 258 ms"
+            }
+          },
+          {
+            "path": "video[0].formatProfile",
+            "kind": "added",
+            "candidate": {
+              "length": 1,
+              "sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+              "value": "2"
+            }
+          },
+          {
+            "path": "video[0].frameRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 10,
+              "sha256": "de0ae5bbb055961082cadb5200afb1634d445b558bb81645d8465ffa081618e7",
+              "value": "30.068 fps"
+            },
+            "candidate": {
+              "length": 10,
+              "sha256": "0e3e221ea23930009d03e60b0973f43837b56bc019913876f2169b2cc6ac8e0a",
+              "value": "30.068 FPS"
+            }
+          },
+          {
+            "path": "video[0].hdrFormat",
+            "kind": "added",
+            "candidate": {
+              "length": 31,
+              "sha256": "7f7b3fffc681b2b35c8ace2a4399e6d35e2285803194326fd49278fd902234f0",
+              "value": "SMPTE ST 2086, HDR10 compatible"
+            }
+          },
+          {
+            "path": "video[0].masteringDisplayColorPrimaries",
+            "kind": "added",
+            "candidate": {
+              "length": 10,
+              "sha256": "516daf16a1c4e2437770dabeba5a6b1eeb7488862d98f9f2b8635466558cb66a"
+            }
+          },
+          {
+            "path": "video[0].masteringDisplayLuminance",
+            "kind": "added",
+            "candidate": {
+              "length": 34,
+              "sha256": "5313bdb2ed77cdfdd60b3f4262fb63d0d3ab315ddb5fb23ed2128fb865d70b88"
+            }
+          },
+          {
+            "path": "video[0].matrixCoefficients",
+            "kind": "added",
+            "candidate": {
+              "length": 20,
+              "sha256": "07545f160d6056bd927aabb923bd10f36a07f865e8e568c160b5b4517436a9b7"
+            }
+          },
+          {
+            "path": "video[0].maximumContentLightLevel",
+            "kind": "added",
+            "candidate": {
+              "length": 7,
+              "sha256": "0bd1b57d2b298e1088d15e6372d0064535765fb663406e6f7922e949f3ea8e34"
+            }
+          },
+          {
+            "path": "video[0].maximumFrameAverageLightLevel",
+            "kind": "added",
+            "candidate": {
+              "length": 7,
+              "sha256": "0bd1b57d2b298e1088d15e6372d0064535765fb663406e6f7922e949f3ea8e34"
+            }
+          },
+          {
+            "path": "video[0].transferCharacteristics",
+            "kind": "added",
+            "candidate": {
+              "length": 2,
+              "sha256": "86fa5a5b7a833ae80eb72a9937435600853595e756edc0ebe8fb5d2510c6bfa6"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "sourceLabel": "normal/Marika Takeuchi - Night Photography.flac",
+      "sizeBytes": 6654332,
+      "sha256": "3c5776362b8d2e5f71fc7928451a24ad46ba6bcaa611eff86395b8e0a6f87023",
+      "baselineFormat": "FLAC",
+      "candidateFormat": "FLAC",
+      "baselineSectionCount": 3,
+      "candidateSectionCount": 4,
+      "changed": true,
+      "report": {
+        "changed": true,
+        "baselineLength": 2085,
+        "candidateLength": 2723,
+        "baselineLineCount": 41,
+        "candidateLineCount": 55,
+        "baselineSha256": "726bb82acce4a4e70b2bb0bba2fcbc023248e939b68f4fd092b33c03add989cb",
+        "candidateSha256": "23f546041e9a756f9826289bebc59051fbce186edd706dc624a19f60cb6be1e0",
+        "insertedLineCount": 1,
+        "removedLineCount": 1,
+        "replacedBaselineLineCount": 9,
+        "replacedCandidateLineCount": 23,
+        "unifiedDiffSha256": "225cb2e7da7b6e2733011c708a402ef8e007098499e9359c99251e93296738bb"
+      },
+      "queries": {
+        "baselineSha256": "df13872c7abaa4221f15c2a1e1b707309cb9469b4130ee85b5c8b5fdfa030c33",
+        "candidateSha256": "b26f0f91c6c9351437de4708f3d3d72c8cae0b7ee8a2cd7880f8d44c556ee9ae",
+        "changes": [
+          {
+            "path": "audio[0].ChannelLayout",
+            "kind": "added",
+            "candidate": {
+              "length": 3,
+              "sha256": "be605116c4830a4fb713a371b82b04de03d4210c8fc8ce8b6bf6fbecbf105f95",
+              "value": "L R"
+            }
+          },
+          {
+            "path": "audio[0].Compression_Mode",
+            "kind": "added",
+            "candidate": {
+              "length": 8,
+              "sha256": "4b86dab6fdeaa7641e7c467cf43325ac8fa44b3711734816da763b0c9ea1a31d",
+              "value": "Lossless"
+            }
+          },
+          {
+            "path": "image[0].BitDepth",
+            "kind": "added",
+            "candidate": {
+              "length": 1,
+              "sha256": "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
+              "value": "8"
+            }
+          },
+          {
+            "path": "image[0].ColorSpace",
+            "kind": "added",
+            "candidate": {
+              "length": 3,
+              "sha256": "34f83abc442a3a71d2c2737eb74ac7bf8573dcd41cf41110855734283207475a",
+              "value": "YUV"
+            }
+          },
+          {
+            "path": "image[0].Format",
+            "kind": "added",
+            "candidate": {
+              "length": 4,
+              "sha256": "f4dc1c96a30fbdeb2a15cb6d4229469fff36c0266dc0c346599093c24d4c0a01",
+              "value": "JPEG"
+            }
+          },
+          {
+            "path": "image[0].Height",
+            "kind": "added",
+            "candidate": {
+              "length": 4,
+              "sha256": "40510175845988f13f6162ed8526f0b09f73384467fa855e1e79b44a56562a58",
+              "value": "1000"
+            }
+          },
+          {
+            "path": "image[0].StreamSize",
+            "kind": "added",
+            "candidate": {
+              "length": 6,
+              "sha256": "5ae6b495fdd7dfb0b7b795e8b5b0744f79cc5f1a31d0a166840c1ba2a8a72a78",
+              "value": "314516"
+            }
+          },
+          {
+            "path": "image[0].Width",
+            "kind": "added",
+            "candidate": {
+              "length": 4,
+              "sha256": "40510175845988f13f6162ed8526f0b09f73384467fa855e1e79b44a56562a58",
+              "value": "1000"
+            }
+          }
+        ]
+      },
+      "sections": {
+        "baselineSha256": "a8af6657acbd2232f7a8d663e24414030c4e57e1d7ebed71917b3572189f440b",
+        "candidateSha256": "897139e6fa6a895686307600d57dde8c1cfccb2aa06cd2b99494f7623ad8d1f6",
+        "addedOccurrences": [
+          "image[0]"
+        ],
+        "removedOccurrences": [],
+        "fieldChanges": [
+          {
+            "path": "audio[0].bitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "9433af6b11c923c389a8420713944dc9d6089c08248d514ceb7b3136f6861c86",
+              "value": "450 Kbps"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "3640b82915eddbe687c0428bd090ded0e2a355e6b06b023b155357b7d06aa628",
+              "value": "450 kb/s"
+            }
+          },
+          {
+            "path": "audio[0].channelLayout",
+            "kind": "added",
+            "candidate": {
+              "length": 3,
+              "sha256": "be605116c4830a4fb713a371b82b04de03d4210c8fc8ce8b6bf6fbecbf105f95",
+              "value": "L R"
+            }
+          },
+          {
+            "path": "audio[0].channelPositions",
+            "kind": "removed",
+            "baseline": {
+              "length": 10,
+              "sha256": "ff4001fcf5065d3c186470f4b87786eb5b0da7eff9a9dacddc2916f95d2d8ebe",
+              "value": "Front: L R"
+            }
+          },
+          {
+            "path": "audio[0].compressionMode",
+            "kind": "added",
+            "candidate": {
+              "length": 8,
+              "sha256": "4b86dab6fdeaa7641e7c467cf43325ac8fa44b3711734816da763b0c9ea1a31d",
+              "value": "Lossless"
+            }
+          },
+          {
+            "path": "audio[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 7,
+              "sha256": "003c7b758f28e91cc0d6a6a5a64e18c537a3dc3320c72d1fda1e635dce6bcf9a",
+              "value": "1mn 52s"
+            },
+            "candidate": {
+              "length": 10,
+              "sha256": "efc8a31d2f16778745acd2b36ccaf94055b0c06e15f10fb18b28d23af3d11fa2",
+              "value": "1 min 52 s"
+            }
+          },
+          {
+            "path": "audio[0].md5OfTheUnencodedContent",
+            "kind": "added",
+            "candidate": {
+              "length": 32,
+              "sha256": "a01f3c8107d93be7ab6c070e0519bb6f8b9e8bcd75856d627b8836f081a74389"
+            }
+          },
+          {
+            "path": "audio[0].samplingRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "520c270fb44d26395b6d9e5640043b1e3d59aa72da6945aca133a3eeb26cd732",
+              "value": "44.1 KHz"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "21b2f3f1b4bb28c1938ffedf1abb080ac0df6d1ea2172521984cf8b12e369362",
+              "value": "44.1 kHz"
+            }
+          },
+          {
+            "path": "audio[0].writingLibrary",
+            "kind": "changed",
+            "baseline": {
+              "length": 30,
+              "sha256": "4349c8ee02dc21ff60774fa6bb952535c1a68e680b4c1dfe50189e588eacb2d7"
+            },
+            "candidate": {
+              "length": 26,
+              "sha256": "65dcc40aa98ac9f75da0d6a0427f228a34d8cbf6ac46681655df6b3626571f35"
+            }
+          },
+          {
+            "path": "general[0].coverType",
+            "kind": "changed",
+            "baseline": {
+              "length": 13,
+              "sha256": "55133c2622001c45e16edd3adb589af960c430ff7f72439639999ee76c06d4ef"
+            },
+            "candidate": {
+              "length": 5,
+              "sha256": "fa8d84566676ee2ee6627116304e7eef7c9b06875d230435a4b23264fcc34f98"
+            }
+          },
+          {
+            "path": "general[0].duration",
+            "kind": "changed",
+            "baseline": {
+              "length": 7,
+              "sha256": "003c7b758f28e91cc0d6a6a5a64e18c537a3dc3320c72d1fda1e635dce6bcf9a",
+              "value": "1mn 52s"
+            },
+            "candidate": {
+              "length": 10,
+              "sha256": "efc8a31d2f16778745acd2b36ccaf94055b0c06e15f10fb18b28d23af3d11fa2",
+              "value": "1 min 52 s"
+            }
+          },
+          {
+            "path": "general[0].overallBitRate",
+            "kind": "changed",
+            "baseline": {
+              "length": 8,
+              "sha256": "41a8fbe31e7b302602ba96b85dbb6d6d84278da51b91ab0e0c4db1f41d77075a",
+              "value": "473 Kbps"
+            },
+            "candidate": {
+              "length": 8,
+              "sha256": "a74716f466c181a0891a3e17b7544e5c9f728316e65f67de020e09d74158dab3",
+              "value": "473 kb/s"
+            }
+          },
+          {
+            "path": "general[0].part",
+            "kind": "removed",
+            "baseline": {
+              "length": 1,
+              "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+            }
+          },
+          {
+            "path": "general[0].partPosition",
+            "kind": "added",
+            "candidate": {
+              "length": 1,
+              "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+            }
+          },
+          {
+            "path": "general[0].title",
+            "kind": "added",
+            "candidate": {
+              "length": 17,
+              "sha256": "9cc820834e5b350e57fa53a1eb5b8369e28827d88d2201629cf50d21dad98c41"
+            }
+          },
+          {
+            "path": "general[0].trackName",
+            "kind": "removed",
+            "baseline": {
+              "length": 17,
+              "sha256": "9cc820834e5b350e57fa53a1eb5b8369e28827d88d2201629cf50d21dad98c41"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "sourceLabel": "bad/20240726.mp4",
+      "sizeBytes": 588251136,
+      "sha256": "8984e343d9d986680e55ca752df47fc3a949965a7d0b368f0937417a52b439e6",
+      "baselineFormat": "MPEG-4",
+      "candidateFormat": "MPEG-4",
+      "baselineSectionCount": 2,
+      "candidateSectionCount": 2,
+      "changed": true,
+      "report": {
+        "changed": true,
+        "baselineLength": 350,
+        "candidateLength": 303,
+        "baselineLineCount": 9,
+        "candidateLineCount": 8,
+        "baselineSha256": "a274e56a64cf9180727127cc7fdcc9ab32032940e8e8401f1ec6d0ad28ad216f",
+        "candidateSha256": "06a6f48e4ddd96713081a1cbc1dfc5844d45370fdf86e7fdb2211d6a9796aa88",
+        "insertedLineCount": 0,
+        "removedLineCount": 1,
+        "replacedBaselineLineCount": 0,
+        "replacedCandidateLineCount": 0,
+        "unifiedDiffSha256": "dd3092266c65638694a2a776f6a4e8a2f7ef29f1fba8dcb051a950f8bf6f2b8a"
+      },
+      "queries": {
+        "baselineSha256": "f05a2ffad21bcb0f6a7cd3fb4a03d0e4b9335ed39e1eb60dd6ed2b2de62a1ade",
+        "candidateSha256": "f05a2ffad21bcb0f6a7cd3fb4a03d0e4b9335ed39e1eb60dd6ed2b2de62a1ade",
+        "changes": []
+      },
+      "sections": {
+        "baselineSha256": "b060f1fa8e00b3d874981c050ab892457e5be2cc9aed6216570c36ab12681e4a",
+        "candidateSha256": "bef67dc1f6be2d42fb04f75025ec539972ab3f7cfd62acc24595487e29776676",
+        "addedOccurrences": [],
+        "removedOccurrences": [],
+        "fieldChanges": [
+          {
+            "path": "general[0].istruncated",
+            "kind": "removed",
+            "baseline": {
+              "length": 3,
+              "sha256": "85a39ab345d672ff8ca9b9c6876f3adcacf45ee7c1e2dbd2408fd338bd55e07e"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "sampleCount": 4,
+    "changedSampleCount": 4,
+    "unchangedSampleCount": 0,
+    "reportChangedSampleCount": 4,
+    "queryChangeCount": 17,
+    "sectionOccurrenceChangeCount": 1,
+    "sectionFieldChangeCount": 63
+  },
+  "review": {
+    "status": "accepted",
+    "compatibility": "compatible-with-reviewed-upstream-parser-evolution",
+    "notes": [
+      "The full raw reports identified by rawReviewSha256 were reviewed locally; all four samples retain their container format and every valid sample retains its core General, Video, and Audio stream types.",
+      "Accepted changes include unit/date spelling normalization, stable field renames, a more specific AAC codec identifier, and additional H.264 settings, VP9 HDR/color metadata, FLAC compression/MD5 data, and embedded-cover Image detection.",
+      "The malformed 20240726.mp4 remains a General-only MPEG-4 result in both engines; MediaInfoLib 26.05 no longer emits the legacy IsTruncated=Yes diagnostic, which is recorded as an upstream diagnostic change rather than a stable plugin API guarantee.",
+      "The parsing baseline is the verified installed v1.1.0 app whose libmediainfo.so is byte-identical to the frozen Release asset. The old minified v1.1.0 Release wrapper cannot load that engine, remains frozen, and motivated a mandatory minified-release AIDL smoke gate for v2.",
+      "No reviewed difference requires a compatibility shim or blocks the official-source migration."
+    ]
+  },
+  "source": {
+    "revision": "2594e1eab2a6e450c92a8426e08b9c7b35aa4e4b",
+    "dirty": false,
+    "benchmarkInputsSha256": "d115555495dc5a69788e853f540df3082550c8d2e6dfa62ec5cb98957a69f6cd"
+  },
+  "rawReviewSha256": "8a4db320e1798d10ab6a831cad3df85922e87765d1909eec6827535c9bb3a4e3"
+}
