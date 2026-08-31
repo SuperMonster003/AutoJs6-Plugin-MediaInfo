@@ -1,13 +1,8 @@
-// @Hint: declared here, applied by the modules.
-//  ! These plugins used to arrive through the settings buildscript classpath, which the
-//  ! platform-versions plugin replaces. Declaring them once here keeps the version in a
-//  ! single place and leaves the module scripts untouched, which Groovy modules require:
-//  ! their plugins block accepts string literals only, so a computed version cannot go there.
-//  ! zh-CN: 这些插件原先经由 settings buildscript classpath 提供, 现已被 platform-versions 插件取代.
-//  ! 在此声明一次可使版本只出现在一处, 且模块脚本无须改动 -- 这对 Groovy 模块是必需的:
-//  ! 它们的 plugins 块只接受字符串字面量, 无法写入运行时计算出的版本.
+// @Hint: pin build plugins in the repository so clean CI workers do not depend on artifacts
+//  ! installed only in a developer's local Maven repository.
+//  ! zh-CN: 在仓库内固定构建插件版本, 避免干净的 CI 环境依赖开发机 Maven 本地仓库中的产物.
 plugins {
-    id("com.android.application") version System.getProperty("gradle.agp.version") apply false
+    id("com.android.application") version "9.2.1" apply false
 }
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
