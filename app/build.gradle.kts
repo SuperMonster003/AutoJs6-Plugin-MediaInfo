@@ -41,6 +41,10 @@ abstract class GenerateMediaInfoMetadataTask : DefaultTask() {
 }
 
 var isSignsValid = false
+val useDebugSigningForReleaseSmoke = providers
+    .gradleProperty("mediainfo.releaseSmokeDebugSigning")
+    .map(String::toBoolean)
+    .getOrElse(false)
 
 android {
     namespace = globalApplicationId
@@ -111,7 +115,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            niceSigningConfig?.let { signingConfig = it }
+            when {
+                niceSigningConfig != null -> signingConfig = niceSigningConfig
+                useDebugSigningForReleaseSmoke -> signingConfig = signingConfigs.getByName("debug")
+            }
         }
     }
 

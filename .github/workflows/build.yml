@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   verify-build:
-    name: Unit tests and debug APKs
+    name: Unit tests and debug/release APKs
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -40,21 +40,27 @@ jobs:
           test -d "${ANDROID_HOME}/ndk/29.0.14206865"
           test -x "${ANDROID_HOME}/cmake/3.22.1/bin/cmake"
 
-      - name: Run unit tests and assemble debug APKs
+      - name: Run unit tests and assemble debug/release APKs
         run: |
           chmod +x gradlew
-          ./gradlew :app:testDebugUnitTest :app:assembleDebug --stacktrace
+          ./gradlew \
+            -Pmediainfo.releaseSmokeDebugSigning=true \
+            :app:testDebugUnitTest \
+            :app:assembleDebug \
+            :app:assembleRelease \
+            --stacktrace
 
       - name: Verify all packaged native architectures
-        run: >-
-          python3 scripts/verify_native_build.py
-          --library-root
-          app/build/intermediates/stripped_native_libs/debug/stripDebugDebugSymbols/out/lib
-          --apk-dir
-          app/build/outputs/apk/debug
+        run: |
+          python3 scripts/verify_native_build.py \
+            --library-root app/build/intermediates/stripped_native_libs/debug/stripDebugDebugSymbols/out/lib \
+            --apk-dir app/build/outputs/apk/debug
+          python3 scripts/verify_native_build.py \
+            --library-root app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib \
+            --apk-dir app/build/outputs/apk/release
 
   verify-service:
-    name: Plugin service round trip
+    name: Debug and minified release service round trip
     needs: verify-build
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -91,7 +97,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Verify discovery and Binder methods
+      - name: Verify debug and minified release discovery/Binder methods
         uses: reactivecircus/android-emulator-runner@v2.38.0
         with:
           api-level: 35
@@ -100,4 +106,26 @@ jobs:
           profile: pixel_7
           script: |
             chmod +x gradlew
+            ./gradlew \
+              -Pmediainfo.releaseSmokeDebugSigning=true \
+              :app:assembleRelease \
+              :app:assembleDebugAndroidTest \
+              --stacktrace
+            release_apk="app/build/outputs/apk/release/app-x86_64-release.apk"
+            test_apk="app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
+            test -f "$release_apk"
+            test -f "$test_apk"
+            cleanup_release_smoke() {
+              adb uninstall io.github.supermonster003.autojs6.plugin.mediainfo.test >/dev/null 2>&1 || true
+              adb uninstall io.github.supermonster003.autojs6.plugin.mediainfo >/dev/null 2>&1 || true
+            }
+            trap cleanup_release_smoke EXIT
+            adb install -t "$release_apk"
+            adb install -t "$test_apk"
+            release_output="$(adb shell am instrument -w -r \
+              -e class io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoReleaseSmokeTest \
+              io.github.supermonster003.autojs6.plugin.mediainfo.test/androidx.test.runner.AndroidJUnitRunner)"
+            printf '%s\n' "$release_output"
+            printf '%s\n' "$release_output" | grep -q 'OK (1 test)'
+            cleanup_release_smoke
             ./gradlew :app:connectedDebugAndroidTest --stacktrace
