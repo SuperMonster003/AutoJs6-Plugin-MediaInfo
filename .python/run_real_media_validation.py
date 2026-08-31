@@ -136,7 +136,7 @@ def cleanup_staged_samples(adb_executable: str, serial: str, samples: list[Path]
         raise common.BenchmarkRunnerError("Real-media cleanup failed:\n" + "\n".join(cleanup_failures))
 
 
-def run_validation(adb_executable: str, serial: str) -> None:
+def run_validation(adb_executable: str, serial: str, capture_details: bool = False) -> None:
     target = f"{common.TEST_APP_ID}/{common.RUNNER}"
     command = [
         "shell",
@@ -150,8 +150,10 @@ def run_validation(adb_executable: str, serial: str) -> None:
         "-e",
         "realMediaValidation",
         "true",
-        target,
     ]
+    if capture_details:
+        command.extend(["-e", "realMediaCaptureDetails", "true"])
+    command.append(target)
     result = common.adb(adb_executable, serial, *command, timeout=1_800)
     output = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
     failure_markers = ("FAILURES!!!", "INSTRUMENTATION_FAILED", "Process crashed", "shortMsg=Process crashed")
@@ -225,6 +227,11 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--allow-physical-device", action="store_true")
     result.add_argument("--allow-large-transfer", action="store_true", help="Allow aggregate samples over 2 GiB")
     result.add_argument(
+        "--capture-details",
+        action="store_true",
+        help="Include full reports, parsed sections, and fixed technical field queries in the JSON output",
+    )
+    result.add_argument(
         "--update-existing-package",
         action="store_true",
         help="Update an existing plugin with adb install -r and preserve it after validation",
@@ -279,7 +286,7 @@ def main() -> int:
         common.install(adb_executable, args.serial, test_apk)
         test_installed = True
         metadata = stage_samples(adb_executable, args.serial, samples)
-        run_validation(adb_executable, args.serial)
+        run_validation(adb_executable, args.serial, args.capture_details)
         payload = merge_sample_metadata(collect_result(adb_executable, args.serial), metadata)
         print_summary(payload)
         write_result(payload, destination)

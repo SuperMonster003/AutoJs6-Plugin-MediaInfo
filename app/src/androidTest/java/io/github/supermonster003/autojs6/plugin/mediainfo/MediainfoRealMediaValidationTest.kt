@@ -43,6 +43,7 @@ class MediainfoRealMediaValidationTest {
         val directory = requireNotNull(context.getExternalFilesDir(STAGED_DIRECTORY)) {
             "App-specific external files directory is unavailable"
         }
+        val captureDetails = arguments.getString(ARG_CAPTURE_DETAILS).toBoolean()
         val files = directory.listFiles { file -> file.isFile }.orEmpty().sortedBy { it.name }
         check(files.isNotEmpty()) { "No real media files were staged in ${directory.absolutePath}" }
 
@@ -51,7 +52,7 @@ class MediainfoRealMediaValidationTest {
         val failures = mutableListOf<String>()
         withBoundPlugin { plugin ->
             files.forEach { file ->
-                val item = runCatching { validateFile(plugin, file) }.fold(
+                val item = runCatching { validateFile(plugin, file, captureDetails) }.fold(
                     onSuccess = { it },
                     onFailure = { error ->
                         failures += "${file.name}: ${error.javaClass.simpleName}: ${error.message}"
@@ -76,12 +77,17 @@ class MediainfoRealMediaValidationTest {
             .put("device", deviceJson())
             .put("files", results)
             .put("failureCount", failures.size)
+            .put("capturedDetails", captureDetails)
         File(context.filesDir, RESULT_FILE_NAME).writeText(result.toString(2), Charsets.UTF_8)
 
         check(failures.isEmpty()) { failures.joinToString(separator = "\n") }
     }
 
-    private fun validateFile(plugin: IMediainfoPlugin, file: File): JSONObject {
+    private fun validateFile(
+        plugin: IMediainfoPlugin,
+        file: File,
+        captureDetails: Boolean,
+    ): JSONObject {
         ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY).use { descriptor ->
             val source = requireNotNull(MediaInputAccess.directSource(descriptor, file.name)) {
                 "Staged media is not available as a regular direct descriptor"
@@ -122,7 +128,38 @@ class MediainfoRealMediaValidationTest {
             .put("cachedGetNanos", cachedFormat.elapsedNanos)
             .put("coldSnapshotNanos", coldSnapshot.elapsedNanos)
             .put("cachedSnapshotNanos", cachedSnapshot.elapsedNanos)
+            .apply {
+                if (captureDetails) {
+                    put("snapshot", snapshot)
+                    put("queries", captureQueries(plugin, file, snapshot))
+                }
+            }
     }
+
+    private fun captureQueries(
+        plugin: IMediainfoPlugin,
+        file: File,
+        snapshot: JSONObject,
+    ): JSONObject {
+        val sections = snapshot.getJSONObject("sections")
+        return JSONObject().apply {
+            QUERY_SPECS.forEach { spec ->
+                val streamCount = sections.optJSONArray(spec.sectionName)?.length().orZero()
+                repeat(streamCount) { streamIndex ->
+                    spec.parameters.forEach { parameter ->
+                        val value = withDescriptor(file) { descriptor ->
+                            plugin.get(descriptor, file.name, spec.streamKind, streamIndex, parameter)
+                        }.orEmpty()
+                        if (value.isNotEmpty()) {
+                            put("${spec.streamKind}[$streamIndex].$parameter", value)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Int?.orZero(): Int = this ?: 0
 
     private fun <T> timed(block: () -> T): TimedValue<T> {
         val startedAt = SystemClock.elapsedRealtimeNanos()
@@ -175,13 +212,127 @@ class MediainfoRealMediaValidationTest {
 
     private data class TimedValue<T>(val value: T, val elapsedNanos: Long)
 
+    private data class QuerySpec(
+        val streamKind: String,
+        val sectionName: String,
+        val parameters: List<String>,
+    )
+
     companion object {
         const val RESULT_FILE_NAME = "mediainfo-real-media-result.json"
 
         private const val RESULT_SCHEMA = "autojs6-plugin-mediainfo-real-media-v1"
         private const val ARG_ENABLED = "realMediaValidation"
+        private const val ARG_CAPTURE_DETAILS = "realMediaCaptureDetails"
         private const val STAGED_DIRECTORY = "media-validation"
         private const val ACTION_MEDIAINFO = "org.autojs.plugin.MEDIAINFO"
         private const val SERVICE_TIMEOUT_SECONDS = 10L
+
+        private val QUERY_SPECS = listOf(
+            QuerySpec(
+                "general",
+                "general",
+                listOf(
+                    "Format",
+                    "Format_Version",
+                    "Format_Profile",
+                    "CodecID",
+                    "FileSize",
+                    "Duration",
+                    "OverallBitRate_Mode",
+                    "OverallBitRate",
+                    "FrameRate",
+                    "FrameCount",
+                    "StreamSize",
+                    "Encoded_Date",
+                    "Tagged_Date",
+                    "Encoded_Application",
+                    "Encoded_Library",
+                ),
+            ),
+            QuerySpec(
+                "video",
+                "video",
+                listOf(
+                    "Format",
+                    "Format_Version",
+                    "Format_Profile",
+                    "Format_Level",
+                    "Format_Tier",
+                    "CodecID",
+                    "Duration",
+                    "BitRate_Mode",
+                    "BitRate",
+                    "Width",
+                    "Height",
+                    "DisplayAspectRatio",
+                    "FrameRate_Mode",
+                    "FrameRate",
+                    "FrameCount",
+                    "ColorSpace",
+                    "ChromaSubsampling",
+                    "BitDepth",
+                    "ScanType",
+                    "HDR_Format",
+                    "StreamSize",
+                    "Language",
+                ),
+            ),
+            QuerySpec(
+                "audio",
+                "audio",
+                listOf(
+                    "Format",
+                    "Format_Version",
+                    "Format_Profile",
+                    "CodecID",
+                    "Duration",
+                    "BitRate_Mode",
+                    "BitRate",
+                    "Channels",
+                    "ChannelLayout",
+                    "SamplingRate",
+                    "FrameRate",
+                    "FrameCount",
+                    "BitDepth",
+                    "Compression_Mode",
+                    "StreamSize",
+                    "Language",
+                    "Default",
+                    "Forced",
+                ),
+            ),
+            QuerySpec(
+                "text",
+                "text",
+                listOf(
+                    "Format",
+                    "Format_Profile",
+                    "CodecID",
+                    "Duration",
+                    "FrameRate",
+                    "FrameCount",
+                    "StreamSize",
+                    "Language",
+                    "Default",
+                    "Forced",
+                ),
+            ),
+            QuerySpec(
+                "other",
+                "other",
+                listOf("Type", "Format", "CodecID", "Duration", "FrameRate", "FrameCount"),
+            ),
+            QuerySpec(
+                "image",
+                "image",
+                listOf("Format", "CodecID", "Width", "Height", "ColorSpace", "BitDepth", "StreamSize"),
+            ),
+            QuerySpec(
+                "menu",
+                "menu",
+                listOf("Format", "Duration", "FrameRate", "FrameCount", "Language"),
+            ),
+        )
     }
 }
