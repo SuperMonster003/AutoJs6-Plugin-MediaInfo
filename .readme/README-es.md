@@ -267,6 +267,19 @@ Las capacidades planificadas del plugin y su estado de finalización se mantiene
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `Función` Compilación desde fuentes oficiales: las cuatro ABI se generan directamente desde MediaArea MediaInfoLib 26.05 y ZenLib 0.4.41 fijados, sin las bibliotecas precompiladas del antiguo repositorio personal
+- `Función` Procedencia reproducible: las etiquetas, commits completos, ajustes de NDK / CMake y textos de licencia se registran en el archivo de bloqueo y cada APK, con auditorías automáticas de ELF y los cinco APK
+- `Función` Seguimiento de versiones estables: las comprobaciones semanales o manuales proponen actualizaciones oficiales fijadas mediante Draft PR, detectan etiquetas movidas y nunca fusionan ni publican automáticamente
+- `Corrección` Se conservaron la clase JNI exacta y sus métodos con R8 y se añadió una prueba AIDL pública que instala el APK Release minificado real, evitando fallos de carga nativa en compilaciones de publicación
+- `Mejora` MediaInfoLib 26.05 ofrece más metadatos de códec, HDR / color, suma de comprobación y carátula, manteniendo los contratos AIDL públicos y `autojs6-plugin-mediainfo-snapshot-v1`
+- `Mejora` Cada ABI admite páginas de 16 KB y supera controles en API 24-37, x86 / x86_64, ARM32 / ARM64, tiempo límite, caché, medios reales y archivos enormes
+- `Mejora` Se revisaron informes completos, consultas de campos y sections de 0.7.83 y 26.05 con las mismas muestras reales; los contenedores y flujos principales siguen siendo compatibles y el texto de los campos sigue el análisis upstream
+- `Dependencia` Se actualizó el analizador nativo congelado de MediaInfoLib 0.7.83 a 26.05 y se fijaron ZenLib 0.4.41 y Android NDK 29.0.14206865
+
 #### v1.1.0
 
 _2026/08/31_
@@ -326,9 +339,9 @@ Compilar los APK release (los splits por ABI están habilitados, produciendo 4 p
 .\gradlew.bat :app:assembleRelease
 ```
 
-Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk`.
+Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
 
-Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 1.1.0.
+Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 2.0.0.
 
 ******
 

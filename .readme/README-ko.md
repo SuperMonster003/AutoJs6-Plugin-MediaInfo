@@ -267,6 +267,19 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `추가` 공식 소스 빌드: 고정된 MediaArea MediaInfoLib 26.05와 ZenLib 0.4.41 소스에서 4개 ABI를 직접 생성하며 오래된 개인 저장소의 사전 빌드 라이브러리를 제거
+- `추가` 재현 가능한 출처: 업스트림 태그, 전체 커밋, NDK / CMake 설정, 라이선스 원문을 잠금 파일과 모든 APK에 기록하고 ELF와 5개 APK를 자동 감사
+- `추가` 안정 버전 추적: 매주 또는 수동으로 공식 Release를 확인하고 고정 버전 업데이트를 Draft PR로만 제안하며 태그 이동을 감지하고 자동 병합이나 배포는 수행하지 않음
+- `수정` R8 처리 후에도 정확한 JNI 래퍼 클래스와 메서드를 유지하고 실제 minified Release APK를 설치하는 공개 AIDL 스모크 테스트를 추가하여 릴리스 빌드의 네이티브 로드 실패를 방지
+- `개선` MediaInfoLib 26.05가 코덱, HDR / 색상, 체크섬, 표지 이미지 메타데이터를 확장하면서 공개 AIDL 및 `autojs6-plugin-mediainfo-snapshot-v1` 계약을 유지
+- `개선` 모든 ABI가 16 KB page size를 지원하고 API 24-37, x86 / x86_64, ARM32 / ARM64, 시간 제한, 캐시, 실제 미디어, 초대형 파일 게이트를 통과
+- `개선` 동일한 실제 샘플에서 0.7.83과 26.05의 전체 보고서, 필드 조회, sections 차이를 검토함; 컨테이너와 핵심 스트림은 호환되며 필드 텍스트는 업스트림 분석 결과를 따름
+- `의존성` 동결된 네이티브 파서를 MediaInfoLib 0.7.83에서 26.05로 업그레이드하고 ZenLib 0.4.41 및 Android NDK 29.0.14206865를 고정
+
 #### v1.1.0
 
 _2026/08/31_
@@ -326,9 +339,9 @@ release APK 빌드 (ABI 분할이 활성화되어 단일 아키텍처 패키지 
 .\gradlew.bat :app:assembleRelease
 ```
 
-릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
+릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
 
-빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 1.1.0.
+빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 2.0.0.
 
 ******
 
