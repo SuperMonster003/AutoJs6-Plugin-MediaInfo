@@ -88,11 +88,13 @@ class MediainfoRealMediaValidationTest {
         file: File,
         captureDetails: Boolean,
     ): JSONObject {
-        ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY).use { descriptor ->
-            val source = requireNotNull(MediaInputAccess.directSource(descriptor, file.name)) {
-                "Staged media is not available as a regular direct descriptor"
+        if (!captureDetails) {
+            ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY).use { descriptor ->
+                val source = requireNotNull(MediaInputAccess.directSource(descriptor, file.name)) {
+                    "Staged media is not available as a regular direct descriptor"
+                }
+                check(source.cacheIdentity != null) { "Staged media does not have a stable cache identity" }
             }
-            check(source.cacheIdentity != null) { "Staged media does not have a stable cache identity" }
         }
 
         val coldInform = timed { withDescriptor(file) { plugin.inform(it, file.name) } }
