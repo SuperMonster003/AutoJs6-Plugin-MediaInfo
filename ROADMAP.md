@@ -124,7 +124,7 @@
 
 版本边界与上游策略详见 [MEDIAINFO_UPSTREAM.md](MEDIAINFO_UPSTREAM.md). v1.1.0 是旧原生引擎的最终冻结点; 从 v2.0.0 起改为直接由 MediaArea 官方源码构建, 插件版本与 MediaInfoLib 上游版本分别管理.
 
-- [x] v1.1.0 冻结边界: `v1.1.0` 标签指向已发布源码, 五个 APK 资产与其中的旧版 `libmediainfo.so` 不再重建, 替换或回溯更新; 后续原生引擎变更仅进入 v2.0.0 及以上版本. (落点: [v1.1.0 Release](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases/tag/v1.1.0), `MEDIAINFO_UPSTREAM.md`)
+- [x] v1.1.0 冻结边界: `v1.1.0` 标签指向已发布源码, 五个 APK 资产与其中的旧版 `libmediainfo.so` 不再重建, 替换或回溯更新; 精确标签规则阻止更新与删除, 后续原生引擎变更仅进入 v2.0.0 及以上版本. (落点: [v1.1.0 Release](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases/tag/v1.1.0), [Freeze v1.1.0 release tag](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/rules/21913972), `MEDIAINFO_UPSTREAM.md`)
 - [ ] 官方源码可复现构建: 以固定标签和提交引入 MediaArea 官方 `MediaInfoLib` 与 `ZenLib`, 首个 v2 基线固定为 MediaInfoLib `v26.05` (`f23e69ce89581343f3b7a42e06828a5331e290d5`) 和 ZenLib `v0.4.41` (`894980d3ecbc843d6ac685493f8f2ed5c2b6864c`); 使用固定 NDK / CMake 配置构建全部 4 种 ABI, 不再提交来源不明的预编译库.
 - [ ] JNI 兼容桥: 在官方 MediaInfoLib 之上维护最小本地桥接层, 保持 `org.mediainfo.android.MediaInfo` 的现有 Kotlin 调用面, regular FD / 回退副本路径及 `getIsCanceled()` 协作取消语义; 不直接修改上游子模块.
 - [ ] MediaInfoLib 版本透出与来源清单: 构建时记录上游仓库, 标签, 完整提交, 工具链和编译选项; 运行时经 `Info_Version` 返回实际引擎版本, 发布说明同步标注插件版本与引擎版本.

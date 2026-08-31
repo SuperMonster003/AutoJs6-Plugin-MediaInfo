@@ -20,6 +20,8 @@
 
 `v1.1.0` 的旧仓库明确携带 `libmediainfo_0.7.83` 源码, 但现有四种 ABI 预编译文件并没有一套可从现代环境完整复现的来源链. 因而冻结的权威对象是 v1.1.0 实际发布的源码和二进制本身; 不用重新编译来“修复”其来源记录.
 
+GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/rules/21913972) 规则精确匹配 `refs/tags/v1.1.0`, 无 bypass actor, 并阻止更新或删除该标签. 仓库级 Release immutability 也已于 2026-08-31 启用, 但 [GitHub 明确说明它只对启用后的未来 Release 生效](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/establish-provenance-and-integrity/prevent-release-changes), 因而先前发布的 v1.0.0 / v1.1.0 API 状态仍为 `immutable=false`; 不通过删除, 转草稿或重发旧 Release 来改写这一历史事实. v1.1.0 的五个资产继续由已记录 SHA-256, 本地备份与维护约定共同冻结.
+
 ******
 
 ## 官方仓库的职责
@@ -114,7 +116,8 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 3. PR 构建四种 ABI, 验证标签到提交的映射, 运行 ELF 架构 / 依赖 / 16 KB 对齐检查, 并在 APK 内核对 `Info_Version`.
 4. 运行 JVM, 模拟器和 ARM64 实体机测试; 对同一批真实样本保存 v1.1.0 与候选版本的字段 / 报告差异, 将合理的上游解析变化作为可审阅产物.
 5. 对 regular FD, pipe 回退, 缓存命中, 30 秒超时 / 取消和大文件分别回归; 19.37 GiB MP4 与 77.97 GiB MKV 只在获得 `--allow-large-transfer` 明确授权时执行, 测试后立即删除设备副本.
-6. 更新 PR 永不自动合并, 永不自动创建 Release. 维护者确认兼容性与许可后再决定插件版本和发布日期.
+6. Release 先以 draft 创建并一次性上传全部 APK, 校验标签, 资产名, 大小与 SHA-256 后才发布; 发布后由已启用的 GitHub Release immutability 锁定标签和资产.
+7. 更新 PR 永不自动合并, 永不自动创建 Release. 维护者确认兼容性与许可后再决定插件版本和发布日期.
 
 这套流程追求“及时发现和可审阅地更新”, 而不是“最快把上游 master 打进发布包”. 后者会破坏可复现性, 也会把解析结果变化直接传给宿主用户.
 
@@ -131,5 +134,6 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 - v1.1.0 的免拷贝路径, 缓存, 30 秒超时 / 取消与清理保证全部保留.
 - 合成样本, `T:\media-samples-for-autojs6-plugin-mediainfo` 真实样本, 多流样本和显式授权的大文件回归通过; 解析差异经过人工审阅.
 - MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和修改说明随源码与发布包完整保留.
+- draft Release 在发布前已包含全部五个 APK 与最终说明; 发布后 `gh release verify` 可验证 immutable 状态及本地资产.
 
 只有以上门禁全部满足, 才删除 v2 构建图中的旧预编译 `app/src/main/jniLibs/<abi>/libmediainfo.so`, 提升插件版本至 v2.0.0 并创建 Release. 在此之前, master 上的 v1.1.0 产物仍是可发布基线.
