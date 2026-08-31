@@ -132,7 +132,7 @@
 - [ ] 原生结构化输出评估: 评估 MediaInfoLib 的 `Output=JSON` 能力, 以原生 JSON 取代 "文本报告再解析" 生成 sections, 降低解析歧义.
 - [x] 16 KB page size 适配: 以 NDK r29 工具链和 `-z,max-page-size=16384` 生成四 ABI 的 16 KB 对齐 ELF; CI 校验每个 LOAD segment, 架构, `DT_NEEDED`, 导出符号和五个 APK 的原生内容, API 37 x86_64 16 KB 页模拟器已通过 JNI / AIDL 核心回归. (落点: `native/CMakeLists.txt`, `scripts/verify_native_build.py`, `.github/workflows/build.yml`)
 
-验收条件: v1.1.0 标签与 Release 资产保持不变; v2.0.0 可从干净检出构建全部 4 种 ABI; `Info_Version` 与来源清单, 发布说明一致; 4 KB / 16 KB 页设备, API 24 最低版本及当前目标版本均可加载; 合成样本, 真实媒体, 多流, 超时 / 取消, 缓存, 19.37 GiB MP4 与 77.97 GiB MKV 回归通过; 上游更新 PR 不绕过人工审阅.
+验收条件: v1.1.0 标签与 Release 资产保持不变; v2.0.0 可从干净检出构建全部 4 种 ABI; `Info_Version` 与来源清单, 发布说明一致; 4 KB / 16 KB 页设备, API 24 最低版本及当前目标版本均可加载; 合成样本, 真实媒体, 多流, 超时 / 取消, 缓存, 19.37 GiB MP4 与 77.97 GiB MKV 回归通过; 上游更新 PR 不绕过人工审阅. 其中四 ABI 与页面大小加载、API 24 / 当前 API、ARM64 / ARM32 实机、真实媒体、超时 / 取消、缓存及两份超大文件运行门禁已于 2026-08-31 通过; 当前剩余验收项为 v1.1.0 / v2 多流解析差异审阅及 v2.0.0 发布准备.
 
 ******
 
