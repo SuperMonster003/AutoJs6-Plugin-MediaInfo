@@ -10,6 +10,7 @@ import android.system.OsConstants
 import android.system.StructPollfd
 import org.autojs.plugin.common.api.PluginInfo
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.json.JSONArray
 import org.json.JSONObject
 import org.mediainfo.android.MediaInfo
@@ -180,7 +181,7 @@ class MediainfoPluginService : Service() {
     ): MediaParseAttempt<String> {
         val inform = getOrParseInform(source, call)
         val snapshot = JSONObject()
-            .put("schema", MediainfoSnapshotContract.SCHEMA_V1)
+            .put("schema", MediainfoSnapshotSchemas.V1)
             .put("fileName", displayName.orEmpty())
             .put("sizeBytes", source.sizeBytes)
             .put("inform", if (options.includeInform) inform else "")

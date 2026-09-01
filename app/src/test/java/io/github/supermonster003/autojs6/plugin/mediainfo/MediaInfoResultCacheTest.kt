@@ -1,5 +1,6 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -30,9 +31,9 @@ class MediaInfoResultCacheTest {
         val v1 = MediaSnapshotRequest(
             includeInform = false,
             includeSections = true,
-            schema = MediainfoSnapshotContract.SCHEMA_V1,
+            schema = MediainfoSnapshotSchemas.V1,
         )
-        val v2 = v1.copy(schema = MediainfoSnapshotContract.SCHEMA_V2)
+        val v2 = v1.copy(schema = MediainfoSnapshotSchemas.V2)
 
         cache.putSnapshot(identity, v1, "v1")
         cache.putSnapshot(identity, v2, "v2")

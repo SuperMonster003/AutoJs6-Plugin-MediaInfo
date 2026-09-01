@@ -1,6 +1,7 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -24,7 +25,7 @@ class MediaInfoSnapshotV2ContractTest {
             ),
         )
 
-        assertEquals(MediainfoSnapshotContract.SCHEMA_V2, snapshot.getString("schema"))
+        assertEquals(MediainfoSnapshotSchemas.V2, snapshot.getString("schema"))
         assertEquals("two-tracks.mka", snapshot.getJSONObject("file").getString("name"))
         assertEquals(4_096, snapshot.getJSONObject("file").getLong("sizeBytes"))
         assertEquals("General\nFormat : Matroska", snapshot.getString("inform"))

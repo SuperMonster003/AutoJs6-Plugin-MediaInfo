@@ -1,5 +1,6 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import java.util.LinkedHashMap
 
 internal data class MediaFileIdentity(
@@ -22,7 +23,7 @@ internal data class MediaGetRequest(
 internal data class MediaSnapshotRequest(
     val includeInform: Boolean,
     val includeSections: Boolean,
-    val schema: String = MediainfoSnapshotContract.SCHEMA_V1,
+    val schema: String = MediainfoSnapshotSchemas.V1,
 )
 
 internal data class MediaCacheHit<out T>(val value: T)
