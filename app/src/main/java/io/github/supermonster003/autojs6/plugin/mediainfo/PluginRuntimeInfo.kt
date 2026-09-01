@@ -6,7 +6,7 @@ import org.autojs.plugin.common.api.PluginCapabilityKeys
 import org.autojs.plugin.common.api.PluginInfo
 import org.autojs.plugin.mediainfo.api.MediainfoPluginIds
 
-internal fun Context.pluginInfo(name: String, description: String): PluginInfo {
+internal fun Context.pluginInfo(name: String, description: String, engineVersion: String?): PluginInfo {
     val appContext = applicationContext
     val packageInfo = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
     return PluginInfo().apply {
@@ -22,6 +22,17 @@ internal fun Context.pluginInfo(name: String, description: String): PluginInfo {
         supportedAbis = NativeLibraryInventory.supportedAbis(appContext)
         capabilities = android.os.Bundle().apply {
             putInt(PluginCapabilityKeys.REQUIRES_HOST_VERSION, 3923)
+            putStringArray(
+                MediainfoSnapshotContract.CAPABILITY_SUPPORTED_SCHEMAS,
+                MediainfoSnapshotContract.SUPPORTED_SCHEMAS.copyOf(),
+            )
+            putString(
+                MediainfoSnapshotContract.CAPABILITY_DEFAULT_SCHEMA,
+                MediainfoSnapshotContract.SCHEMA_V1,
+            )
+            engineVersion?.takeIf { it.isNotBlank() }?.let { version ->
+                putString(MediainfoSnapshotContract.CAPABILITY_ENGINE_VERSION, version)
+            }
         }
     }
 }

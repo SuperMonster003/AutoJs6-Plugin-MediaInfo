@@ -26,6 +26,11 @@ import java.util.concurrent.TimeUnit
 class MediainfoPluginService : Service() {
 
     private val resultCache = MediaInfoResultCache()
+    private val engineVersion: String? by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        runCatching { MediaInfo().getMIOption("Info_Version").trim() }
+            .getOrNull()
+            ?.takeIf { it.isNotBlank() }
+    }
     private val activeCalls = ConcurrentHashMap.newKeySet<MediaInfoCallGuard>()
     private val timeoutScheduler = Executors.newSingleThreadScheduledExecutor { runnable ->
         Thread(runnable, "mediainfo-call-timeout").apply { isDaemon = true }
@@ -50,6 +55,7 @@ class MediainfoPluginService : Service() {
             return pluginInfo(
                 name = getString(R.string.app_name),
                 description = getString(R.string.plugin_description),
+                engineVersion = engineVersion,
             )
         }
 
@@ -126,33 +132,30 @@ class MediainfoPluginService : Service() {
 
         override fun snapshot(mediaFd: ParcelFileDescriptor?, displayName: String?, options: Bundle?): String {
             return withCallTimeout { call ->
+                val snapshotOptions = try {
+                    parseSnapshotOptions(
+                        readBoolean = { key, defaultValue ->
+                            options?.getBoolean(key, defaultValue) ?: defaultValue
+                        },
+                        readString = { key -> options?.getString(key) },
+                    )
+                } catch (error: Throwable) {
+                    runCatching { mediaFd?.close() }
+                    throw error
+                }
                 withMediaSource(mediaFd, displayName, call) { source ->
-                    val snapshotOptions = parseSnapshotOptions { key, defaultValue ->
-                        options?.getBoolean(key, defaultValue) ?: defaultValue
-                    }
                     val request = MediaSnapshotRequest(
                         includeInform = snapshotOptions.includeInform,
                         includeSections = snapshotOptions.includeSections,
+                        schema = snapshotOptions.schema.id,
                     )
                     resultCache.getSnapshot(source.cacheIdentity, request)?.let { cached ->
                         return@withMediaSource MediaParseAttempt(cached, true)
                     }
-                    val inform = resultCache.getInform(source.cacheIdentity)
-                        ?: call.withMediaInfo { it.getMI(source.path).orEmpty() }.also { report ->
-                            if (report.isNotBlank()) resultCache.putInform(source.cacheIdentity, report)
-                        }
-                    val snapshot = JSONObject()
-                        .put("schema", "autojs6-plugin-mediainfo-snapshot-v1")
-                        .put("fileName", displayName.orEmpty())
-                        .put("sizeBytes", source.sizeBytes)
-                        .put("inform", if (snapshotOptions.includeInform) inform else "")
-                        .put(
-                            "sections",
-                            if (snapshotOptions.includeSections) mediaInfoSections(inform) else JSONObject(),
-                        )
-                        .toString()
-                    if (inform.isNotBlank()) resultCache.putSnapshot(source.cacheIdentity, request, snapshot)
-                    MediaParseAttempt(snapshot, inform.isNotBlank())
+                    when (snapshotOptions.schema) {
+                        SnapshotSchema.V1 -> createV1Snapshot(source, displayName, snapshotOptions, request, call)
+                        SnapshotSchema.V2 -> createV2Snapshot(source, displayName, snapshotOptions, request, call)
+                    }
                 }
             }
         }
@@ -167,6 +170,57 @@ class MediainfoPluginService : Service() {
         val value: String,
         val validationReport: String?,
     )
+
+    private fun createV1Snapshot(
+        source: MediaInputSource,
+        displayName: String?,
+        options: SnapshotOptions,
+        request: MediaSnapshotRequest,
+        call: MediaInfoCallGuard,
+    ): MediaParseAttempt<String> {
+        val inform = getOrParseInform(source, call)
+        val snapshot = JSONObject()
+            .put("schema", MediainfoSnapshotContract.SCHEMA_V1)
+            .put("fileName", displayName.orEmpty())
+            .put("sizeBytes", source.sizeBytes)
+            .put("inform", if (options.includeInform) inform else "")
+            .put(
+                "sections",
+                if (options.includeSections) mediaInfoSections(inform) else JSONObject(),
+            )
+            .toString()
+        if (inform.isNotBlank()) resultCache.putSnapshot(source.cacheIdentity, request, snapshot)
+        return MediaParseAttempt(snapshot, inform.isNotBlank())
+    }
+
+    private fun createV2Snapshot(
+        source: MediaInputSource,
+        displayName: String?,
+        options: SnapshotOptions,
+        request: MediaSnapshotRequest,
+        call: MediaInfoCallGuard,
+    ): MediaParseAttempt<String> {
+        val nativeJson = call.withMediaInfo { it.getMIJson(source.path).orEmpty() }
+        if (nativeJson.isBlank()) return MediaParseAttempt("", false)
+
+        val inform = if (options.includeInform) getOrParseInform(source, call) else ""
+        val snapshot = MediaInfoSnapshotV2.build(
+            fileName = displayName.orEmpty(),
+            sizeBytes = source.sizeBytes,
+            inform = inform,
+            includeInform = options.includeInform,
+            includeTracks = options.includeSections,
+            nativeJson = nativeJson,
+        )
+        resultCache.putSnapshot(source.cacheIdentity, request, snapshot)
+        return MediaParseAttempt(snapshot, true)
+    }
+
+    private fun getOrParseInform(source: MediaInputSource, call: MediaInfoCallGuard): String =
+        resultCache.getInform(source.cacheIdentity)
+            ?: call.withMediaInfo { it.getMI(source.path).orEmpty() }.also { report ->
+                if (report.isNotBlank()) resultCache.putInform(source.cacheIdentity, report)
+            }
 
     private fun <T> withCallTimeout(block: (MediaInfoCallGuard) -> T): T {
         val call = MediaInfoCallGuard()

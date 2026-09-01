@@ -26,7 +26,7 @@
 |---|---|---|
 | M0 | 基线能力 (v1.0.0) | 已完成 |
 | M1 | 文档与工程化 | 进行中 |
-| M2 | 读取能力增强 | 规划中 |
+| M2 | 读取能力增强 | 进行中 |
 | M3 | 性能与大文件 | 已完成 |
 | M4 | 健壮性与诊断 | 进行中 |
 | M5 | 原生库演进 (v2.0.0+) | 进行中 |
@@ -67,17 +67,19 @@
 
 ******
 
-## M2 读取能力增强 - 规划中
+## M2 读取能力增强 - 进行中
 
 ******
 
 说明: JNI 封装 `MediaInfo.kt` 已具备 `streamNum`, `InfoKind`, `countGet`, `getMIOption` 等完整能力; AIDL 与插件服务已可接收 `streamNumber`, 但当前宿主 Node / Rhino API 仍固定查询同类流第 1 条, InfoKind 也固定为参数值文本. 本里程碑以 "接线已有能力" 为主, 原生层无需改动.
 
+当前进度: 插件侧已建立显式 opt-in 的 snapshot-v2 契约与 capability 广告, 缺省及空白 schema 仍返回 v1, 未知 schema 显式拒绝; v2 以 MediaInfoLib 原生 JSON 为数据源, 将同类流按数组分组并隔离动态字段, 属性与诊断扩展. 宿主与共享 API 尚未接入, 因此对应协同项保持未勾选. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `PluginRuntimeInfo.kt`, `MediainfoPluginService.kt`)
+
 - [ ] `get` 支持流序号 (协同项): AIDL 层以选项或新方法携带 `streamNumber`, Node / Rhino API 同步透出, 使脚本可查询第 2 条及之后的音轨 / 字幕. (落点: `MediaInfo.kt` 的 `get(filename, streamKind, streamNum, parameter)`, `MediainfoPluginService.kt`)
 - [ ] 流计数查询 (协同项): 透出 `countGet`, 返回某流类型的流数量, 配合流序号实现多流遍历. (落点: `MediaInfo.kt` 的 `countGet`)
 - [ ] InfoKind 扩展查询 (协同项): 支持 `MEASURE` / `INFO` / `NAME_TEXT` 等信息种类, 获取参数单位, 说明与本地化名称. (落点: `MediaInfo.kt` 的 `InfoKind` 枚举)
-- [ ] 引擎信息透出: 经 `getMIOption` 提供 `Info_Version` / `Info_Parameters` 等库级信息, 便于脚本诊断与参数发现. (落点: `MediaInfo.kt` 的 `getMIOption`)
-- [ ] 快照 schema v2 (协同项): 规范化多流 sections 表示 (以数组序号取代 `audio #1` 式小节名), 明确字段命名规则与 schema 版本协商方式, 保持对 v1 消费方的兼容期.
+- [ ] 引擎信息透出: 经 `getMIOption` 提供 `Info_Version` / `Info_Parameters` 等库级信息, 便于脚本诊断与参数发现. 插件发现信息已通过 capability 提供小体积的 `Info_Version`; 大体积 `Info_Parameters` 与宿主脚本入口仍待专用按需 API. (落点: `MediaInfo.kt` 的 `getMIOption`, `PluginRuntimeInfo.kt`, `MEDIAINFO_SNAPSHOT_V2.md`)
+- [ ] 快照 schema v2 (协同项): 规范化多流 sections 表示 (以数组序号取代 `audio #1` 式小节名), 明确字段命名规则与 schema 版本协商方式, 保持对 v1 消费方的兼容期. 插件侧契约, opt-in 实现, 缓存隔离与测试已落地; 共享 API 常量, 宿主双引擎入口及跨仓库验收待完成. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `MediainfoPluginService.kt`, `MediaInfoSnapshotV2ContractTest.kt`)
 
 验收条件: 双引擎示例脚本可读取多音轨样本的第 2 条流及其单位信息; `.readme` / `plugin_instruction` 文档同步更新; 涉及 AIDL 变更的条目与宿主版本要求 (`REQUIRES_HOST_VERSION`) 联动更新.
 

@@ -24,6 +24,25 @@ class MediaInfoResultCacheTest {
     }
 
     @Test
+    fun snapshotSchemasHaveIndependentCacheEntries() {
+        val cache = cache()
+        val identity = identity(1)
+        val v1 = MediaSnapshotRequest(
+            includeInform = false,
+            includeSections = true,
+            schema = MediainfoSnapshotContract.SCHEMA_V1,
+        )
+        val v2 = v1.copy(schema = MediainfoSnapshotContract.SCHEMA_V2)
+
+        cache.putSnapshot(identity, v1, "v1")
+        cache.putSnapshot(identity, v2, "v2")
+
+        assertEquals("v1", cache.getSnapshot(identity, v1))
+        assertEquals("v2", cache.getSnapshot(identity, v2))
+        assertEquals(2, cache.stats().snapshotCount)
+    }
+
+    @Test
     fun fileLruEvictsTheLeastRecentlyUsedIdentity() {
         val cache = cache(maxFiles = 2)
         val first = identity(1)
