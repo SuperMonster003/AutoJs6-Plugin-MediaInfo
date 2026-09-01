@@ -4,12 +4,12 @@
 
 MediaInfoLib 26.05 的 `Output=JSON` 在当前四 ABI 构建配置中可用, JSON 语法和外层结构稳定, 适合作为未来结构化接口的数据源. 它不能在不改变语义的情况下直接替换 `autojs6-plugin-mediainfo-snapshot-v1`: 原生 JSON 使用机器字段名和原始数值, 可包含嵌套对象及上游诊断字段, 而 v1 使用文本报告中的显示标签, 格式化值和插件生成的 `file` 小节.
 
-因此 v2.1.x 的决定是:
+因此当前演进决定是:
 
 1. 保留内部 `MediaInfo.getMIJson()` 与 JNI 安全切换能力, 作为测试和后续 schema 设计的基础.
-2. `inform`, `get`, `snapshot` 三个公开行为和 AIDL 均不变; `snapshot-v1` 继续以文本报告解析结果为唯一数据源.
-3. 不对原生 JSON 做静默透传, 也不在上游更新时自动改变公开快照.
-4. 如后续引入 `snapshot-v2`, 必须采用新的 schema 标识和显式宿主协商, 并由插件维护稳定字段映射, 单位与类型规则.
+2. `inform`, `get` 与缺省 `snapshot` 行为及 AIDL 方法签名不变; `snapshot-v1` 继续以文本报告解析结果为唯一数据源.
+3. 插件侧提供显式 opt-in 的 `snapshot-v2` 稳定 envelope, 但不对原生根对象做透传, 也不在上游更新时自动替换 v1.
+4. 宿主与共享 API 接入前, v2 只作为兼容基础和测试面存在; 完整契约与协同边界见 [`MEDIAINFO_SNAPSHOT_V2.md`](MEDIAINFO_SNAPSHOT_V2.md).
 
 ## 官方源码审查
 
@@ -72,13 +72,13 @@ MediaInfoLib 26.05 的 `Output=JSON` 在当前四 ABI 构建配置中可用, JSO
 | 结构 | section -> array -> string map | 字符串, 属性对象与嵌套 `extra` 可混合 | v1 的 `Map<String, String>` 模型不能无损承载 |
 | 诊断字段 | 当前损坏样本只保留四个 General 显示字段 | 另含 `extra.IsTruncated=Yes` | 非稳定诊断信息会重新进入公开契约 |
 
-## 后续 snapshot-v2 门槛
+## snapshot-v2 门槛与当前进度
 
-未来如推进 `snapshot-v2`, 至少应满足:
+插件侧第一阶段已经满足显式 schema 标识, v1 缺省兼容, 原生 envelope 校验, 多流分组, `@` 属性 / `extra` 分区, schema 缓存隔离和当前 26.05 实机往返测试. 仍需满足的协同与长期门槛包括:
 
-- 使用新的 AIDL/API 能力协商与 `schema` 值, 不复用 v1 名称.
-- 明确区分稳定规范字段, 上游扩展字段和显示文本; 不把整个 track 对象无版本透传.
+- 在共享 API 中固化 capability / option 常量, 并由宿主显式协商 `schema`; 不复用 v1 名称.
+- 继续区分稳定 envelope, 上游扩展字段和显示文本; 不把整个 track 对象无版本透传.
 - 为时长, 大小, 码率, 采样率等定义类型与单位, 同时决定是否保留显示值.
-- 统一重复流, `@typeorder`, nested `extra` 和二进制 / cover data 的表示及大小上限.
+- 评估 `fields` 中常用字段的可选强类型视图, 并定义二进制 / cover data 的表示及大小上限.
 - 固定至少前一稳定版与当前稳定版的 JSON fixtures, 并在每次上游更新 Draft PR 中审阅 schema diff.
 - 使用现有 MP4, WebM, FLAC, 损坏文件, 多流文件与大文件矩阵回归; 上游升级不得自动合并或发布结构变化.

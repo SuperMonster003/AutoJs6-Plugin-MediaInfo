@@ -4,9 +4,11 @@ import android.content.Context
 import android.os.Build
 import org.autojs.plugin.common.api.PluginCapabilityKeys
 import org.autojs.plugin.common.api.PluginInfo
+import org.autojs.plugin.mediainfo.api.MediainfoPluginCapabilityKeys
 import org.autojs.plugin.mediainfo.api.MediainfoPluginIds
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 
-internal fun Context.pluginInfo(name: String, description: String): PluginInfo {
+internal fun Context.pluginInfo(name: String, description: String, engineVersion: String?): PluginInfo {
     val appContext = applicationContext
     val packageInfo = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
     return PluginInfo().apply {
@@ -22,6 +24,17 @@ internal fun Context.pluginInfo(name: String, description: String): PluginInfo {
         supportedAbis = NativeLibraryInventory.supportedAbis(appContext)
         capabilities = android.os.Bundle().apply {
             putInt(PluginCapabilityKeys.REQUIRES_HOST_VERSION, 3923)
+            putStringArray(
+                MediainfoPluginCapabilityKeys.SNAPSHOT_SCHEMAS,
+                MediainfoSnapshotSchemas.VALUES.toTypedArray(),
+            )
+            putString(
+                MediainfoPluginCapabilityKeys.DEFAULT_SNAPSHOT_SCHEMA,
+                MediainfoSnapshotSchemas.DEFAULT,
+            )
+            engineVersion?.takeIf { it.isNotBlank() }?.let { version ->
+                putString(MediainfoPluginCapabilityKeys.ENGINE_VERSION, version)
+            }
         }
     }
 }
