@@ -73,15 +73,16 @@
 
 说明: JNI 封装 `MediaInfo.kt` 已具备 `streamNum`, `InfoKind`, `countGet`, `getMIOption` 等完整能力; AIDL 与插件服务已可接收 `streamNumber`, 但当前宿主 Node / Rhino API 仍固定查询同类流第 1 条, InfoKind 也固定为参数值文本. 本里程碑以 "接线已有能力" 为主, 原生层无需改动.
 
-当前进度: 插件侧已建立显式 opt-in 的 snapshot-v2 契约与 capability 广告, 缺省及空白 schema 仍返回 v1, 未知 schema 显式拒绝; v2 以 MediaInfoLib 原生 JSON 为数据源, 将同类流按数组分组并隔离动态字段, 属性与诊断扩展. 宿主与共享 API 尚未接入, 因此对应协同项保持未勾选. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `PluginRuntimeInfo.kt`, `MediainfoPluginService.kt`)
+当前进度: snapshot-v2 已完成插件, 共享 API, AutoJs6 宿主, Rhino / Node 公共入口, 类型声明与文档的协同接入. 缺省及空白 schema 仍返回 v1, 只有精确请求且插件明确广告 v2 时才启用 v2, 未知或两侧带空白的 schema 显式拒绝. v2 以 MediaInfoLib 原生 JSON 为数据源, 将同类流按数组分组并隔离动态字段, 属性与诊断扩展; `Info_Version` 已通过 capability 按需暴露, `Info_Parameters` 继续延后. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `PluginRuntimeInfo.kt`, `libs/mediainfo-api.aar`, AutoJs6 `MediainfoPluginHost.kt` / `Mediainfo.kt` / `NodeBridgeProtocol.kt`)
 
 - [ ] `get` 支持流序号 (协同项): AIDL 层以选项或新方法携带 `streamNumber`, Node / Rhino API 同步透出, 使脚本可查询第 2 条及之后的音轨 / 字幕. (落点: `MediaInfo.kt` 的 `get(filename, streamKind, streamNum, parameter)`, `MediainfoPluginService.kt`)
 - [ ] 流计数查询 (协同项): 透出 `countGet`, 返回某流类型的流数量, 配合流序号实现多流遍历. (落点: `MediaInfo.kt` 的 `countGet`)
 - [ ] InfoKind 扩展查询 (协同项): 支持 `MEASURE` / `INFO` / `NAME_TEXT` 等信息种类, 获取参数单位, 说明与本地化名称. (落点: `MediaInfo.kt` 的 `InfoKind` 枚举)
-- [ ] 引擎信息透出: 经 `getMIOption` 提供 `Info_Version` / `Info_Parameters` 等库级信息, 便于脚本诊断与参数发现. 插件发现信息已通过 capability 提供小体积的 `Info_Version`; 大体积 `Info_Parameters` 与宿主脚本入口仍待专用按需 API. (落点: `MediaInfo.kt` 的 `getMIOption`, `PluginRuntimeInfo.kt`, `MEDIAINFO_SNAPSHOT_V2.md`)
-- [ ] 快照 schema v2 (协同项): 规范化多流 sections 表示 (以数组序号取代 `audio #1` 式小节名), 明确字段命名规则与 schema 版本协商方式, 保持对 v1 消费方的兼容期. 插件侧契约, opt-in 实现, 缓存隔离与测试已落地; 共享 API 常量, 宿主双引擎入口及跨仓库验收待完成. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `MediainfoPluginService.kt`, `MediaInfoSnapshotV2ContractTest.kt`)
+- [x] 引擎版本透出 (协同项): 插件发现 capability 以小体积 `Info_Version` 提供 `engineVersion`, 共享 API 定义稳定键名, Rhino `mediainfo.capabilities()` 与 Node `require("mediainfo").capabilities()` 均可查询; 查询失败时安全省略版本字段. (落点: `MediaInfo.kt` 的 `getMIOption`, `PluginRuntimeInfo.kt`, `MEDIAINFO_SNAPSHOT_V2.md`, `libs/mediainfo-api.aar`, AutoJs6 `MediainfoPluginHost.kt` / `Mediainfo.kt` / `NodeBridgeProtocol.kt`)
+- [ ] `Info_Parameters` 按需查询 (协同项, 继续延后): 大体积参数表不进入发现阶段的 capability Bundle; 如后续需要公开, 使用专用 AIDL / 宿主脚本入口并补充响应大小与 Binder 边界测试. (落点: `MediaInfo.kt` 的 `getMIOption`, `MEDIAINFO_SNAPSHOT_V2.md`)
+- [x] 快照 schema v2 (协同项): 规范化多流表示 (以数组下标取代 `audio #1` 式小节名), 明确字段分区, 命名边界与 schema 版本协商方式, 保持 v1 为默认协议. 插件契约, opt-in 实现, 缓存隔离, 共享 API 常量, 宿主能力协商, Rhino / Node 公共入口, 类型声明, 文档与 ARM64 实体机端到端验收均已完成. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `MediainfoPluginService.kt`, `MediaInfoSnapshotV2ContractTest.kt`, `libs/mediainfo-api.aar`, AutoJs6 `MediainfoSnapshotSchemas.kt` / `MediainfoPluginHost.kt` / `MediainfoSnapshotRhinoInstrumentationTest.kt` / `NodeMediaBridgeInstrumentationTest.kt`)
 
-验收条件: 双引擎示例脚本可读取多音轨样本的第 2 条流及其单位信息; `.readme` / `plugin_instruction` 文档同步更新; 涉及 AIDL 变更的条目与宿主版本要求 (`REQUIRES_HOST_VERSION`) 联动更新.
+验收进度: snapshot-v2 子项已在 QV710AF65F 上通过插件真实 AIDL, Rhino 生产引擎, Node 直连 / compat 门面与真实 Android Provider 验证, 双引擎类型声明及文档已同步; 本里程碑整体仍等待直接 `get` 流序号, 流计数与 InfoKind 单位信息. 涉及未来 AIDL 变更的条目仍须与宿主版本要求 (`REQUIRES_HOST_VERSION`) 联动更新.
 
 ******
 
