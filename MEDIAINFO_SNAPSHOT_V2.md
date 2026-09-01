@@ -2,7 +2,7 @@
 
 ## 状态与边界
 
-本文档定义 `autojs6-plugin-mediainfo-snapshot-v2` 的插件侧契约. 当前实现是 M2 的兼容基础, 尚未替换 v1, 也尚未接入 AutoJs6 的 Node / Rhino 公共 API. 在宿主和共享 `mediainfo-api` 完成协同改造前, 普通脚本仍只会得到 v1.
+本文档定义 `autojs6-plugin-mediainfo-snapshot-v2` 的稳定插件契约. M2 协同实现已接入共享 `mediainfo-api`, AutoJs6 宿主及 Node / Rhino 公共 API, 但不会替换 v1: 普通脚本仍默认得到 v1, 只有显式选择并通过能力协商后才得到 v2.
 
 设计遵循三个边界:
 
@@ -30,7 +30,7 @@
 | `defaultSnapshotSchema` | `String` | `autojs6-plugin-mediainfo-snapshot-v1` |
 | `engineVersion` | `String` | MediaInfoLib `Info_Version` 去除首尾空白后的非空结果; 查询失败时省略 |
 
-共享 API 后续应为这些字符串增加常量. 在此之前, 插件用内部常量实现并测试协议. 这些附加 capability 不改变现有 `REQUIRES_HOST_VERSION = 3923`, 因为旧宿主会忽略未知 Bundle 键, 且缺省 snapshot 仍是 v1.
+共享 API 已通过 `MediainfoOptionKeys`, `MediainfoPluginCapabilityKeys` 与 `MediainfoSnapshotSchemas` 定义这些键名, schema 标识, 缺省策略及稳定的不支持错误前缀; 插件随仓库内 `libs/mediainfo-api.aar` 使用同一份定义. 这些附加 capability 不改变现有 `REQUIRES_HOST_VERSION = 3923`, 因为旧宿主会忽略未知 Bundle 键, 且缺省 snapshot 仍是 v1.
 
 `Info_Parameters` 不放入发现阶段的 capability Bundle. 该值体积大, 应在后续通过专用 AIDL 查询按需取得, 避免每次插件发现都跨 Binder 传输完整参数表.
 
@@ -110,15 +110,13 @@ Track 规则:
 - 原生 JSON envelope 缺少 `creatingLibrary`, `media.track`, 必需字符串或合法 track 类型时显式失败, 不生成看似成功但结构不完整的 v2.
 - 解析, FD 回退, 30 秒取消和超时边界沿用现有服务机制.
 
-## 协同接入步骤
+## 协同接入状态
 
-插件仓库完成本契约并不代表 M2 协同项已经完成. 后续需要在 AutoJs6 与共享 API 中依次完成:
+- [x] 共享 API 通过 `MediainfoOptionKeys` / capability keys / `MediainfoSnapshotSchemas` 统一本页常量, 并将新 AAR 同步回插件.
+- [x] 宿主发现插件时读取 `snapshotSchemas`; 只有 capability 明确包含 v2 才发送 v2 schema, 对旧插件保留缺省 v1 路径.
+- [x] Node / Rhino API 提供显式 schema 选择与 `capabilities()`, 默认保持 v1, 不支持显式 v2 时返回稳定错误.
+- [x] 双引擎类型定义, API 文档与示例已同步; v2 的 `fields`, `attributes` 与 `extra` 均保留为动态 JSON 扩展面.
+- [x] 插件侧多轨, 多字幕, MP4, WebM, FLAC + cover, 损坏文件及大文件矩阵保持通过; QV710AF65F 进一步通过真实 AIDL, Rhino 生产引擎, Node 直连 / compat 门面及真实 Android Provider 的跨仓库端到端验证.
+- [ ] `Info_Parameters` 继续延后. 如后续决定公开, 新增按需查询方法与响应大小测试, 不扩张发现 Bundle.
 
-1. 在 `MediainfoOptionKeys` / capability keys 中加入本页常量, 发布新的 `mediainfo-api.aar`.
-2. 宿主发现插件时读取 `snapshotSchemas`; 只有明确包含 v2 才发送 v2 schema.
-3. Node / Rhino API 提供显式 schema 选择, 保持默认 v1, 并对不支持 v2 的旧插件给出可识别错误或按调用方策略回退.
-4. 更新双引擎类型定义, 示例与 10 语言使用说明, 不把 v2 的 `fields` 动态集合声明为固定类型.
-5. 使用多音轨, 多字幕, MP4, WebM, FLAC + cover, 损坏文件及大文件矩阵做跨仓库端到端验证.
-6. 如需公开 `Info_Parameters`, 新增按需查询方法与响应大小测试, 不扩张发现 Bundle.
-
-宿主/API 接入完成并满足上述验证前, Roadmap 的 “快照 schema v2 (协同项)” 与 “引擎信息透出” 保持未勾选状态.
+因此 Roadmap 已勾选 “快照 schema v2 (协同项)” 与小体积的 “引擎版本透出”; `Info_Parameters`, 直接 `get` 流序号, 流计数与 InfoKind 仍保持独立未完成条目.
