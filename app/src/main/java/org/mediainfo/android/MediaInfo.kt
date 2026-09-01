@@ -113,6 +113,11 @@ class MediaInfo {
         getMediaInfo(filename)
     }
 
+    /** Returns MediaInfoLib's native JSON for internal schema evaluation. */
+    internal fun getMIJson(filename: String): String = checkAvailability {
+        getMediaInfoJson(filename)
+    }
+
     fun getMIOption(param: String): String = checkAvailability {
         getMediaInfoOption(param)
     }
@@ -172,6 +177,8 @@ class MediaInfo {
     }
 
     external fun getMediaInfo(filename: String): String
+
+    private external fun getMediaInfoJson(filename: String): String
 
     external fun getMediaInfoOption(param: String): String
 
