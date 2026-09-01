@@ -13,7 +13,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.autojs.plugin.common.api.PluginCapabilityKeys
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
 import org.autojs.plugin.mediainfo.api.MediainfoOptionKeys
+import org.autojs.plugin.mediainfo.api.MediainfoPluginCapabilityKeys
 import org.autojs.plugin.mediainfo.api.MediainfoPluginIds
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.json.JSONObject
 import org.mediainfo.android.MediaInfo
 import org.junit.Assert.assertArrayEquals
@@ -199,15 +201,15 @@ class MediainfoPluginServiceTest {
 
                 val v2Options = Bundle(options).apply {
                     putString(
-                        MediainfoSnapshotContract.OPTION_SCHEMA,
-                        MediainfoSnapshotContract.SCHEMA_V2,
+                        MediainfoOptionKeys.SCHEMA,
+                        MediainfoSnapshotSchemas.V2,
                     )
                 }
                 val v2SnapshotText = withMediaDescriptor(mediaFile) { descriptor ->
                     plugin.snapshot(descriptor, mediaFile.name, v2Options)
                 }
                 val v2Snapshot = JSONObject(v2SnapshotText)
-                assertEquals(MediainfoSnapshotContract.SCHEMA_V2, v2Snapshot.getString("schema"))
+                assertEquals(MediainfoSnapshotSchemas.V2, v2Snapshot.getString("schema"))
                 assertFalse("snapshot-v2 leaked the v1 fileName field", v2Snapshot.has("fileName"))
                 assertFalse("snapshot-v2 leaked the v1 sections field", v2Snapshot.has("sections"))
                 assertEquals(mediaFile.name, v2Snapshot.getJSONObject("file").getString("name"))
@@ -311,7 +313,7 @@ class MediainfoPluginServiceTest {
                             descriptor,
                             mediaFile.name,
                             Bundle().apply {
-                                putString(MediainfoSnapshotContract.OPTION_SCHEMA, "snapshot-latest")
+                                putString(MediainfoOptionKeys.SCHEMA, "snapshot-latest")
                             },
                         )
                     }.exceptionOrNull()
@@ -362,16 +364,16 @@ class MediainfoPluginServiceTest {
         val capabilities = requireNotNull(info.capabilities) { "Plugin capabilities are missing" }
         assertEquals(3923, capabilities.getInt(PluginCapabilityKeys.REQUIRES_HOST_VERSION))
         assertArrayEquals(
-            MediainfoSnapshotContract.SUPPORTED_SCHEMAS,
-            capabilities.getStringArray(MediainfoSnapshotContract.CAPABILITY_SUPPORTED_SCHEMAS),
+            MediainfoSnapshotSchemas.VALUES.toTypedArray(),
+            capabilities.getStringArray(MediainfoPluginCapabilityKeys.SNAPSHOT_SCHEMAS),
         )
         assertEquals(
-            MediainfoSnapshotContract.SCHEMA_V1,
-            capabilities.getString(MediainfoSnapshotContract.CAPABILITY_DEFAULT_SCHEMA),
+            MediainfoSnapshotSchemas.V1,
+            capabilities.getString(MediainfoPluginCapabilityKeys.DEFAULT_SNAPSHOT_SCHEMA),
         )
         assertEquals(
             MediaInfo().getMIOption("Info_Version").trim(),
-            capabilities.getString(MediainfoSnapshotContract.CAPABILITY_ENGINE_VERSION),
+            capabilities.getString(MediainfoPluginCapabilityKeys.ENGINE_VERSION),
         )
     }
 

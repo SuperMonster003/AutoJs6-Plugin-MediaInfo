@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
 import org.autojs.plugin.mediainfo.api.MediainfoOptionKeys
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -69,14 +70,14 @@ class MediainfoReleaseSmokeTest {
 
                 val v2Options = Bundle(options).apply {
                     putString(
-                        MediainfoSnapshotContract.OPTION_SCHEMA,
-                        MediainfoSnapshotContract.SCHEMA_V2,
+                        MediainfoOptionKeys.SCHEMA,
+                        MediainfoSnapshotSchemas.V2,
                     )
                 }
                 val v2Snapshot = withDescriptor(mediaFile) { descriptor ->
                     JSONObject(plugin.snapshot(descriptor, mediaFile.name, v2Options))
                 }
-                assertEquals(MediainfoSnapshotContract.SCHEMA_V2, v2Snapshot.getString("schema"))
+                assertEquals(MediainfoSnapshotSchemas.V2, v2Snapshot.getString("schema"))
                 assertEquals("MediaInfoLib", v2Snapshot.getJSONObject("engine").getString("name"))
                 assertTrue(
                     v2Snapshot.getJSONObject("tracks")

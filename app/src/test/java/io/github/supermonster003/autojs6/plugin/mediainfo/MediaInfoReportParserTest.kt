@@ -1,5 +1,6 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -110,11 +111,11 @@ class MediaInfoReportParserTest {
     fun `snapshot schema requires an explicit supported identifier`() {
         val v1 = parseSnapshotOptions(
             readBoolean = { _, defaultValue -> defaultValue },
-            readString = { MediainfoSnapshotContract.SCHEMA_V1 },
+            readString = { MediainfoSnapshotSchemas.V1 },
         )
         val v2 = parseSnapshotOptions(
             readBoolean = { _, defaultValue -> defaultValue },
-            readString = { MediainfoSnapshotContract.SCHEMA_V2 },
+            readString = { MediainfoSnapshotSchemas.V2 },
         )
         val blank = parseSnapshotOptions(
             readBoolean = { _, defaultValue -> defaultValue },
@@ -139,7 +140,7 @@ class MediaInfoReportParserTest {
         val paddedFailure = runCatching {
             parseSnapshotOptions(
                 readBoolean = { _, defaultValue -> defaultValue },
-                readString = { " ${MediainfoSnapshotContract.SCHEMA_V2} " },
+                readString = { " ${MediainfoSnapshotSchemas.V2} " },
             )
         }.exceptionOrNull()
         assertTrue("A padded schema identifier must not be accepted", paddedFailure is IllegalArgumentException)

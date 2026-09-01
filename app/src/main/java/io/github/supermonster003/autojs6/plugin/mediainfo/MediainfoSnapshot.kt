@@ -1,33 +1,20 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
 import org.autojs.plugin.mediainfo.api.MediainfoOptionKeys
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Locale
 
-internal object MediainfoSnapshotContract {
-    const val OPTION_SCHEMA = "schema"
-
-    const val SCHEMA_V1 = "autojs6-plugin-mediainfo-snapshot-v1"
-    const val SCHEMA_V2 = "autojs6-plugin-mediainfo-snapshot-v2"
-
-    const val CAPABILITY_SUPPORTED_SCHEMAS = "snapshotSchemas"
-    const val CAPABILITY_DEFAULT_SCHEMA = "defaultSnapshotSchema"
-    const val CAPABILITY_ENGINE_VERSION = "engineVersion"
-
-    val SUPPORTED_SCHEMAS = arrayOf(SCHEMA_V1, SCHEMA_V2)
-}
-
 internal enum class SnapshotSchema(val id: String) {
-    V1(MediainfoSnapshotContract.SCHEMA_V1),
-    V2(MediainfoSnapshotContract.SCHEMA_V2),
+    V1(MediainfoSnapshotSchemas.V1),
+    V2(MediainfoSnapshotSchemas.V2),
     ;
 
     companion object {
         fun resolve(requestedSchema: String?): SnapshotSchema {
-            if (requestedSchema.isNullOrBlank()) return V1
-            return entries.firstOrNull { it.id == requestedSchema }
-                ?: throw IllegalArgumentException("Unsupported MediaInfo snapshot schema: $requestedSchema")
+            val resolvedSchema = MediainfoSnapshotSchemas.resolve(requestedSchema)
+            return entries.first { it.id == resolvedSchema }
         }
     }
 }
@@ -48,7 +35,7 @@ internal fun parseSnapshotOptions(
     SnapshotOptions(
         includeInform = readBoolean(MediainfoOptionKeys.INCLUDE_INFORM, true),
         includeSections = readBoolean(MediainfoOptionKeys.INCLUDE_SECTIONS, true),
-        schema = SnapshotSchema.resolve(readString(MediainfoSnapshotContract.OPTION_SCHEMA)),
+        schema = SnapshotSchema.resolve(readString(MediainfoOptionKeys.SCHEMA)),
     )
 
 /**
@@ -81,7 +68,7 @@ internal object MediaInfoSnapshotV2 {
         val adaptedTracks = adaptTracks(nativeTracks)
         val tracks = if (includeTracks) adaptedTracks else JSONObject()
         return JSONObject()
-            .put("schema", MediainfoSnapshotContract.SCHEMA_V2)
+            .put("schema", MediainfoSnapshotSchemas.V2)
             .put(
                 "file",
                 JSONObject()
