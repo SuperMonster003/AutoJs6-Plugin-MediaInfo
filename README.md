@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ Node 引擎出于安全限制只允许访问工程目录内的文件. 请将媒�
 
 ******
 
-### 权限与安全
-
-******
-
-媒体文件可能来自不可信来源, 插件在设计上为解析过程设置了多道防线:
-
-- 进程隔离: 解析在插件自身进程中完成, 原生库不注入宿主进程, 即使解析异常也不影响 AutoJs6 稳定运行.
-- 最小数据面: 插件自身无法读取设备存储, 仅接收宿主打开的只读文件描述符与文件显示名.
-- 能直读则直读, 回退即用即清: 可随机访问的常规描述符不产生媒体副本; 仅兼容回退写入私有缓存, 调用结束立即删除.
-- 最小权限: 不申请网络, 存储, 相机等任何敏感系统权限; 服务与唤醒入口均受 AutoJs6 插件权限 (`org.autojs.permission.PLUGIN`) 保护, 第三方应用无法直接调用.
-- 开源可审计: 插件代码, 构建脚本与文档生成链路全部开源, 原生库来源与 JNI 封装出处在许可章节明确标注.
-
-请仅从官方 [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) 页面或其他可信渠道获取插件安装包; 来源不明的安装包即使名称与版本号相同, 也可能被篡改.
-
-******
-
 ### 插件接口
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 `MediainfoPluginService` 通过 AIDL 接口 `IMediainfoPlugin` 暴露 `getInfo`/`inform`/`get`/`snapshot` 四个方法; 媒体内容以只读 `ParcelFileDescriptor` 加显示名传参, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 选项. 服务与 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 权限保护.
 
-插件扫描已安装的 base / split APK 中实际包含的 `libmediainfo.so` 并动态上报 ABI; 单架构包仅上报对应 ABI, `universal` 包上报全部 4 种. 若 APK 路径不可读, 则根据当前进程位数和已解压的原生库安全回退.
+媒体解析由内置的 MediaInfoLib 原生库提供.
 
 ******
 
@@ -269,7 +252,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `新增` 官方源码构建: 从固定的 MediaArea MediaInfoLib 26.05 与 ZenLib 0.4.41 直接生成四种 ABI, 不再依赖陈旧个人仓库的预编译库
 - `新增` 可复现来源链: 在锁文件与 APK 中记录上游标签, 完整提交, NDK / CMake 配置及许可原文, 并自动审计 ELF 与五个 APK
@@ -278,6 +261,7 @@ _2026/08/31_
 - `优化` MediaInfoLib 26.05 提供更丰富的编码, HDR / 色彩, 校验和与封面图元数据, 同时保持公开 AIDL 与 `autojs6-plugin-mediainfo-snapshot-v1` 契约
 - `优化` 四种 ABI 均支持 16 KB page size, 并通过 API 24-37, x86 / x86_64, ARM32 / ARM64, 超时, 缓存, 真实媒体与超大文件门禁
 - `优化` 同一批真实样本的 0.7.83 / 26.05 完整报告, 字段查询和 sections 差异已审阅; 容器与核心流保持兼容, 字段文本继续遵循上游解析结果
+- `优化` 统一 README 版式与 Gradle 平台版本管理方式
 - `依赖` 原生解析引擎从冻结的 MediaInfoLib 0.7.83 升级至 26.05, 并固定 ZenLib 0.4.41 与 Android NDK 29.0.14206865
 
 #### v1.1.0
@@ -333,7 +317,7 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleDebug
 ```
 
-构建 release APK (已启用 ABI 拆分, 一次产出 4 个单架构包与 1 个 `universal` 包; 在不入库的 `sign.properties` 中配置签名后自动签名):
+构建 release APK:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease

@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ No. Su manifiesto no contiene permisos de red, almacenamiento, cámara ni otros 
 
 ******
 
-### Permisos Y Seguridad
-
-******
-
-Los archivos multimedia pueden venir de fuentes no confiables, por lo que el diseño coloca varias líneas de defensa alrededor del análisis:
-
-- Aislamiento de procesos: el análisis ocurre en el propio proceso del plugin y la biblioteca nativa nunca se inyecta en el proceso del host, de modo que incluso un fallo de análisis deja a AutoJs6 funcionando con normalidad.
-- Superficie de datos mínima: el plugin no puede leer el almacenamiento del dispositivo por sí mismo; solo recibe un descriptor de archivo de solo lectura abierto por el host más un nombre para mostrar.
-- Lectura directa cuando sea posible y limpieza al recurrir a la copia: los descriptores normales con acceso aleatorio no crean una copia del medio; solo la ruta de compatibilidad escribe en la caché privada y elimina el archivo temporal al terminar la llamada.
-- Permisos mínimos: sin permisos de red, almacenamiento, cámara ni otros permisos sensibles del sistema; el servicio y la entrada de activación están protegidos por el permiso de plugin de AutoJs6 (`org.autojs.permission.PLUGIN`), por lo que las aplicaciones de terceros no pueden llamarlos directamente.
-- Abierto y auditable: el código del plugin, los scripts de compilación y la cadena de generación de documentación son totalmente de código abierto, y el origen de la biblioteca nativa y del envoltorio JNI se indica en la sección de licencia.
-
-Instale el plugin solo desde la página oficial [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) u otros canales de confianza; los paquetes de origen desconocido pueden estar alterados aunque el nombre y el número de versión parezcan idénticos.
-
-******
-
 ### Interfaz Del Plugin
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 `MediainfoPluginService` expone cuatro métodos, `getInfo`/`inform`/`get`/`snapshot`, a través de la interfaz AIDL `IMediainfoPlugin`; el contenido multimedia se pasa como `ParcelFileDescriptor` de solo lectura más un nombre para mostrar, y `snapshot` acepta además un `Bundle` de opciones con `includeInform`/`includeSections`. Tanto el servicio como `WakeActivity` están protegidos por el permiso `org.autojs.permission.PLUGIN`.
 
-El plugin examina los APK base / split instalados e informa dinámicamente las ABI que realmente contienen `libmediainfo.so`; un paquete de una sola ABI informa solo la suya, mientras que `universal` informa las 4. Si no se pueden leer las rutas de los APK, usa de forma segura la arquitectura del proceso actual cuando existe una biblioteca nativa extraída.
+El análisis multimedia utiliza las bibliotecas nativas MediaInfoLib incluidas.
 
 ******
 
@@ -269,7 +252,7 @@ Las capacidades planificadas del plugin y su estado de finalización se mantiene
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `Función` Compilación desde fuentes oficiales: las cuatro ABI se generan directamente desde MediaArea MediaInfoLib 26.05 y ZenLib 0.4.41 fijados, sin las bibliotecas precompiladas del antiguo repositorio personal
 - `Función` Procedencia reproducible: las etiquetas, commits completos, ajustes de NDK / CMake y textos de licencia se registran en el archivo de bloqueo y cada APK, con auditorías automáticas de ELF y los cinco APK
@@ -278,6 +261,7 @@ _2026/08/31_
 - `Mejora` MediaInfoLib 26.05 ofrece más metadatos de códec, HDR / color, suma de comprobación y carátula, manteniendo los contratos AIDL públicos y `autojs6-plugin-mediainfo-snapshot-v1`
 - `Mejora` Cada ABI admite páginas de 16 KB y supera controles en API 24-37, x86 / x86_64, ARM32 / ARM64, tiempo límite, caché, medios reales y archivos enormes
 - `Mejora` Se revisaron informes completos, consultas de campos y sections de 0.7.83 y 26.05 con las mismas muestras reales; los contenedores y flujos principales siguen siendo compatibles y el texto de los campos sigue el análisis upstream
+- `Mejora` Unificar el diseño del README y la gestión de versiones de la plataforma Gradle
 - `Dependencia` Se actualizó el analizador nativo congelado de MediaInfoLib 0.7.83 a 26.05 y se fijaron ZenLib 0.4.41 y Android NDK 29.0.14206865
 
 #### v1.1.0
@@ -333,7 +317,7 @@ Compilar los APK debug:
 .\gradlew.bat :app:assembleDebug
 ```
 
-Compilar los APK release (los splits por ABI están habilitados, produciendo 4 paquetes de una sola arquitectura más 1 paquete `universal` de una vez; configure el archivo no rastreado `sign.properties` para la firma automática):
+Compilar los APK release:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease

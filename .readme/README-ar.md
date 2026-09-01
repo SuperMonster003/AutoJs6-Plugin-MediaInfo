@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ general, video, audio, text, other, image, menu
 
 ******
 
-### الأذونات والأمان
-
-******
-
-قد تأتي ملفات الوسائط من مصادر غير موثوقة, لذا يضع التصميم عدة خطوط دفاع حول التحليل:
-
-- عزل العمليات: يجري التحليل في عملية المكون الخاصة ولا تحقن المكتبة الأصلية أبدا في عملية المضيف, فحتى فشل التحليل يترك AutoJs6 يعمل بشكل طبيعي.
-- سطح بيانات أدنى: لا يستطيع المكون قراءة تخزين الجهاز بنفسه; ولا يتلقى سوى واصف ملف للقراءة فقط يفتحه المضيف مع اسم للعرض.
-- قراءة مباشرة عند الإمكان وحذف عند الرجوع: لا تنشئ الواصفات العادية القابلة للوصول العشوائي نسخة من الوسائط; وحده مسار التوافق يكتب في التخزين الخاص ويحذف الملف المؤقت فور انتهاء الاستدعاء.
-- أذونات دنيا: لا أذونات شبكة أو تخزين أو كاميرا أو أي أذونات نظام حساسة أخرى; والخدمة ونقطة الإيقاظ محميتان بإذن مكون AutoJs6 الإضافي (`org.autojs.permission.PLUGIN`), فلا تستطيع تطبيقات الجهات الخارجية استدعاءهما مباشرة.
-- مفتوح وقابل للتدقيق: كود المكون وبرامج البناء النصية وخط إنتاج الوثائق كلها مفتوحة المصدر, ومصدر المكتبة الأصلية وغلاف JNI مذكوران في قسم الترخيص.
-
-ثبت المكون الإضافي فقط من صفحة [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) الرسمية أو من قنوات موثوقة أخرى; فقد تكون الحزم مجهولة المصدر معدلة حتى لو بدا الاسم ورقم الإصدار متطابقين.
-
-******
-
 ### واجهة المكون الإضافي
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 تكشف `MediainfoPluginService` أربع طرق, `getInfo`/`inform`/`get`/`snapshot`, عبر واجهة AIDL باسم `IMediainfoPlugin`; يمرر محتوى الوسائط كـ `ParcelFileDescriptor` للقراءة فقط مع اسم للعرض, وتقبل `snapshot` إضافة إلى ذلك حزمة `Bundle` من الخيارات تحمل `includeInform`/`includeSections`. الخدمة و `WakeActivity` كلتاهما محميتان بإذن `org.autojs.permission.PLUGIN`.
 
-يفحص المكون ملفات APK المثبتة من نوع base / split ويبلغ ديناميكيا عن بنى ABI التي تحتوي فعليا على `libmediainfo.so`; تبلغ حزمة ABI الأحادية عن بنيتها فقط, بينما تبلغ حزمة `universal` عن البنى الأربع كلها. إذا تعذرت قراءة مسارات APK, يستخدم المكون بديلا آمنا بحسب معمارية العملية الحالية عند وجود مكتبة أصلية مستخرجة.
+يعتمد تحليل الوسائط على مكتبات MediaInfoLib الأصلية المضمنة.
 
 ******
 
@@ -269,7 +252,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `ميزة` بناء من المصادر الرسمية: تنشأ بنى ABI الأربع مباشرة من مصدري MediaArea MediaInfoLib 26.05 و ZenLib 0.4.41 المثبتين دون المكتبات الجاهزة من المستودع الشخصي القديم
 - `ميزة` مصدر قابل لإعادة الإنتاج: تسجل الوسوم والالتزامات الكاملة وإعدادات NDK / CMake ونصوص التراخيص في ملف القفل وكل APK مع تدقيق آلي لملفات ELF وحزم APK الخمس
@@ -278,6 +261,7 @@ _2026/08/31_
 - `تحسين` يوفر MediaInfoLib 26.05 بيانات أوسع للترميز و HDR / الألوان والمجاميع الاختبارية وصور الأغلفة مع الحفاظ على عقدي AIDL العام و `autojs6-plugin-mediainfo-snapshot-v1`
 - `تحسين` تدعم جميع بنى ABI صفحات 16 KB وتجتاز بوابات API 24-37 و x86 / x86_64 و ARM32 / ARM64 والمهلة والذاكرة المؤقتة والوسائط الحقيقية والملفات الضخمة
 - `تحسين` راجعت التقارير الكاملة واستعلامات الحقول و sections في 0.7.83 و 26.05 على العينات الحقيقية نفسها; بقيت الحاويات والتدفقات الأساسية متوافقة بينما يتبع نص الحقول تحليل upstream
+- `تحسين` توحيد تخطيط README وطريقة إدارة إصدارات منصة Gradle
 - `اعتماد` رقي المحلل الأصلي المجمد من MediaInfoLib 0.7.83 إلى 26.05 وثبت ZenLib 0.4.41 مع Android NDK 29.0.14206865
 
 #### v1.1.0
@@ -333,7 +317,7 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleDebug
 ```
 
-بناء حزم APK بوضع release (تقسيم ABI مفعل, فتنتج 4 حزم أحادية البنية وحزمة `universal` واحدة دفعة واحدة; اضبط ملف `sign.properties` غير المتتبع للتوقيع التلقائي):
+بناء ملفات APK من نوع release:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease

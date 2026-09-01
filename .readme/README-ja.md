@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ Node エンジンは安全上の制限により, プロジェクトディレク�
 
 ******
 
-### 権限とセキュリティ
-
-******
-
-メディアファイルは信頼できない提供元から届く可能性があるため, 設計上, 解析には複数の防御層を設けています:
-
-- プロセス分離: 解析はプラグイン自身のプロセスで行われ, ネイティブライブラリがホストプロセスに注入されることはないため, 解析に失敗しても AutoJs6 は正常に動作し続けます.
-- 最小のデータ面: プラグイン自身は端末ストレージを読み取れず, ホストが開いた読み取り専用ファイルディスクリプタと表示名のみを受け取ります.
-- 可能なら直接読み取り, フォールバック時は即削除: ランダムアクセス可能な通常ディスクリプタはメディアコピーを作成せず, 互換フォールバックだけが私有キャッシュへ書き込み, 呼び出し終了時に一時ファイルを削除します.
-- 最小権限: ネットワーク, ストレージ, カメラなどの機密性の高いシステム権限を要求しません. サービスとウェイクエントリはいずれも AutoJs6 プラグイン権限 (`org.autojs.permission.PLUGIN`) で保護され, サードパーティアプリから直接呼び出せません.
-- オープンで監査可能: プラグインコード, ビルドスクリプト, ドキュメント生成パイプラインはすべてオープンソースで, ネイティブライブラリと JNI ラッパーの出所はライセンスの節に明記されています.
-
-プラグインは公式の [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) ページまたは信頼できる経路からのみ入手してください. 出所不明のパッケージは, 名前とバージョン番号が同じでも改ざんされている可能性があります.
-
-******
-
 ### プラグインインターフェース
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 `MediainfoPluginService` は AIDL インターフェース `IMediainfoPlugin` を通じて `getInfo`/`inform`/`get`/`snapshot` の 4 メソッドを公開します. メディア内容は読み取り専用 `ParcelFileDescriptor` と表示名で渡され, `snapshot` はさらに `includeInform`/`includeSections` を含む `Bundle` オプションを受け取ります. サービスと `WakeActivity` はいずれも `org.autojs.permission.PLUGIN` 権限で保護されています.
 
-プラグインはインストール済みの base / split APK を走査し, `libmediainfo.so` を実際に含む ABI を動的に報告します. 単一 ABI 版は該当 ABI のみ, `universal` 版は全 4 種類を報告します. APK パスを読み取れない場合は, 展開済みネイティブライブラリが存在するときに現在のプロセスのビット数へ安全にフォールバックします.
+メディア解析には同梱の MediaInfoLib ネイティブライブラリを使用します.
 
 ******
 
@@ -269,7 +252,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `追加` 公式ソースビルド: 固定した MediaArea MediaInfoLib 26.05 と ZenLib 0.4.41 から 4 ABI を直接生成し, 古い個人リポジトリのプリビルドライブラリを廃止
 - `追加` 再現可能な来歴: 上流タグ, 完全なコミット, NDK / CMake 設定, ライセンス原文をロックファイルと各 APK に記録し, ELF と 5 APK を自動監査
@@ -278,6 +261,7 @@ _2026/08/31_
 - `改善` MediaInfoLib 26.05 によりコーデック, HDR / 色, チェックサム, カバー画像のメタデータを拡充しつつ, 公開 AIDL と `autojs6-plugin-mediainfo-snapshot-v1` の契約を維持
 - `改善` 全 ABI が 16 KB page size に対応し, API 24-37, x86 / x86_64, ARM32 / ARM64, タイムアウト, キャッシュ, 実メディア, 巨大ファイルの各ゲートを通過
 - `改善` 同じ実メディアで 0.7.83 と 26.05 の完全レポート, フィールド照会, sections を比較済み; コンテナと主要ストリームは互換で, フィールド文言は上流解析に追従
+- `改善` README のレイアウトと Gradle プラットフォームのバージョン管理方式を統一
 - `依存関係` 凍結済みネイティブ解析器を MediaInfoLib 0.7.83 から 26.05 へ更新し, ZenLib 0.4.41 と Android NDK 29.0.14206865 を固定
 
 #### v1.1.0
@@ -333,7 +317,7 @@ debug APK をビルド:
 .\gradlew.bat :app:assembleDebug
 ```
 
-release APK をビルド (ABI 分割が有効で, 4 つの単一アーキテクチャ版と 1 つの `universal` 版を一度に生成します. バージョン管理外の `sign.properties` を設定すると自動署名されます):
+release APK をビルド:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease
