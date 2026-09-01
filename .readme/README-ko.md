@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ Node 엔진은 보안상 프로젝트 디렉터리 안의 파일만 접근을 �
 
 ******
 
-### 권한과 보안
-
-******
-
-미디어 파일은 신뢰할 수 없는 출처에서 올 수 있으므로, 설계상 분석 과정에 여러 방어선을 두었습니다:
-
-- 프로세스 격리: 분석은 플러그인 자체 프로세스에서 이루어지고 네이티브 라이브러리는 호스트 프로세스에 주입되지 않으므로, 분석이 실패해도 AutoJs6 은 정상 동작합니다.
-- 최소 데이터 노출: 플러그인은 스스로 기기 저장소를 읽을 수 없으며, 호스트가 연 읽기 전용 파일 디스크립터와 표시 이름만 받습니다.
-- 가능하면 직접 읽고 대체 시 즉시 삭제: 임의 접근 가능한 일반 디스크립터는 미디어 복사본을 만들지 않으며, 호환성 대체 경로만 전용 캐시에 기록한 뒤 호출 종료 시 임시 파일을 삭제합니다.
-- 최소 권한: 네트워크, 저장소, 카메라 등 민감한 시스템 권한을 요청하지 않습니다. 서비스와 웨이크 진입점은 모두 AutoJs6 플러그인 권한 (`org.autojs.permission.PLUGIN`) 으로 보호되어 서드파티 앱이 직접 호출할 수 없습니다.
-- 공개적이고 감사 가능: 플러그인 코드, 빌드 스크립트, 문서 생성 파이프라인이 모두 오픈 소스이며, 네이티브 라이브러리와 JNI 래퍼의 출처는 라이선스 절에 명시되어 있습니다.
-
-플러그인은 공식 [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) 페이지나 신뢰할 수 있는 경로에서만 설치하세요. 출처가 불분명한 패키지는 이름과 버전이 같아 보여도 변조되었을 수 있습니다.
-
-******
-
 ### 플러그인 인터페이스
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 `MediainfoPluginService` 는 AIDL 인터페이스 `IMediainfoPlugin` 을 통해 `getInfo`/`inform`/`get`/`snapshot` 네 가지 메서드를 노출합니다. 미디어 내용은 읽기 전용 `ParcelFileDescriptor` 와 표시 이름으로 전달되며, `snapshot` 은 추가로 `includeInform`/`includeSections` 를 담은 `Bundle` 옵션을 받습니다. 서비스와 `WakeActivity` 모두 `org.autojs.permission.PLUGIN` 권한으로 보호됩니다.
 
-플러그인은 설치된 base / split APK 를 검사하여 실제로 `libmediainfo.so` 를 포함한 ABI 를 동적으로 보고합니다. 단일 ABI 패키지는 해당 ABI 만, `universal` 패키지는 4 개 모두를 보고합니다. APK 경로를 읽을 수 없으면 추출된 네이티브 라이브러리가 있을 때 현재 프로세스 비트 수를 기준으로 안전하게 대체합니다.
+미디어 분석에는 포함된 MediaInfoLib 네이티브 라이브러리를 사용합니다.
 
 ******
 
@@ -269,7 +252,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `추가` 공식 소스 빌드: 고정된 MediaArea MediaInfoLib 26.05와 ZenLib 0.4.41 소스에서 4개 ABI를 직접 생성하며 오래된 개인 저장소의 사전 빌드 라이브러리를 제거
 - `추가` 재현 가능한 출처: 업스트림 태그, 전체 커밋, NDK / CMake 설정, 라이선스 원문을 잠금 파일과 모든 APK에 기록하고 ELF와 5개 APK를 자동 감사
@@ -278,6 +261,7 @@ _2026/08/31_
 - `개선` MediaInfoLib 26.05가 코덱, HDR / 색상, 체크섬, 표지 이미지 메타데이터를 확장하면서 공개 AIDL 및 `autojs6-plugin-mediainfo-snapshot-v1` 계약을 유지
 - `개선` 모든 ABI가 16 KB page size를 지원하고 API 24-37, x86 / x86_64, ARM32 / ARM64, 시간 제한, 캐시, 실제 미디어, 초대형 파일 게이트를 통과
 - `개선` 동일한 실제 샘플에서 0.7.83과 26.05의 전체 보고서, 필드 조회, sections 차이를 검토함; 컨테이너와 핵심 스트림은 호환되며 필드 텍스트는 업스트림 분석 결과를 따름
+- `개선` README 레이아웃과 Gradle 플랫폼 버전 관리 방식을 통일
 - `의존성` 동결된 네이티브 파서를 MediaInfoLib 0.7.83에서 26.05로 업그레이드하고 ZenLib 0.4.41 및 Android NDK 29.0.14206865를 고정
 
 #### v1.1.0
@@ -333,7 +317,7 @@ debug APK 빌드:
 .\gradlew.bat :app:assembleDebug
 ```
 
-release APK 빌드 (ABI 분할이 활성화되어 단일 아키텍처 패키지 4 개와 `universal` 패키지 1 개를 한 번에 생성합니다. 버전 관리에서 제외된 `sign.properties` 를 설정하면 자동 서명됩니다):
+release APK 빌드:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease

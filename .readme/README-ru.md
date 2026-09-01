@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ general, video, audio, text, other, image, menu
 
 ******
 
-### Разрешения И Безопасность
-
-******
-
-Медиафайлы могут приходить из ненадежных источников, поэтому вокруг разбора выстроено несколько линий защиты:
-
-- Изоляция процессов: разбор выполняется в собственном процессе плагина, а нативная библиотека никогда не внедряется в процесс хоста, поэтому даже сбой разбора не мешает нормальной работе AutoJs6.
-- Минимальная поверхность данных: плагин не может сам читать хранилище устройства; он получает лишь открытый хостом файловый дескриптор только для чтения и отображаемое имя.
-- Прямое чтение, когда возможно, и удаление при откате: обычные позиционируемые дескрипторы не создают копию медиа; только путь совместимости пишет во временный файл приватного кеша и удаляет его сразу после вызова.
-- Минимальные разрешения: нет разрешений сети, хранилища, камеры и других чувствительных системных разрешений; сервис и точка пробуждения защищены разрешением плагина AutoJs6 (`org.autojs.permission.PLUGIN`), поэтому сторонние приложения не могут вызывать их напрямую.
-- Открытость и проверяемость: код плагина, скрипты сборки и конвейер генерации документации полностью открыты, а происхождение нативной библиотеки и JNI обертки указано в разделе лицензии.
-
-Устанавливайте плагин только с официальной страницы [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) или из других доверенных каналов; пакеты неизвестного происхождения могут быть подменены, даже если имя и номер версии выглядят одинаково.
-
-******
-
 ### Интерфейс Плагина
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 `MediainfoPluginService` предоставляет четыре метода, `getInfo`/`inform`/`get`/`snapshot`, через AIDL интерфейс `IMediainfoPlugin`; медиаконтент передается как `ParcelFileDescriptor` только для чтения плюс отображаемое имя, а `snapshot` дополнительно принимает `Bundle` с параметрами `includeInform`/`includeSections`. Сервис и `WakeActivity` защищены разрешением `org.autojs.permission.PLUGIN`.
 
-Плагин сканирует установленные base / split APK и динамически сообщает ABI, в которых действительно присутствует `libmediainfo.so`; пакет для одной ABI сообщает только ее, а `universal` - все 4. Если пути APK недоступны для чтения, используется безопасный резервный вариант по разрядности текущего процесса при наличии распакованной нативной библиотеки.
+Для анализа медиафайлов используются встроенные нативные библиотеки MediaInfoLib.
 
 ******
 
@@ -269,7 +252,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `Функция` Сборка из официальных исходников: все четыре ABI создаются непосредственно из закрепленных MediaArea MediaInfoLib 26.05 и ZenLib 0.4.41 без готовых библиотек из устаревшего личного репозитория
 - `Функция` Воспроизводимое происхождение: теги, полные коммиты, настройки NDK / CMake и тексты лицензий записываются в файл блокировки и каждый APK, а ELF и пять APK проверяются автоматически
@@ -278,6 +261,7 @@ _2026/08/31_
 - `Улучшение` MediaInfoLib 26.05 предоставляет больше метаданных о кодеках, HDR / цвете, контрольных суммах и обложках, сохраняя публичный AIDL и контракт `autojs6-plugin-mediainfo-snapshot-v1`
 - `Улучшение` Все ABI поддерживают страницы 16 KB и проходят проверки на API 24-37, x86 / x86_64, ARM32 / ARM64, тайм-ауты, кеш, реальные медиа и огромные файлы
 - `Улучшение` Полные отчеты, запросы полей и sections версий 0.7.83 и 26.05 проверены на одинаковых реальных образцах; контейнеры и основные потоки совместимы, а текст полей следует анализу upstream
+- `Улучшение` Унифицировать оформление README и управление версиями платформы Gradle
 - `Зависимость` Зафиксированный нативный анализатор обновлен с MediaInfoLib 0.7.83 до 26.05, закреплены ZenLib 0.4.41 и Android NDK 29.0.14206865
 
 #### v1.1.0
@@ -333,7 +317,7 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleDebug
 ```
 
-Собрать release APK (включено разделение по ABI, за один запуск создаются 4 пакета под одну архитектуру и 1 пакет `universal`; настройте неотслеживаемый `sign.properties` для автоматической подписи):
+Сборка release APK:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease

@@ -13,7 +13,6 @@
   <p>
     <a href="{{ repo_url }}/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/{{ repo_slug }}?label=Release"/></a>
     <a href="{{ repo_url }}/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/{{ repo_slug }}?color=A24232&label=Issues"/></a>
-    <a href="{{ repo_url }}/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="{{ license_url }}"><img alt="GitHub License" src="https://img.shields.io/github/license/{{ repo_slug }}?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -159,18 +158,6 @@ console.log(mi.audio("BitRate"));
 ******
 
 {{ placeholder_faq }}
-
-******
-
-### {{ h3_security }}
-
-******
-
-{{ p_security_intro }}
-
-{{ placeholder_security_points }}
-
-{{ p_security_permission }}
 
 ******
 

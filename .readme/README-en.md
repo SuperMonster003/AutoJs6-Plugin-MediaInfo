@@ -13,7 +13,6 @@
   <p>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SuperMonster003/AutoJs6-Plugin-MediaInfo?label=Release"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=A24232&label=Issues"/></a>
-    <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/commit/9319767358b7e53d1c401bfa4f1d818ceb65df38"><img alt="Created" src="https://img.shields.io/date/1783211498?color=2e7d32&label=Created"/></a>
     <a href="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SuperMonster003/AutoJs6-Plugin-MediaInfo?color=534BAE&label=License"/></a>
   </p>
 </div>
@@ -211,22 +210,6 @@ No. Its manifest contains no network, storage, camera, or other sensitive system
 
 ******
 
-### Permissions and Security
-
-******
-
-Media files may come from untrusted sources, so the design puts several lines of defense around parsing:
-
-- Process isolation: parsing happens in the plugin's own process and the native library is never injected into the host process, so even a parsing failure leaves AutoJs6 running normally.
-- Minimal data surface: the plugin cannot read device storage by itself; it only receives a read-only file descriptor opened by the host plus a display name.
-- Direct when possible, purge on fallback: seekable regular descriptors create no media copy; only the compatibility fallback writes to the private cache, and that temporary file is deleted as soon as the call finishes.
-- Minimal permissions: no network, storage, camera, or other sensitive system permissions; the service and the wake entry are both guarded by the AutoJs6 plugin permission (`org.autojs.permission.PLUGIN`), so third-party apps cannot call them directly.
-- Open and auditable: the plugin code, build scripts, and documentation pipeline are fully open source, and the origins of the native library and the JNI wrapper are stated in the license section.
-
-Install the plugin only from the official [Releases](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases) page or other trusted channels; packages from unknown origins may be tampered with even when the name and version number look identical.
-
-******
-
 ### Plugin Interface
 
 ******
@@ -249,7 +232,7 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 `MediainfoPluginService` exposes four methods, `getInfo`/`inform`/`get`/`snapshot`, through the AIDL interface `IMediainfoPlugin`; media content is passed as a read-only `ParcelFileDescriptor` plus a display name, and `snapshot` additionally accepts a `Bundle` of options carrying `includeInform`/`includeSections`. Both the service and `WakeActivity` are guarded by the `org.autojs.permission.PLUGIN` permission.
 
-The plugin scans the installed base / split APKs and dynamically reports the ABIs that actually contain `libmediainfo.so`; a single-ABI package reports only its ABI, while `universal` reports all 4. If APK paths cannot be read, it safely falls back to the current process bitness when an extracted native library is present.
+Media parsing is powered by the bundled MediaInfoLib native libraries.
 
 ******
 
@@ -269,7 +252,7 @@ The plugin's planned capabilities and their completion status are maintained as 
 
 #### v2.0.0
 
-_2026/08/31_
+_2026/09/01_
 
 - `Feature` Official-source build: all four ABIs are generated directly from pinned MediaArea MediaInfoLib 26.05 and ZenLib 0.4.41 sources, replacing prebuilt libraries from the dormant personal repository
 - `Feature` Reproducible provenance: upstream tags, full commits, NDK / CMake settings, and license texts are recorded in the lock file and every APK, with automated ELF and five-APK audits
@@ -278,6 +261,7 @@ _2026/08/31_
 - `Improvement` MediaInfoLib 26.05 exposes richer codec, HDR / color, checksum, and cover-image metadata while preserving the public AIDL and `autojs6-plugin-mediainfo-snapshot-v1` contracts
 - `Improvement` Every ABI supports 16 KB page sizes and passes gates across API 24-37, x86 / x86_64, ARM32 / ARM64, timeout, cache, real-media, and huge-file scenarios
 - `Improvement` Full reports, field queries, and sections from 0.7.83 and 26.05 were reviewed on the same real samples; containers and core streams remain compatible while field text continues to follow upstream parsing
+- `Improvement` Standardize the README layout and Gradle platform version management
 - `Dependency` Upgraded the frozen native parser from MediaInfoLib 0.7.83 to 26.05 and pinned ZenLib 0.4.41 with Android NDK 29.0.14206865
 
 #### v1.1.0
@@ -333,7 +317,7 @@ Build debug APKs:
 .\gradlew.bat :app:assembleDebug
 ```
 
-Build release APKs (ABI splits are enabled, producing 4 single-ABI packages plus 1 `universal` package in one go; configure the untracked `sign.properties` for automatic signing):
+Build release APKs:
 
 ```powershell
 .\gradlew.bat :app:assembleRelease

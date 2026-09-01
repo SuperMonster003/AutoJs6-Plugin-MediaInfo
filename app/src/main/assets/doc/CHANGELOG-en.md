@@ -6,7 +6,7 @@
 
 # v2.0.0
 
-###### 2026/08/31
+###### 2026/09/01
 
 * `Feature` Official-source build: all four ABIs are generated directly from pinned MediaArea MediaInfoLib 26.05 and ZenLib 0.4.41 sources, replacing prebuilt libraries from the dormant personal repository
 * `Feature` Reproducible provenance: upstream tags, full commits, NDK / CMake settings, and license texts are recorded in the lock file and every APK, with automated ELF and five-APK audits
@@ -15,6 +15,7 @@
 * `Improvement` MediaInfoLib 26.05 exposes richer codec, HDR / color, checksum, and cover-image metadata while preserving the public AIDL and `autojs6-plugin-mediainfo-snapshot-v1` contracts
 * `Improvement` Every ABI supports 16 KB page sizes and passes gates across API 24-37, x86 / x86_64, ARM32 / ARM64, timeout, cache, real-media, and huge-file scenarios
 * `Improvement` Full reports, field queries, and sections from 0.7.83 and 26.05 were reviewed on the same real samples; containers and core streams remain compatible while field text continues to follow upstream parsing
+* `Improvement` Standardize the README layout and Gradle platform version management
 * `Dependency` Upgraded the frozen native parser from MediaInfoLib 0.7.83 to 26.05 and pinned ZenLib 0.4.41 with Android NDK 29.0.14206865
 
 # v1.1.0
