@@ -1,6 +1,6 @@
 # AutoJs6-Plugin-MediaInfo 开发路线图 (Roadmap)
 
-更新日期: 2026-08-31
+更新日期: 2026-09-01
 
 本文档以可勾选清单维护 MediaInfo 插件的能力现状与演进规划, 按里程碑组织.
 未勾选条目表示规划意向而非当前版本能力; 欢迎通过 [Issues](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues) 参与讨论或认领条目.
@@ -129,13 +129,13 @@
 - [x] JNI 兼容桥: 在官方 MediaInfoLib 之上维护最小本地桥接层, 保持 `org.mediainfo.android.MediaInfo` 的现有 Kotlin 调用面, regular FD / 回退副本路径及 `getIsCanceled()` 协作取消语义; 上游子模块保持未修改. 导出面由 version script 收敛为唯一的 `JNI_OnLoad`. (落点: `native/bridge/mediainfo_jni.cpp`, `native/bridge/libmediainfo.map.txt`, `MediainfoPluginServiceTest.kt`)
 - [x] MediaInfoLib 版本透出与来源清单: `native/upstream.lock.json` 记录上游仓库, 标签, 完整提交, 许可, 工具链和编译选项并原样打入全部 APK; 运行时 `Info_Version` 与锁定标签交叉验证, APK 同时携带 MediaInfoLib / ZenLib 许可原文. (落点: `native/upstream.lock.json`, `GenerateMediaInfoMetadataTask`, `scripts/verify_native_build.py`, `MediainfoPluginServiceTest.kt`)
 - [x] 上游稳定版跟踪: 每周一及手动触发时查询 MediaInfoLib / ZenLib 的最新非 draft, 非 prerelease Release; 只有版本递增才更新固定标签, 完整提交, 许可与来源清单并创建或刷新 Draft PR. 同名标签移动会作为安全错误失败, PR 永不自动合并或发布. (落点: `.github/workflows/update-mediainfo-upstream.yml`, `scripts/update_mediainfo_upstream.py`)
-- [ ] 原生结构化输出评估 (v2.1.x): 评估 MediaInfoLib 的 `Output=JSON` 能力与跨版本字段稳定性. v2.0.0 保持现有 `autojs6-plugin-mediainfo-snapshot-v1` 和文本报告解析路径, 避免在原生引擎迁移版本中同时改变公开结构; 评估通过后再决定是否以新 schema 逐步替换.
+- [x] 原生结构化输出评估 (v2.1.x): 已实现仅插件内部可见的 `Output=JSON` JNI 路径, 对进程级输出选项执行加锁, 保存与异常安全恢复, 并在 API 31 ARM64 上用 MP4 / WebM / FLAC / 损坏 MP4 及并发文本调用验证. 结论是原生 JSON 可作为未来 `snapshot-v2` 的数据源, 但其机器字段名, 原始值, nested `extra` 与动态字段集合不能透明替换 `autojs6-plugin-mediainfo-snapshot-v1`; v1 继续使用文本解析, AIDL 与公开结构不变. (落点: `MEDIAINFO_NATIVE_JSON.md`, `native/bridge/mediainfo_jni.cpp`, `MediainfoPluginServiceTest.kt`, `benchmark/results/2026-09-01-api31-arm64-v8a-native-json-evaluation.json`)
 - [x] 16 KB page size 适配: 以 NDK r29 工具链和 `-z,max-page-size=16384` 生成四 ABI 的 16 KB 对齐 ELF; CI 校验每个 LOAD segment, 架构, `DT_NEEDED`, 导出符号和五个 APK 的原生内容, API 37 x86_64 16 KB 页模拟器已通过 JNI / AIDL 核心回归. (落点: `native/CMakeLists.txt`, `scripts/verify_native_build.py`, `.github/workflows/build.yml`)
 - [x] 双版本解析兼容性审查: 在 API 31 ARM64 实体机上对 0.7.83 / 26.05 使用同一批 MP4, WebM, FLAC 与畸形 MP4, 审阅完整报告、固定字段查询和 sections 差异. 容器与核心流保持兼容; 日期 / 单位规范化、字段调整和新增元数据按上游演进接受, `IsTruncated` 明确视为非稳定诊断字段. (落点: `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`)
 - [x] minified Release 防回归: 固定 JNI 精确类名不被 R8 改写, 以独立 androidTest 经公开 AIDL 安装并验证真实 release APK; ARM64 实体机已通过, CI 对 x86_64 release 重复该门禁. (落点: `app/proguard-rules.pro`, `app/src/androidTest/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediainfoReleaseSmokeTest.kt`, `.github/workflows/build.yml`)
 - [x] v2.0.0 发布候选: code 10 与十语言日志已生成; 五个生产签名 APK 的版本、签名连续性、CRC32 文件名、SHA-256、来源清单、许可和原生结构均通过审计, 最终 ARM64 / ARM32 字节在实体机复核并清理. (落点: `version.properties`, `.changelog/`, `benchmark/results/2026-08-31-v2.0.0-release.json`, `MEDIAINFO_UPSTREAM.md`)
 
-验收条件: v1.1.0 标签与 Release 资产保持不变; v2.0.0 可从干净检出构建全部 4 种 ABI; `Info_Version` 与来源清单, 发布说明一致; 4 KB / 16 KB 页设备, API 24 最低版本及当前目标版本均可加载; 合成样本, 真实媒体, 多流, minified Release, 超时 / 取消, 缓存, 19.37 GiB MP4 与 77.97 GiB MKV 回归通过; 上游更新 PR 不绕过人工审阅. 本地构建、运行、解析兼容性与最终资产门禁已于 2026-08-31 全部通过; 当前仅待远端 CI 与 Draft Release 复核, 合并和正式发布仍需人工批准.
+验收条件: v1.1.0 标签与 Release 资产保持不变; v2.0.0 可从干净检出构建全部 4 种 ABI; `Info_Version` 与来源清单, 发布说明一致; 4 KB / 16 KB 页设备, API 24 最低版本及当前目标版本均可加载; 合成样本, 真实媒体, 多流, minified Release, 超时 / 取消, 缓存, 19.37 GiB MP4 与 77.97 GiB MKV 回归通过; 上游更新 PR 不绕过人工审阅. v2.0.0 已于 2026-09-01 合并并发布; v2.1.x 原生 JSON 可行性, 并发隔离和 snapshot-v1 兼容边界已于同日完成验证.
 
 ******
 
