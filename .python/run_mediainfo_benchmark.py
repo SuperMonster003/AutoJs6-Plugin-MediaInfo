@@ -35,11 +35,15 @@ RUNNER_SCHEMA_VERSION = 1
 BENCHMARK_INPUT_PATTERNS = (
     ".python/run_mediainfo_benchmark.py",
     ".python/run_real_media_validation.py",
+    ".python/compare_mediainfo_versions.py",
     "app/build.gradle.kts",
     "app/src/main/AndroidManifest.xml",
     "app/src/main/java/**/*.kt",
-    "app/src/main/jniLibs/**/*.so",
     "app/src/androidTest/**/*.kt",
+    ".gitmodules",
+    "native/CMakeLists.txt",
+    "native/upstream.lock.json",
+    "native/bridge/**/*",
     "libs/*.aar",
     "version.properties",
 )

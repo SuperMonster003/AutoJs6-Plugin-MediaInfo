@@ -1,0 +1,127 @@
+{
+  "schema": "autojs6-plugin-mediainfo-release-validation-v1",
+  "generatedAtUtc": "2026-08-31T15:44:41.488Z",
+  "release": {
+    "pluginVersionName": "2.0.0",
+    "pluginVersionCode": 10,
+    "releaseDate": "2026/08/31",
+    "buildSourceRevision": "c2e8c42c4ff020df9d6d12aa00095d29482e9298",
+    "sourceTreeClean": true,
+    "mediaInfoLib": {
+      "tag": "v26.05",
+      "commit": "f23e69ce89581343f3b7a42e06828a5331e290d5"
+    },
+    "zenLib": {
+      "tag": "v0.4.41",
+      "commit": "894980d3ecbc843d6ac685493f8f2ed5c2b6864c"
+    },
+    "androidNdk": "29.0.14206865",
+    "cmake": "3.22.1"
+  },
+  "build": {
+    "command": ".\\gradlew.bat :app:clean :app:testDebugUnitTest :app:assembleRelease :app:assembleDebugAndroidTest --stacktrace",
+    "result": "success",
+    "durationSeconds": 637,
+    "actionableTasks": 129,
+    "executedTasks": 121,
+    "signerCertificateSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+    "signerMatchesV1_1_0": true,
+    "markdownArtifacts": 36,
+    "markdownCheck": "passed",
+    "actionlint": "passed"
+  },
+  "nativeAudit": {
+    "loadAlignment": "0x4000",
+    "exports": [
+      "JNI_OnLoad"
+    ],
+    "needed": [
+      "libc.so",
+      "libdl.so",
+      "libm.so",
+      "libz.so"
+    ],
+    "artifacts": {
+      "arm64-v8a": {
+        "bytes": 7174704,
+        "sha256": "c11e48657fc7efcfe62e97122e2f66d4c2bebf3e766cbcb989308774d4d6137b"
+      },
+      "armeabi-v7a": {
+        "bytes": 5173816,
+        "sha256": "92a0be744bf1d2fbefa7f2fd486cba823ad9a7bd8d949633b7da801ca6312ec0"
+      },
+      "x86": {
+        "bytes": 8055716,
+        "sha256": "9ca0b3fd4d89f282cf56f2d69e989250879c5b06c254b4e17420f731bee56059"
+      },
+      "x86_64": {
+        "bytes": 7720040,
+        "sha256": "78b6f0fb0ac90ad9d4793fa87e788811c6a22c7542999cb8ac395d2fd015c9d6"
+      }
+    }
+  },
+  "releaseArtifacts": [
+    {
+      "abi": "arm64-v8a",
+      "fileName": "autojs6-plugin-mediainfo-v2.0.0-arm64-v8a-69e544cf.apk",
+      "bytes": 2951111,
+      "crc32": "69e544cf",
+      "sha256": "d8d7c289c78f61aabbe459196475d5630618ca9b0e9d8ab865995a8d8d84bc7f"
+    },
+    {
+      "abi": "armeabi-v7a",
+      "fileName": "autojs6-plugin-mediainfo-v2.0.0-armeabi-v7a-40397d24.apk",
+      "bytes": 2721393,
+      "crc32": "40397d24",
+      "sha256": "c1ea25922acbef6fc290a18520555c580f2ed917b2c76936735960447ccba25c"
+    },
+    {
+      "abi": "universal",
+      "fileName": "autojs6-plugin-mediainfo-v2.0.0-universal-69a8a908.apk",
+      "bytes": 11715225,
+      "crc32": "69a8a908",
+      "sha256": "f33bb09fad708635bee0776ba2a0a00220761d280f25e72fe07cb710efc6c3f8"
+    },
+    {
+      "abi": "x86",
+      "fileName": "autojs6-plugin-mediainfo-v2.0.0-x86-70ec1b9b.apk",
+      "bytes": 3338929,
+      "crc32": "70ec1b9b",
+      "sha256": "83ab907437f3736cc84cb411f1624aefef814ca391b01ca5942bd13a627ef3f6"
+    },
+    {
+      "abi": "x86_64",
+      "fileName": "autojs6-plugin-mediainfo-v2.0.0-x86_64-9cd62670.apk",
+      "bytes": 3073544,
+      "crc32": "9cd62670",
+      "sha256": "eadfd1f89047017e7459aa0865875cbff0b1fb31cb08d19978e27ceb5e563f5b"
+    }
+  ],
+  "physicalDeviceValidation": {
+    "serial": "QV710AF65F",
+    "manufacturer": "Sony",
+    "model": "XQ-AT72",
+    "sdk": 31,
+    "tests": [
+      {
+        "abi": "arm64-v8a",
+        "apkSha256": "d8d7c289c78f61aabbe459196475d5630618ca9b0e9d8ab865995a8d8d84bc7f",
+        "installedApkSha256Matched": true,
+        "versionMatched": true,
+        "instrumentation": "OK (1 test)",
+        "durationSeconds": 0.045
+      },
+      {
+        "abi": "armeabi-v7a",
+        "apkSha256": "c1ea25922acbef6fc290a18520555c580f2ed917b2c76936735960447ccba25c",
+        "installedApkSha256Matched": true,
+        "versionMatched": true,
+        "instrumentation": "OK (1 test)",
+        "durationSeconds": 0.061
+      }
+    ],
+    "appPackageAbsentAfterEveryRun": true,
+    "testPackageAbsentAfterEveryRun": true,
+    "finalDeviceClean": true
+  }
+}

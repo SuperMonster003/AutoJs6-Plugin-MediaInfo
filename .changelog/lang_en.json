@@ -5,6 +5,25 @@
   "changelog_label_improvement": "Improvement",
   "changelog_label_dependency": "Dependency",
   "$data": {
+    "v2.0.0": {
+      "released_date": "2026/08/31",
+      "feature": [
+        "Official-source build: all four ABIs are generated directly from pinned MediaArea MediaInfoLib 26.05 and ZenLib 0.4.41 sources, replacing prebuilt libraries from the dormant personal repository",
+        "Reproducible provenance: upstream tags, full commits, NDK / CMake settings, and license texts are recorded in the lock file and every APK, with automated ELF and five-APK audits",
+        "Stable upstream tracking: weekly or manual checks propose pinned official Release updates through Draft PRs, detect moved tags, and never merge or publish automatically"
+      ],
+      "improvement": [
+        "MediaInfoLib 26.05 exposes richer codec, HDR / color, checksum, and cover-image metadata while preserving the public AIDL and `autojs6-plugin-mediainfo-snapshot-v1` contracts",
+        "Every ABI supports 16 KB page sizes and passes gates across API 24-37, x86 / x86_64, ARM32 / ARM64, timeout, cache, real-media, and huge-file scenarios",
+        "Full reports, field queries, and sections from 0.7.83 and 26.05 were reviewed on the same real samples; containers and core streams remain compatible while field text continues to follow upstream parsing"
+      ],
+      "fix": [
+        "Preserved the exact JNI wrapper class and methods through R8 and added a public-AIDL smoke test that installs the actual minified Release APK, preventing native loading failures in release builds"
+      ],
+      "dependency": [
+        "Upgraded the frozen native parser from MediaInfoLib 0.7.83 to 26.05 and pinned ZenLib 0.4.41 with Android NDK 29.0.14206865"
+      ]
+    },
     "v1.1.0": {
       "released_date": "2026/08/31",
       "feature": [

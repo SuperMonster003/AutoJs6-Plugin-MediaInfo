@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "pluginReleaseLine": "2.x",
+  "initialPluginVersion": "2.0.0",
+  "lockedAt": "2026-08-31",
+  "sources": {
+    "mediaInfoLib": {
+      "repository": "https://github.com/MediaArea/MediaInfoLib.git",
+      "submodulePath": "native/upstream/MediaInfoLib",
+      "tag": "v26.05",
+      "commit": "f23e69ce89581343f3b7a42e06828a5331e290d5",
+      "license": "BSD-2-Clause",
+      "licensePath": "LICENSE"
+    },
+    "zenLib": {
+      "repository": "https://github.com/MediaArea/ZenLib.git",
+      "submodulePath": "native/upstream/ZenLib",
+      "tag": "v0.4.41",
+      "commit": "894980d3ecbc843d6ac685493f8f2ed5c2b6864c",
+      "license": "Zlib",
+      "licensePath": "License.txt"
+    }
+  },
+  "toolchain": {
+    "androidNdk": "29.0.14206865",
+    "cmake": "3.22.1",
+    "minSdk": 24,
+    "stl": "c++_static",
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86",
+      "x86_64"
+    ],
+    "elfMaxPageSize": 16384
+  },
+  "buildProfile": {
+    "unicode": true,
+    "largeFiles": true,
+    "upstreamJni": false,
+    "bundledZenLib": true,
+    "bundledZlib": false,
+    "disabledMediaInfoFeatures": [
+      "ADVANCED",
+      "AES",
+      "DEMUX",
+      "DIRECTORY",
+      "DUPLICATE",
+      "DVDIF_ANALYZE",
+      "EVENTS",
+      "FILTER",
+      "FIXITY",
+      "GRAPH",
+      "IBI",
+      "LIBCURL",
+      "LIBMMS",
+      "MACROBLOCKS",
+      "MD5",
+      "NEXTPACKET",
+      "READER",
+      "READTHREAD",
+      "REFERENCES",
+      "SHA1",
+      "SHA2",
+      "TRACE",
+      "TRACE_FFV1CONTENT"
+    ]
+  }
+}

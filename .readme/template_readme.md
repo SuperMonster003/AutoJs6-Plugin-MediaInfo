@@ -228,6 +228,16 @@ snapshot schema: {{ snapshot_schema_plugin }}
 
 {{ p_build_intro }}
 
+{{ p_build_checkout }}:
+
+```powershell
+git clone --recurse-submodules {{ repo_url }}.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md]({{ native_build_url }})
+
 {{ p_build_debug }}:
 
 ```powershell
@@ -272,6 +282,8 @@ app/src/main/res/raw-*/plugin_instruction.md
 ******
 
 {{ p_license }}
+
+- [MEDIAINFO_UPSTREAM.md]({{ mediainfo_upstream_url }})
 
 ******
 

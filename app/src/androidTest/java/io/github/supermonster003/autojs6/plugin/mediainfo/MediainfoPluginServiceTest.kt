@@ -36,6 +36,41 @@ class MediainfoPluginServiceTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
+    fun nativeBridgeReportsPinnedEngineAndPreservesUnicodePaths() {
+        val mediaInfo = MediaInfo()
+        val engineVersion = mediaInfo.getMIOption("Info_Version")
+        val upstreamLock = context.assets.open("mediainfo-upstream.lock.json")
+            .bufferedReader()
+            .use { reader -> JSONObject(reader.readText()) }
+        val lockedTag = upstreamLock
+            .getJSONObject("sources")
+            .getJSONObject("mediaInfoLib")
+            .getString("tag")
+        assertTrue("Invalid source-lock tag: $lockedTag", Regex("^v\\d+(?:\\.\\d+){1,2}$").matches(lockedTag))
+        assertTrue(
+            "Engine version $engineVersion does not match the packaged source lock $lockedTag",
+            engineVersion.contains(lockedTag.removePrefix("v")),
+        )
+
+        val mediaFile = File(context.cacheDir, "mediainfo-媒体-🎵.wav")
+            .apply { writeBytes(createWaveBytes()) }
+        try {
+            val report = mediaInfo.getMI(mediaFile.absolutePath)
+            assertTrue("Unicode path was not preserved in the report", report.contains(mediaFile.absolutePath))
+            assertTrue("MediaInfo report has no Audio section", report.contains("Audio"))
+
+            val canceledMediaInfo = MediaInfo().apply { cancel() }
+            val canceledAt = android.os.SystemClock.elapsedRealtime()
+            val canceledReport = canceledMediaInfo.getMI(mediaFile.absolutePath)
+            val cancellationMillis = android.os.SystemClock.elapsedRealtime() - canceledAt
+            assertTrue("JNI did not preserve the cooperative cancellation marker", canceledReport.contains("terminated"))
+            assertTrue("Pre-canceled JNI parsing was not prompt: ${cancellationMillis}ms", cancellationMillis < 2_000)
+        } finally {
+            mediaFile.delete()
+        }
+    }
+
+    @Test
     fun discoveryBindingAndAllBinderMethodsRoundTrip() {
         withBoundPlugin { plugin ->
             assertRuntimeInfo(plugin)
@@ -233,7 +268,11 @@ class MediainfoPluginServiceTest {
             assertEquals(MediaInputKind.DIRECT_DESCRIPTOR, source.kind)
             assertEquals(file.length(), source.sizeBytes)
             assertTrue(source.path.startsWith("/proc/self/fd/"))
-            assertEquals(file.name, requireNotNull(source.cacheIdentity).displayName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                assertEquals(file.name, requireNotNull(source.cacheIdentity).displayName)
+            } else {
+                assertNull("API 24-26 must not synthesize an incomplete file identity", source.cacheIdentity)
+            }
             assertTrue(MediaInfo().getMI(source.path).contains("Audio"))
         }
     }

@@ -5,6 +5,25 @@
   "changelog_label_improvement": "改善",
   "changelog_label_dependency": "依存関係",
   "$data": {
+    "v2.0.0": {
+      "released_date": "2026/08/31",
+      "feature": [
+        "公式ソースビルド: 固定した MediaArea MediaInfoLib 26.05 と ZenLib 0.4.41 から 4 ABI を直接生成し, 古い個人リポジトリのプリビルドライブラリを廃止",
+        "再現可能な来歴: 上流タグ, 完全なコミット, NDK / CMake 設定, ライセンス原文をロックファイルと各 APK に記録し, ELF と 5 APK を自動監査",
+        "上流安定版の追跡: 毎週または手動で公式 Release を確認し, 固定バージョン更新を Draft PR のみで提案, タグ移動を検出して自動マージや公開は不実施"
+      ],
+      "improvement": [
+        "MediaInfoLib 26.05 によりコーデック, HDR / 色, チェックサム, カバー画像のメタデータを拡充しつつ, 公開 AIDL と `autojs6-plugin-mediainfo-snapshot-v1` の契約を維持",
+        "全 ABI が 16 KB page size に対応し, API 24-37, x86 / x86_64, ARM32 / ARM64, タイムアウト, キャッシュ, 実メディア, 巨大ファイルの各ゲートを通過",
+        "同じ実メディアで 0.7.83 と 26.05 の完全レポート, フィールド照会, sections を比較済み; コンテナと主要ストリームは互換で, フィールド文言は上流解析に追従"
+      ],
+      "fix": [
+        "R8 後も JNI ラッパーの正確なクラス名とメソッドを保持し, 実際の minified Release APK をインストールする公開 AIDL スモークテストでリリース時のネイティブ読込失敗を防止"
+      ],
+      "dependency": [
+        "凍結済みネイティブ解析器を MediaInfoLib 0.7.83 から 26.05 へ更新し, ZenLib 0.4.41 と Android NDK 29.0.14206865 を固定"
+      ]
+    },
     "v1.1.0": {
       "released_date": "2026/08/31",
       "feature": [

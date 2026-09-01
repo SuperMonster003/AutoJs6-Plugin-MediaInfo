@@ -10,13 +10,20 @@ permissions:
 
 jobs:
   verify-build:
-    name: Unit tests and debug APKs
+    name: Unit tests and debug/release APKs
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Verify pinned upstream sources
+        run: |
+          python3 scripts/update_mediainfo_upstream.py --fetch-locked
+          python3 scripts/verify_native_build.py
 
       - name: Set up Java
         uses: actions/setup-java@v5
@@ -25,20 +32,49 @@ jobs:
           java-version: "21"
           cache: gradle
 
-      - name: Run unit tests and assemble debug APKs
+      - name: Install pinned native toolchain
+        run: |
+          sdkmanager_path="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$sdkmanager_path"
+          "$sdkmanager_path" "ndk;29.0.14206865" "cmake;3.22.1"
+          test -d "${ANDROID_HOME}/ndk/29.0.14206865"
+          test -x "${ANDROID_HOME}/cmake/3.22.1/bin/cmake"
+
+      - name: Run unit tests and assemble debug/release APKs
         run: |
           chmod +x gradlew
-          ./gradlew :app:testDebugUnitTest :app:assembleDebug --stacktrace
+          ./gradlew \
+            -Pmediainfo.releaseSmokeDebugSigning=true \
+            :app:testDebugUnitTest \
+            :app:assembleDebug \
+            :app:assembleRelease \
+            --stacktrace
+
+      - name: Verify all packaged native architectures
+        run: |
+          python3 scripts/verify_native_build.py \
+            --library-root app/build/intermediates/stripped_native_libs/debug/stripDebugDebugSymbols/out/lib \
+            --apk-dir app/build/outputs/apk/debug
+          python3 scripts/verify_native_build.py \
+            --library-root app/build/intermediates/stripped_native_libs/release/stripReleaseDebugSymbols/out/lib \
+            --apk-dir app/build/outputs/apk/release
 
   verify-service:
-    name: Plugin service round trip
+    name: Debug and minified release service round trip
     needs: verify-build
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Verify pinned upstream sources
+        run: |
+          python3 scripts/update_mediainfo_upstream.py --fetch-locked
+          python3 scripts/verify_native_build.py
 
       - name: Set up Java
         uses: actions/setup-java@v5
@@ -46,6 +82,14 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: gradle
+
+      - name: Install pinned native toolchain
+        run: |
+          sdkmanager_path="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$sdkmanager_path"
+          "$sdkmanager_path" "ndk;29.0.14206865" "cmake;3.22.1"
+          test -d "${ANDROID_HOME}/ndk/29.0.14206865"
+          test -x "${ANDROID_HOME}/cmake/3.22.1/bin/cmake"
 
       - name: Enable KVM
         run: |
@@ -53,13 +97,13 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Verify discovery and Binder methods
+      - name: Verify debug and minified release discovery/Binder methods
         uses: reactivecircus/android-emulator-runner@v2.38.0
         with:
           api-level: 35
           target: google_apis
           arch: x86_64
           profile: pixel_7
-          script: |
-            chmod +x gradlew
-            ./gradlew :app:connectedDebugAndroidTest --stacktrace
+          # The action executes each script input line in a separate shell.
+          # Keep stateful variables, traps, and assertions inside one driver.
+          script: bash scripts/run_ci_service_validation.sh

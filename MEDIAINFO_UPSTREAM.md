@@ -54,19 +54,28 @@ GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/A
 
 ******
 
-## ARM64 源码构建验证
+## 四 ABI 集成构建与运行验证
 
 ******
 
-2026-08-31 已在不改动插件 APK 和 `app/src/main/jniLibs` 的前提下完成一次独立验证:
+2026-08-31 先完成了与插件隔离的 ARM64 源码构建证明, 随后已把同一规则正式接入 Gradle / CMake. 从干净构建图一次生成四种 ABI 与五个 debug APK, 旧 `app/src/main/jniLibs` 二进制仅在 v2 功能分支中删除, v1.1.0 标签与 Release 资产未发生任何变化.
 
-- 官方源码分别精确检出到 `T:\backups\idea-projects\MediaInfoLib` (`v26.05`) 和 `T:\backups\idea-projects\ZenLib` (`v0.4.41`), 两个工作树均为 detached HEAD 且无本地修改.
-- 使用 NDK `29.0.14206865`, CMake `3.22.1`, Android API 24, `arm64-v8a`, Release 与 `c++_static` 配置, 并沿用官方 Android 工程的精简 feature flags; 大文件支持显式开启.
-- ZenLib 的 CMake 最低版本策略会在未指定时把它意外构建成共享库. 验证通过 `CMAKE_POLICY_DEFAULT_CMP0077=NEW` 使 MediaInfoLib 保持共享库, ZenLib 静态并入, 最终 `libmediainfo.so` 不依赖额外的 `libzen.so`.
-- 最终未剥离产物为 AArch64 ELF, SHA-256 为 `a91944ef787ac911e482002f1bc546596e9a8fdf6f46cbe4088fa2f62a8e3a32`, 三个 LOAD segment 对齐均为 `0x4000`; 动态依赖仅为 Android 系统的 `libz.so`, `libm.so`, `libdl.so` 与 `libc.so`.
-- `JNI_OnLoad`, `MediaInfo_Open`, `MediaInfo_Inform`, `MediaInfo_Get`, `MediaInfo_Option` 等入口均已导出; 源码版本常量为 `MediaInfoLib - v26.05`. `llvm-strip --strip-unneeded` 后的验证副本为 10,048,424 字节.
+| ABI | 剥离后字节数 | SHA-256 |
+|---|---:|---|
+| `arm64-v8a` | 11,227,272 | `a689212b294f2e7f1504bd67c733584f19b2c2a04dac28f9b1753fb7e5fd4ae6` |
+| `armeabi-v7a` | 6,903,216 | `e09db8de0a45bf482d39b7cce9141eff32f6ae17bca54d7ffb84c1e97a4bb22e` |
+| `x86` | 12,476,056 | `a0dcab8f0fee822e6938e215153886fa97cbe533c9f101a845ed4b4172c9106c` |
+| `x86_64` | 11,118,472 | `431b666ec6079c6e284f5e27e9c2dc47596f2385c0c840a15bac7a49df39b2e4` |
 
-验证产物保留在 `T:\backups\idea-projects\MediaInfo-v2-build-proof\arm64-v8a`. 它不是发布输入, 也没有复制进本仓库; 正式 v2 构建仍需把相同规则纳入 Gradle / CMake, CI 和四 ABI 回归.
+- 四个 ELF 的全部 LOAD segment 均为 `0x4000` 对齐, SONAME 均为 `libmediainfo.so`, 动态依赖严格只有 Android 系统 `libz.so`, `libm.so`, `libdl.so`, `libc.so`; ZenLib 与 C++ 运行时均静态并入.
+- 本地 version script 将动态导出面限制为唯一的 `JNI_OnLoad`; Kotlin 需要的旧类名和方法签名在 `JNI_OnLoad` 中显式注册, 不暴露上游 C API.
+- 五个 APK 均通过逐项审计: 四个 split APK 只含目标 ABI, `universal` 含全部四种 ABI; APK 内库哈希与已审计的剥离产物一致, 来源锁和两份许可也逐字核对.
+- 核心 JNI / AIDL 测试已在 API 24 x86_64 (4 KB), API 29 x86, API 36 x86_64 与 API 37 x86_64 (16 KB) 通过. API 24 的停滞管道于 30.128 秒超时并验证无临时文件泄漏; API 37 实际页大小为 16384.
+- QV710AF65F (API 31) 上的 v2 ARM64 与 ARM32 候选 APK 核心回归均为 4/4 通过; ARM64 停滞管道于 30.094 秒超时且无临时文件泄漏. 同一 ARM64 候选还通过 MP4, WebM, FLAC 与 561 MiB 问题样本的 regular FD、冷 / 热缓存和清理验证, 四份样本均为 `failureCount=0`.
+- QV770340J7 (API 33) 上的 v2 ARM64 候选使用显式 `--allow-large-transfer` 授权通过 19.37 GiB MP4 与 77.97 GiB MKV 回归. 两份样本的冷解析分别为 303.451 ms 与 548.698 ms, 缓存命中分别为 0.254 ms 与 0.406 ms, `inform`, `get` 与 `snapshot` 的冷 / 热结果一致. 每次测试后均独立确认设备副本和测试包已删除, 可用空间恢复至约 130 GiB; 最后以设备原 APK 的 SHA-256 逐字校验恢复 v1.1.0.
+- QV710AF65F (API 31) 上以同一批 MP4, WebM, FLAC 与 561 MiB 问题样本完成 0.7.83 / 26.05 双版本对照. 四份完整报告均变化, 共审阅 17 项直接查询变化, 1 项 section occurrence 变化与 63 项 section 字段变化; 容器格式及有效样本的 General / Video / Audio 核心流保持一致. 变化均属于上游解析演进: 日期与单位规范化、字段键名调整、更精确的 AAC 标识, 以及新增 H.264、VP9 HDR / 色彩、FLAC 校验和 / 压缩和封面图元数据. 561 MiB 畸形 MP4 在两版中均保持 General-only MPEG-4, 但 26.05 不再输出旧 `IsTruncated=Yes`; 该字段按非稳定诊断信息处理, 不增加兼容 shim. 脱敏证据见 `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`.
+- 已发布的 minified v1.1.0 Release 包在复核时暴露了旧包装层无法加载 JNI 的历史缺陷; 包内旧 `libmediainfo.so` 与可工作的已安装 v1.1.0 基线逐字相同, 因此差异审查使用同签名、版本号相同的已安装基线, 并在证据中明确标注来源与哈希. 按冻结策略不重建、不替换 v1.1.0. v2 已为 JNI 精确类名加入 R8 keep 规则, 并在 QV710AF65F 上安装实际 minified ARM64 Release APK, 通过只依赖公开 AIDL 的原生加载、服务发现和四类读取冒烟测试.
+- 至此 v2 的四 ABI、4 KB / 16 KB 页、最低 / 当前 API、ARM 实机、真实媒体、双版本解析差异、minified Release、超时及超大文件运行门禁均已通过. 剩余工作仅为提升 v2.0.0 版本、生成最终五个 Release APK、等待 CI 全绿并建立 Draft Release; 合并与正式发布仍需另行人工批准.
 
 ******
 
@@ -74,7 +83,7 @@ GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/A
 
 ******
 
-v2 实现时采用以下职责分离:
+v2 实现采用以下职责分离:
 
 ```text
 native/
@@ -82,14 +91,15 @@ native/
 |   |-- MediaInfoLib/  # 固定提交的官方源码
 |   `-- ZenLib/        # 固定提交的官方源码
 |-- bridge/            # 本项目维护的最小 JNI 兼容与取消桥
-`-- upstream.lock      # 仓库, 标签, 提交, 工具链与编译选项
+|-- CMakeLists.txt     # 固定 feature profile 与 Android 链接规则
+`-- upstream.lock.json # 仓库, 标签, 提交, 许可, 工具链与编译选项
 ```
 
-- 上游目录使用固定提交的 Git 子模块或等价的内容寻址检出; 两个上游目录保持同级, 以符合官方 CMake 的相对路径布局.
+- 上游目录使用固定提交的 Git 子模块; 两个上游目录保持同级, 以符合官方 CMake 的相对路径布局. 干净检出必须使用 `--recurse-submodules` 或随后执行 `git submodule update --init --recursive`.
 - 本项目的补丁只放在 `native/bridge` 或显式补丁文件中. 不在上游子模块工作树内直接提交混合修改, 这样每次升级都能清楚审阅本地差异.
 - APK 中的 `libmediainfo.so` 由 Gradle / CMake 构建图生成, 不再从个人仓库复制预编译文件.
 - CMake 入口固定 `CMP0077=NEW`, 让 ZenLib 静态并入 MediaInfoLib; CI 拒绝 `DT_NEEDED` 中出现非 Android 系统库, 防止漏打包的共享依赖.
-- 来源清单同时进入 APK 元数据或资源, 使运行时诊断, Release 说明和可复现构建使用同一来源.
+- 来源清单以 `assets/mediainfo-upstream.lock.json` 进入每个 APK, 使运行时诊断, Release 说明和可复现构建使用同一来源; MediaInfoLib / ZenLib 许可原文也随 APK 打包.
 
 ******
 
@@ -111,9 +121,9 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 
 ******
 
-1. 每周检查一次 MediaInfoLib 的非 draft, 非 prerelease GitHub Release; 手动触发同样可用.
-2. 新稳定版高于 `upstream.lock` 时, 自动创建或刷新一个更新 PR, 只改变官方固定引用, 来源清单与必要的许可归档.
-3. PR 构建四种 ABI, 验证标签到提交的映射, 运行 ELF 架构 / 依赖 / 16 KB 对齐检查, 并在 APK 内核对 `Info_Version`.
+1. `.github/workflows/update-mediainfo-upstream.yml` 每周一检查 MediaInfoLib 与 ZenLib 的非 draft, 非 prerelease GitHub Release; `workflow_dispatch` 手动触发同样可用.
+2. 新稳定版高于 `native/upstream.lock.json` 时, 自动创建或刷新 `automation/update-mediainfo-upstream` Draft PR, 只改变官方固定引用, 来源清单与许可归档. 相同版本号解析到不同提交时直接作为安全错误停止, 不静默接受标签移动.
+3. 更新分支推送后显式 `workflow_dispatch` 完整 Build integrity 流程, 构建四种 ABI, 验证标签到提交的映射, 运行 ELF 架构 / 依赖 / 16 KB 对齐检查, 并在 APK 内核对 `Info_Version`; 即使机器人 PR 的普通事件等待批准, 也会立即产生候选提交的 CI 证据.
 4. 运行 JVM, 模拟器和 ARM64 实体机测试; 对同一批真实样本保存 v1.1.0 与候选版本的字段 / 报告差异, 将合理的上游解析变化作为可审阅产物.
 5. 对 regular FD, pipe 回退, 缓存命中, 30 秒超时 / 取消和大文件分别回归; 19.37 GiB MP4 与 77.97 GiB MKV 只在获得 `--allow-large-transfer` 明确授权时执行, 测试后立即删除设备副本.
 6. Release 先以 draft 创建并一次性上传全部 APK, 校验标签, 资产名, 大小与 SHA-256 后才发布; 发布后由已启用的 GitHub Release immutability 锁定标签和资产.
@@ -127,13 +137,24 @@ v2 的桥接层应复用官方 MediaInfoLib API, 但继续履行现有 Kotlin / 
 
 ******
 
-- 从不含本地缓存的干净检出可构建五个 APK, 二次构建的来源清单和输入提交一致.
-- 四个 `libmediainfo.so` 的 ELF 架构正确, 无缺失依赖, LOAD segment 对齐至少为 `0x4000`, 并可在 4 KB / 16 KB 页设备加载.
-- API 24 最低版本, 当前目标 API, 四种 ABI 模拟器 / 设备的核心 AIDL 往返测试通过.
-- `Info_Version` 返回 MediaInfoLib 26.05, 且与锁文件, APK 元数据和 Release 说明一致.
-- v1.1.0 的免拷贝路径, 缓存, 30 秒超时 / 取消与清理保证全部保留.
-- 合成样本, `T:\media-samples-for-autojs6-plugin-mediainfo` 真实样本, 多流样本和显式授权的大文件回归通过; 解析差异经过人工审阅.
-- MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和修改说明随源码与发布包完整保留.
-- draft Release 在发布前已包含全部五个 APK 与最终说明; 发布后 `gh release verify` 可验证 immutable 状态及本地资产.
+- [x] 从固定子模块和不含个人预编译库的构建图生成五个 APK; 锁文件完整记录输入提交与工具链.
+- [x] 四个 `libmediainfo.so` 的 ELF 架构, SONAME, 依赖, 导出面与 LOAD segment `0x4000` 对齐通过自动校验, 并在 4 KB / 16 KB 页模拟器加载.
+- [x] API 24 最低版本和当前目标 API 已通过; x86 / x86_64、ARM64 与 ARM32 候选 APK 均已运行核心 AIDL 回归, ARM64 另通过 30 秒超时 / 取消回归.
+- [x] `Info_Version` 返回 MediaInfoLib 26.05, 且与锁文件和 APK 元数据一致; Release 说明在 v2 发布时补齐.
+- [x] v1.1.0 的免拷贝路径, 缓存, 30 秒超时 / 取消与清理保证已在 JVM 与模拟器回归中保留.
+- [x] 合成样本、ARM64 实机上的四份非超大真实样本及显式授权的 19.37 GiB MP4 / 77.97 GiB MKV 候选版本回归均已通过; 设备副本和测试包已删除并复核.
+- [x] 对同一批真实样本审阅 v1.1.0 与 v2 候选的字段、完整报告与 sections 差异; 容器和核心流保持兼容, 合理的上游解析变化已记录为脱敏证据. (落点: `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`)
+- [x] 实际 minified Release APK 通过公开 AIDL 原生加载与读取冒烟测试; CI 同时构建、审计并在模拟器安装 release 变体, 防止 JNI 精确类名再次被 R8 改写. (落点: `app/proguard-rules.pro`, `MediainfoReleaseSmokeTest.kt`, `.github/workflows/build.yml`)
+- [x] MediaInfoLib, ZenLib 及本地桥的许可证, 版权声明和来源锁随源码与 APK 保留.
+- [x] 版本提升为 v2.0.0 code 10, 2026/08/31; 十语言发布说明与五个生产签名 Release APK 已由干净源码树生成, 签名证书与 v1.1.0 连续一致. 最终 ARM64 / ARM32 包在 QV710AF65F 上的安装字节哈希与主机相同, 公开 AIDL / JNI 冒烟测试通过, 两个测试包均已卸载. (落点: `.changelog/`, `version.properties`, `benchmark/results/2026-08-31-v2.0.0-release.json`)
+- [ ] 推送分支并等待全部 GitHub Actions 通过后创建 Draft Release, 一次性上传并复核下列五个资产; 不将 PR 转为 Ready, 不合并, 不正式发布.
 
-只有以上门禁全部满足, 才删除 v2 构建图中的旧预编译 `app/src/main/jniLibs/<abi>/libmediainfo.so`, 提升插件版本至 v2.0.0 并创建 Release. 在此之前, master 上的 v1.1.0 产物仍是可发布基线.
+| ABI | Release 资产 | 字节数 | SHA-256 |
+|---|---|---:|---|
+| `arm64-v8a` | `autojs6-plugin-mediainfo-v2.0.0-arm64-v8a-69e544cf.apk` | 2,951,111 | `d8d7c289c78f61aabbe459196475d5630618ca9b0e9d8ab865995a8d8d84bc7f` |
+| `armeabi-v7a` | `autojs6-plugin-mediainfo-v2.0.0-armeabi-v7a-40397d24.apk` | 2,721,393 | `c1ea25922acbef6fc290a18520555c580f2ed917b2c76936735960447ccba25c` |
+| `universal` | `autojs6-plugin-mediainfo-v2.0.0-universal-69a8a908.apk` | 11,715,225 | `f33bb09fad708635bee0776ba2a0a00220761d280f25e72fe07cb710efc6c3f8` |
+| `x86` | `autojs6-plugin-mediainfo-v2.0.0-x86-70ec1b9b.apk` | 3,338,929 | `83ab907437f3736cc84cb411f1624aefef814ca391b01ca5942bd13a627ef3f6` |
+| `x86_64` | `autojs6-plugin-mediainfo-v2.0.0-x86_64-9cd62670.apk` | 3,073,544 | `eadfd1f89047017e7459aa0865875cbff0b1fb31cb08d19978e27ceb5e563f5b` |
+
+v2 功能分支已经从其构建图移除旧预编译库, 这是验证官方源码为唯一输入所必需的可审阅改动; 在上述门禁全部满足并人工合并前, `master` 仍保持 v1.1.0 可发布基线. 本地发布门禁现已全部通过, 当前授权范围仅余推送、CI 复核和创建 Draft Release; 不包括将 PR 转为 Ready、合并或正式发布.

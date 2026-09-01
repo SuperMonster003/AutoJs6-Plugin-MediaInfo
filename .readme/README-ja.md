@@ -267,6 +267,19 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `追加` 公式ソースビルド: 固定した MediaArea MediaInfoLib 26.05 と ZenLib 0.4.41 から 4 ABI を直接生成し, 古い個人リポジトリのプリビルドライブラリを廃止
+- `追加` 再現可能な来歴: 上流タグ, 完全なコミット, NDK / CMake 設定, ライセンス原文をロックファイルと各 APK に記録し, ELF と 5 APK を自動監査
+- `追加` 上流安定版の追跡: 毎週または手動で公式 Release を確認し, 固定バージョン更新を Draft PR のみで提案, タグ移動を検出して自動マージや公開は不実施
+- `修正` R8 後も JNI ラッパーの正確なクラス名とメソッドを保持し, 実際の minified Release APK をインストールする公開 AIDL スモークテストでリリース時のネイティブ読込失敗を防止
+- `改善` MediaInfoLib 26.05 によりコーデック, HDR / 色, チェックサム, カバー画像のメタデータを拡充しつつ, 公開 AIDL と `autojs6-plugin-mediainfo-snapshot-v1` の契約を維持
+- `改善` 全 ABI が 16 KB page size に対応し, API 24-37, x86 / x86_64, ARM32 / ARM64, タイムアウト, キャッシュ, 実メディア, 巨大ファイルの各ゲートを通過
+- `改善` 同じ実メディアで 0.7.83 と 26.05 の完全レポート, フィールド照会, sections を比較済み; コンテナと主要ストリームは互換で, フィールド文言は上流解析に追従
+- `依存関係` 凍結済みネイティブ解析器を MediaInfoLib 0.7.83 から 26.05 へ更新し, ZenLib 0.4.41 と Android NDK 29.0.14206865 を固定
+
 #### v1.1.0
 
 _2026/08/31_
@@ -304,6 +317,16 @@ _2026/07/15_
 
 この節はソースからプラグインをビルドしたい開発者向けです.
 
+ビルド前にリポジトリと固定された2つの公式サブモジュールを再帰的に取得します:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 debug APK をビルド:
 
 ```powershell
@@ -316,9 +339,9 @@ release APK をビルド (ABI 分割が有効で, 4 つの単一アーキテク�
 .\gradlew.bat :app:assembleRelease
 ```
 
-リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk` 形式にリネームします.
+リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 形式にリネームします.
 
-ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 1.1.0.
+ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 2.0.0.
 
 ******
 
@@ -347,7 +370,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-プロジェクトコードは [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE) の下でライセンスされています. 同梱の `libmediainfo.so` は [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, BSD スタイルライセンス) からビルドされ, JNI ラッパーは [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android) プロジェクトに由来します.
+プロジェクトコードは [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE) の下でライセンスされています. v2 のソースビルドでは, `libmediainfo.so` を公式 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) と [ZenLib](https://github.com/MediaArea/ZenLib) (zlib ライセンス) からビルドし, 互換 JNI ブリッジはこのリポジトリで保守します. 凍結された v1.1.0 バイナリの来歴は別途記録されています.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

@@ -267,6 +267,19 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `新增` 官方源码构建: 从固定的 MediaArea MediaInfoLib 26.05 与 ZenLib 0.4.41 直接生成四种 ABI, 不再依赖陈旧个人仓库的预编译库
+- `新增` 可复现来源链: 在锁文件与 APK 中记录上游标签, 完整提交, NDK / CMake 配置及许可原文, 并自动审计 ELF 与五个 APK
+- `新增` 上游稳定版跟踪: 每周或手动检查官方 Release, 仅以 Draft PR 提交固定版本更新, 检测标签移动且永不自动合并或发布
+- `修复` 固定 JNI 包装类及其方法不被 R8 改写, 并安装实际 minified Release APK 运行公开 AIDL 冒烟测试, 防止原生库在发布构建中不可用
+- `优化` MediaInfoLib 26.05 提供更丰富的编码, HDR / 色彩, 校验和与封面图元数据, 同时保持公开 AIDL 与 `autojs6-plugin-mediainfo-snapshot-v1` 契约
+- `优化` 四种 ABI 均支持 16 KB page size, 并通过 API 24-37, x86 / x86_64, ARM32 / ARM64, 超时, 缓存, 真实媒体与超大文件门禁
+- `优化` 同一批真实样本的 0.7.83 / 26.05 完整报告, 字段查询和 sections 差异已审阅; 容器与核心流保持兼容, 字段文本继续遵循上游解析结果
+- `依赖` 原生解析引擎从冻结的 MediaInfoLib 0.7.83 升级至 26.05, 并固定 ZenLib 0.4.41 与 Android NDK 29.0.14206865
+
 #### v1.1.0
 
 _2026/08/31_
@@ -304,6 +317,16 @@ _2026/07/15_
 
 本节面向希望从源码构建插件的开发者.
 
+构建前递归检出仓库及两个固定提交的官方子模块:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 构建 debug APK:
 
 ```powershell
@@ -316,9 +339,9 @@ _2026/07/15_
 .\gradlew.bat :app:assembleRelease
 ```
 
-发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk` 形式.
+发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 形式.
 
-构建参数集中于 `version.properties`: 最低 SDK 24 (Android 7.0), 目标 SDK 36, 当前版本 1.1.0.
+构建参数集中于 `version.properties`: 最低 SDK 24 (Android 7.0), 目标 SDK 36, 当前版本 2.0.0.
 
 ******
 
@@ -347,7 +370,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-项目代码使用 [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). 内置的 `libmediainfo.so` 基于 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, BSD 风格许可) 构建, JNI 封装源自 [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android) 项目.
+项目代码使用 [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). v2 官方源码构建线的 `libmediainfo.so` 来自 [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) 与 [ZenLib](https://github.com/MediaArea/ZenLib) (zlib 许可), 兼容 JNI 桥由本仓库维护. 已冻结的 v1.1.0 二进制来源另行记录.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

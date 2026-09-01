@@ -16,6 +16,8 @@ The full profile creates sparse regular files with an apparent size up to 1 GiB 
 
 The real-media runner applies the same serial, physical-device and existing-package safety checks. It caps aggregate transfer at 2 GiB by default, stages samples one at a time under the plugin's app-specific external directory, disables redundant ADB compression for already compressed media, and removes each exact staged path in its cleanup block. Use `--allow-large-transfer` only after explicit approval. If the selected device already contains the plugin, `--update-existing-package` performs a same-signature `adb install -r`, preserves the plugin and its data after validation, and still removes the test package.
 
+The version-difference runner refuses any pre-existing plugin or test package. It installs a published baseline, stages the samples once, captures the full report, parsed sections, and a fixed technical query matrix, then performs a same-signature in-place update to the candidate and repeats the capture. It verifies that each installed base APK has the same SHA-256 as its host input and removes every staged file and both packages in its cleanup block. The normal output is sanitized for review; `--raw-output` contains full media reports and should point outside the repository unless its contents have been reviewed explicitly.
+
 ## Usage
 
 From the repository root with JDK 21, Android SDK tools and `adb` on `PATH`:
@@ -37,6 +39,14 @@ py .python/run_real_media_validation.py --serial DEVICE_SERIAL --sample PATH_TO_
 ```
 
 For an explicitly approved physical-device transfer larger than 2 GiB where the plugin is already installed, additionally pass `--allow-large-transfer --update-existing-package`.
+
+To compare a published baseline with the current source-built candidate on exactly the same staged files:
+
+```text
+py .python/compare_mediainfo_versions.py --serial DEVICE_SERIAL --baseline-apk PATH_TO_BASELINE_APK --sample PATH_TO_SAMPLE --output benchmark/results/api31-arm64-v1-v2-diff.json --raw-output PATH_OUTSIDE_REPOSITORY/raw-v1-v2.json --allow-physical-device
+```
+
+Repeat `--sample` for every file. The comparison output records APK identities, report and section hashes, line-change counts, section occurrence changes, and fixed technical field changes. The raw output is optional and exists only to support human review of the exact report text.
 
 Useful overrides are `--formats`, `--direct-sizes-mib`, `--fallback-sizes-mib`, `--warmups`, and `--iterations`. Use `--skip-build` only after assembling both `:app:assembleDebug` and `:app:assembleDebugAndroidTest` from the same source tree.
 
