@@ -66,6 +66,26 @@ class MediainfoReleaseSmokeTest {
                 assertEquals("autojs6-plugin-mediainfo-snapshot-v1", snapshot.getString("schema"))
                 assertEquals("", snapshot.getString("inform"))
                 assertTrue(snapshot.getJSONObject("sections").getJSONArray("audio").length() > 0)
+
+                val v2Options = Bundle(options).apply {
+                    putString(
+                        MediainfoSnapshotContract.OPTION_SCHEMA,
+                        MediainfoSnapshotContract.SCHEMA_V2,
+                    )
+                }
+                val v2Snapshot = withDescriptor(mediaFile) { descriptor ->
+                    JSONObject(plugin.snapshot(descriptor, mediaFile.name, v2Options))
+                }
+                assertEquals(MediainfoSnapshotContract.SCHEMA_V2, v2Snapshot.getString("schema"))
+                assertEquals("MediaInfoLib", v2Snapshot.getJSONObject("engine").getString("name"))
+                assertTrue(
+                    v2Snapshot.getJSONObject("tracks")
+                        .getJSONArray("audio")
+                        .getJSONObject(0)
+                        .getJSONObject("fields")
+                        .getString("Format")
+                        .contains("PCM", ignoreCase = true),
+                )
             }
         } finally {
             mediaFile.delete()
