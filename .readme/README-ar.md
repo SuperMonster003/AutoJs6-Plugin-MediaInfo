@@ -267,6 +267,19 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `ميزة` بناء من المصادر الرسمية: تنشأ بنى ABI الأربع مباشرة من مصدري MediaArea MediaInfoLib 26.05 و ZenLib 0.4.41 المثبتين دون المكتبات الجاهزة من المستودع الشخصي القديم
+- `ميزة` مصدر قابل لإعادة الإنتاج: تسجل الوسوم والالتزامات الكاملة وإعدادات NDK / CMake ونصوص التراخيص في ملف القفل وكل APK مع تدقيق آلي لملفات ELF وحزم APK الخمس
+- `ميزة` تتبع الإصدارات المستقرة: تقترح الفحوص الأسبوعية أو اليدوية تحديثات Release الرسمية المثبتة عبر Draft PR فقط وتكتشف نقل الوسوم ولا تدمج أو تنشر تلقائيا
+- `إصلاح` حفظت فئة غلاف JNI الدقيقة وأساليبها بعد R8 وأضيف اختبار دخان عبر AIDL العام يثبت APK Release المصغر الفعلي لمنع فشل تحميل المكتبة الأصلية في بنى الإصدار
+- `تحسين` يوفر MediaInfoLib 26.05 بيانات أوسع للترميز و HDR / الألوان والمجاميع الاختبارية وصور الأغلفة مع الحفاظ على عقدي AIDL العام و `autojs6-plugin-mediainfo-snapshot-v1`
+- `تحسين` تدعم جميع بنى ABI صفحات 16 KB وتجتاز بوابات API 24-37 و x86 / x86_64 و ARM32 / ARM64 والمهلة والذاكرة المؤقتة والوسائط الحقيقية والملفات الضخمة
+- `تحسين` راجعت التقارير الكاملة واستعلامات الحقول و sections في 0.7.83 و 26.05 على العينات الحقيقية نفسها; بقيت الحاويات والتدفقات الأساسية متوافقة بينما يتبع نص الحقول تحليل upstream
+- `اعتماد` رقي المحلل الأصلي المجمد من MediaInfoLib 0.7.83 إلى 26.05 وثبت ZenLib 0.4.41 مع Android NDK 29.0.14206865
+
 #### v1.1.0
 
 _2026/08/31_
@@ -304,6 +317,16 @@ _2026/07/15_
 
 هذا القسم موجه للمطورين الراغبين في بناء المكون من المصدر.
 
+استنسخ المستودع مع الوحدتين الفرعيتين الرسميتين المثبتتين قبل البناء:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 بناء حزم APK بوضع debug:
 
 ```powershell
@@ -316,9 +339,9 @@ _2026/07/15_
 .\gradlew.bat :app:assembleRelease
 ```
 
-لأرشفة الإصدارات, شغل المهمة `:app:appendDigestToReleasedFiles` التي تنسخ حزم APK من `app/release` إلى `app/releases` وتعيد تسميتها بالنمط `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk`.
+لأرشفة الإصدارات, شغل المهمة `:app:appendDigestToReleasedFiles` التي تنسخ حزم APK من `app/release` إلى `app/releases` وتعيد تسميتها بالنمط `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
 
-معاملات البناء مجمعة في `version.properties`: الحد الأدنى من SDK هو 24 (Android 7.0), و SDK الهدف 36, والإصدار الحالي 1.1.0.
+معاملات البناء مجمعة في `version.properties`: الحد الأدنى من SDK هو 24 (Android 7.0), و SDK الهدف 36, والإصدار الحالي 2.0.0.
 
 ******
 
@@ -347,7 +370,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-كود المشروع مرخص بموجب [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). أما `libmediainfo.so` المضمن فمبني من [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, ترخيص بنمط BSD), مع غلاف JNI مشتق من مشروع [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android).
+كود المشروع مرخص بموجب [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). في مسار v2 المبني من المصدر, يبنى `libmediainfo.so` من المصدرين الرسميين [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) و [ZenLib](https://github.com/MediaArea/ZenLib) (ترخيص zlib), بينما تتم صيانة جسر JNI المتوافق في هذا المستودع. ويوثق أصل ملف v1.1.0 الثنائي المجمد بشكل منفصل.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

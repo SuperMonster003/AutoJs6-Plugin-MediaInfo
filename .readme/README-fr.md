@@ -267,6 +267,19 @@ Les capacités prévues du plugin et leur état d'avancement sont maintenus sous
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `Nouveauté` Compilation depuis les sources officielles: les quatre ABI sont générées directement depuis MediaArea MediaInfoLib 26.05 et ZenLib 0.4.41 épinglés, sans les bibliothèques précompilées de l'ancien dépôt personnel
+- `Nouveauté` Provenance reproductible: les tags, commits complets, réglages NDK / CMake et textes de licence sont consignés dans le verrou et chaque APK, avec audit automatique des ELF et des cinq APK
+- `Nouveauté` Suivi des versions stables: les vérifications hebdomadaires ou manuelles proposent les mises à jour officielles épinglées via des Draft PR, détectent les tags déplacés et ne fusionnent ni ne publient automatiquement
+- `Correction` Conservation de la classe JNI exacte et de ses méthodes avec R8, plus un test AIDL public installant le véritable APK Release minifié afin d'éviter les échecs de chargement natif en production
+- `Amélioration` MediaInfoLib 26.05 fournit davantage de métadonnées de codec, HDR / couleur, somme de contrôle et pochette tout en conservant les contrats AIDL publics et `autojs6-plugin-mediainfo-snapshot-v1`
+- `Amélioration` Chaque ABI prend en charge les pages de 16 KB et passe les contrôles API 24-37, x86 / x86_64, ARM32 / ARM64, délai, cache, médias réels et fichiers immenses
+- `Amélioration` Les rapports complets, requêtes de champs et sections de 0.7.83 et 26.05 ont été comparés sur les mêmes médias; conteneurs et flux principaux restent compatibles tandis que le texte des champs suit l'analyse amont
+- `Dépendance` Mise à niveau du moteur natif figé de MediaInfoLib 0.7.83 vers 26.05, avec ZenLib 0.4.41 et Android NDK 29.0.14206865 épinglés
+
 #### v1.1.0
 
 _2026/08/31_
@@ -304,6 +317,16 @@ _2026/07/15_
 
 Cette section s'adresse aux développeurs souhaitant compiler le plugin depuis les sources.
 
+Clonez le dépôt avec les deux sous-modules officiels épinglés avant la compilation:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 Compiler les APK debug:
 
 ```powershell
@@ -316,9 +339,9 @@ Compiler les APK release (les splits ABI sont activés, produisant 4 paquets mon
 .\gradlew.bat :app:assembleRelease
 ```
 
-Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk`.
+Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
 
-Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal 24 (Android 7.0), SDK cible 36, version actuelle 1.1.0.
+Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal 24 (Android 7.0), SDK cible 36, version actuelle 2.0.0.
 
 ******
 
@@ -347,7 +370,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-Le code du projet est sous licence [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). Le `libmediainfo.so` inclus est construit a partir de [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, licence de style BSD), avec une enveloppe JNI dérivée du projet [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android).
+Le code du projet est sous licence [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). Pour la branche v2 construite depuis les sources, `libmediainfo.so` est produit depuis les sources officielles [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) et [ZenLib](https://github.com/MediaArea/ZenLib) (licence zlib), tandis que le pont JNI compatible est maintenu dans ce dépôt. La provenance du binaire v1.1.0 gelé reste documentée séparément.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

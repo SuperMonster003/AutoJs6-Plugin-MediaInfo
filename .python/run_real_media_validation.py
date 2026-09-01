@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -103,29 +104,39 @@ def staged_paths(samples: list[Path]) -> list[str]:
 
 
 def cleanup_staged_samples(adb_executable: str, serial: str, samples: list[Path]) -> None:
+    cleanup_failures: list[str] = []
     for remote_path in staged_paths(samples):
         if not remote_path.startswith(f"{REMOTE_DIRECTORY}/"):
             raise common.BenchmarkRunnerError(f"Refusing unsafe staged path: {remote_path}")
+        quoted_path = shlex.quote(remote_path)
         result = common.adb(
             adb_executable,
             serial,
             "shell",
-            "rm",
-            "-f",
-            "--",
-            remote_path,
+            f"rm -f -- {quoted_path}",
             check=False,
             timeout=120,
         )
         if result.returncode != 0:
-            print(
-                f"WARNING: could not remove staged sample {remote_path}: "
-                f"{result.stdout} {result.stderr}",
-                file=sys.stderr,
+            cleanup_failures.append(
+                f"could not remove {remote_path}: {result.stdout.strip()} {result.stderr.strip()}"
             )
+            continue
+        verification = common.adb(
+            adb_executable,
+            serial,
+            "shell",
+            f"test ! -e {quoted_path}",
+            check=False,
+            timeout=30,
+        )
+        if verification.returncode != 0:
+            cleanup_failures.append(f"staged sample still exists after removal: {remote_path}")
+    if cleanup_failures:
+        raise common.BenchmarkRunnerError("Real-media cleanup failed:\n" + "\n".join(cleanup_failures))
 
 
-def run_validation(adb_executable: str, serial: str) -> None:
+def run_validation(adb_executable: str, serial: str, capture_details: bool = False) -> None:
     target = f"{common.TEST_APP_ID}/{common.RUNNER}"
     command = [
         "shell",
@@ -139,8 +150,10 @@ def run_validation(adb_executable: str, serial: str) -> None:
         "-e",
         "realMediaValidation",
         "true",
-        target,
     ]
+    if capture_details:
+        command.extend(["-e", "realMediaCaptureDetails", "true"])
+    command.append(target)
     result = common.adb(adb_executable, serial, *command, timeout=1_800)
     output = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
     failure_markers = ("FAILURES!!!", "INSTRUMENTATION_FAILED", "Process crashed", "shortMsg=Process crashed")
@@ -214,6 +227,11 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--allow-physical-device", action="store_true")
     result.add_argument("--allow-large-transfer", action="store_true", help="Allow aggregate samples over 2 GiB")
     result.add_argument(
+        "--capture-details",
+        action="store_true",
+        help="Include full reports, parsed sections, and fixed technical field queries in the JSON output",
+    )
+    result.add_argument(
         "--update-existing-package",
         action="store_true",
         help="Update an existing plugin with adb install -r and preserve it after validation",
@@ -268,7 +286,7 @@ def main() -> int:
         common.install(adb_executable, args.serial, test_apk)
         test_installed = True
         metadata = stage_samples(adb_executable, args.serial, samples)
-        run_validation(adb_executable, args.serial)
+        run_validation(adb_executable, args.serial, args.capture_details)
         payload = merge_sample_metadata(collect_result(adb_executable, args.serial), metadata)
         print_summary(payload)
         write_result(payload, destination)

@@ -91,7 +91,7 @@
 
 - [x] 免整文件拷贝解析: 对可随机访问的常规文件描述符通过 `/proc/self/fd/<fd>` 交由 MediaInfoLib 直读, 以实际报告校验直读是否成功; 管道等非 regular 描述符, proc 路径不可读或直读解析失败时才回退私有缓存副本, 并保证描述符与临时文件清理. `get` 仅在结果为空时追加报告探测, 避免常见查询重复解析. (落点: `app/src/main/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediaInputAccess.kt`, `MediainfoPluginService.kt`, `app/src/androidTest/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediainfoPluginServiceTest.kt`)
 - [x] 解析结果缓存: 对 API 27+ 可稳定识别的 regular FD, 以设备号, inode, 大小, 纳秒级 mtime / ctime 与显示名组成文件身份, 在插件进程内缓存完整报告, 字段查询 (含合法空结果) 与快照; API 24-26 因缺少纳秒级 stat 时间戳而保守禁用. 采用 access-order LRU 和 10 分钟滑动 TTL, 上限为 32 个文件, 每文件 64 个查询及约 2 MiB 文本, 文件元数据变化自动换键, 低内存或服务销毁时清空; 管道与私有副本不缓存. JVM 测试覆盖命中, 失效, LRU, TTL 与容量预算, API 31 ARM64 真实样本验证冷 / 热结果完全一致. (落点: `MediaInfoResultCache.kt`, `MediaInputAccess.kt`, `MediainfoPluginService.kt`, `MediaInfoResultCacheTest.kt`, `MediainfoRealMediaValidationTest.kt`)
-- [x] 取消与超时: `MediaInfo.cancel()` 以 volatile 标志接通 JNI 缓冲循环已有的 `getIsCanceled()` 轮询, 服务为每次 AIDL 调用设置 30 秒硬上限并跟踪活动解析器 / 输入流; 超时或服务销毁时协作取消原生解析, 关闭阻塞回退流, 停止复制, 删除私有临时文件并以稳定前缀 `MEDIAINFO_TIMEOUT` 报错. JVM 并发测试验证 JNI 轮询标志置位与资源关闭, 停滞管道端到端测试在 API 36 x86_64 与 API 31 ARM64 上均约 30.05 秒结束且无临时文件泄漏. (落点: `MediaInfo.kt`, `MediaInfoCallGuard.kt`, `MediainfoPluginService.kt`, `MediaInfoCallGuardTest.kt`, `MediainfoTimeoutTest.kt`)
+- [x] 取消与超时: `MediaInfo.cancel()` 以 volatile 标志接通 JNI 缓冲循环的 `getIsCanceled()` 轮询, 服务为每次 AIDL 调用设置 30 秒硬上限并跟踪活动解析器 / 输入流; 回退复制以 100 ms `poll` 间隔检查取消状态, 避免旧 Android 上跨线程关闭管道仍不能唤醒阻塞读取. 超时或服务销毁时协作取消原生解析, 停止复制, 删除私有临时文件并以稳定前缀 `MEDIAINFO_TIMEOUT` 报错. JVM 并发测试验证 JNI 轮询标志置位与资源关闭, 停滞管道端到端测试在 API 24 / 36 x86_64 与 API 31 ARM64 上均约 30 秒结束且无临时文件泄漏. (落点: `MediaInfo.kt`, `MediaInfoCallGuard.kt`, `MediainfoPluginService.kt`, `MediaInfoCallGuardTest.kt`, `MediainfoTimeoutTest.kt`)
 - [x] 耗时基准: 建立显式设备串号驱动的端到端基准, 以稀疏 PCM/WAVE 与 RGB/BMP 样本分别测量 regular FD 冷解析, 进程内缓存命中和 pipe 私有副本回退; full profile 对直读 / 缓存覆盖 1/64/256/1024 MiB, 对回退覆盖 1/16/64/256 MiB, 每项保留原始纳秒样本与中位数. API 36 x86_64, API 29 x86 与 API 31 ARM64 的 3 份串行完整结果使用相同输入哈希, 样本放大 1024 倍时直读延迟仅增长 1.11-3.84 倍, 1 GiB 缓存命中为 0.088-0.239 ms. ARM64 实体机除验证 MP4 / WebM / FLAC 与 561 MiB 问题样本外, 还以显式大文件授权验证 19.37 GiB MP4 与 77.97 GiB MKV 的冷 / 热结果一致, 冷解析分别为 137.417 ms 与 177.211 ms. (落点: `.python/run_mediainfo_benchmark.py`, `.python/run_real_media_validation.py`, `app/src/androidTest/java/io/github/supermonster003/autojs6/plugin/mediainfo/`, `benchmark/`)
 
 验收进度:
@@ -112,7 +112,7 @@
 - [ ] 结构化错误码 (协同项): 库不可用, 文件不可读, 解析失败等场景以稳定错误码返回, 宿主与脚本可编程区分处理, 而非仅依赖异常消息文本.
 - [x] 单元测试: 将 sections / camelCase / 快照选项解析抽为纯 Kotlin, 覆盖多流编号小节, 重复小节, 畸形字段, 值内冒号, 重复字段与默认 / 独立选项. (落点: `app/src/main/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediainfoSnapshot.kt`, `app/src/test/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediaInfoReportParserTest.kt`)
 - [x] 服务级测试: androidTest 生成最小 PCM/WAVE 样本, 验证 action / category 发现, 服务绑定, 动态 ABI 信息与 `getInfo` / `inform` / `get` / `snapshot` 四个 AIDL 方法的真实往返; 另以显式开关覆盖缓存命中, 非 seekable 回退, 30 秒停滞管道超时及真实媒体矩阵. (落点: `app/src/androidTest/java/io/github/supermonster003/autojs6/plugin/mediainfo/`)
-- [x] 构建 CI: GitHub Actions 在推送与 PR 时以 JDK 21 运行 `testDebugUnitTest` / `assembleDebug`, 并在 x86_64 Android 35 模拟器运行 `connectedDebugAndroidTest`; 与 Markdown CI 并列成为合入门禁. (落点: `.github/workflows/build.yml`)
+- [x] 构建 CI: GitHub Actions 在推送与 PR 时以 JDK 21 运行单元测试, 构建并审计 debug / minified release 的四 ABI 与 universal APK; Android 35 x86_64 模拟器先安装实际 release 变体运行公开 AIDL / JNI 冒烟测试, 再运行完整 `connectedDebugAndroidTest`. (落点: `.github/workflows/build.yml`, `MediainfoReleaseSmokeTest.kt`)
 
 验收条件: CI 全绿; 主要错误路径均有测试覆盖; 单架构包在插件中心显示的 ABI 与实际内容一致.
 
@@ -125,14 +125,17 @@
 版本边界与上游策略详见 [MEDIAINFO_UPSTREAM.md](MEDIAINFO_UPSTREAM.md). v1.1.0 是旧原生引擎的最终冻结点; 从 v2.0.0 起改为直接由 MediaArea 官方源码构建, 插件版本与 MediaInfoLib 上游版本分别管理.
 
 - [x] v1.1.0 冻结边界: `v1.1.0` 标签指向已发布源码, 五个 APK 资产与其中的旧版 `libmediainfo.so` 不再重建, 替换或回溯更新; 精确标签规则阻止更新与删除, 后续原生引擎变更仅进入 v2.0.0 及以上版本. (落点: [v1.1.0 Release](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases/tag/v1.1.0), [Freeze v1.1.0 release tag](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/rules/21913972), `MEDIAINFO_UPSTREAM.md`)
-- [ ] 官方源码可复现构建: 以固定标签和提交引入 MediaArea 官方 `MediaInfoLib` 与 `ZenLib`, 首个 v2 基线固定为 MediaInfoLib `v26.05` (`f23e69ce89581343f3b7a42e06828a5331e290d5`) 和 ZenLib `v0.4.41` (`894980d3ecbc843d6ac685493f8f2ed5c2b6864c`); 使用固定 NDK / CMake 配置构建全部 4 种 ABI, 不再提交来源不明的预编译库.
-- [ ] JNI 兼容桥: 在官方 MediaInfoLib 之上维护最小本地桥接层, 保持 `org.mediainfo.android.MediaInfo` 的现有 Kotlin 调用面, regular FD / 回退副本路径及 `getIsCanceled()` 协作取消语义; 不直接修改上游子模块.
-- [ ] MediaInfoLib 版本透出与来源清单: 构建时记录上游仓库, 标签, 完整提交, 工具链和编译选项; 运行时经 `Info_Version` 返回实际引擎版本, 发布说明同步标注插件版本与引擎版本.
-- [ ] 上游稳定版跟踪: 定时检查 MediaInfoLib 正式 Release; 发现新版本时创建只更新固定引用与来源清单的 PR, 由完整回归门禁审阅后人工合并, 不跟随移动的 `master`, 不自动发布.
-- [ ] 原生结构化输出评估: 评估 MediaInfoLib 的 `Output=JSON` 能力, 以原生 JSON 取代 "文本报告再解析" 生成 sections, 降低解析歧义.
-- [ ] 16 KB page size 适配: 以 NDK r28 及以上工具链生成 16 KB 对齐 ELF, 校验全部原生库在 16 KB 内存页设备上的兼容性, 并将 ELF 对齐检查纳入 CI 与发布前检查清单.
+- [x] 官方源码可复现构建: 以 Git 子模块的固定标签和提交引入 MediaArea 官方 `MediaInfoLib` 与 `ZenLib`, 首个 v2 基线固定为 MediaInfoLib `v26.05` (`f23e69ce89581343f3b7a42e06828a5331e290d5`) 和 ZenLib `v0.4.41` (`894980d3ecbc843d6ac685493f8f2ed5c2b6864c`); 使用固定 NDK `29.0.14206865` / CMake `3.22.1` 从源码构建全部 4 种 ABI, 构建图中不再使用旧预编译库. (落点: `.gitmodules`, `native/upstream/`, `native/CMakeLists.txt`, `app/build.gradle.kts`)
+- [x] JNI 兼容桥: 在官方 MediaInfoLib 之上维护最小本地桥接层, 保持 `org.mediainfo.android.MediaInfo` 的现有 Kotlin 调用面, regular FD / 回退副本路径及 `getIsCanceled()` 协作取消语义; 上游子模块保持未修改. 导出面由 version script 收敛为唯一的 `JNI_OnLoad`. (落点: `native/bridge/mediainfo_jni.cpp`, `native/bridge/libmediainfo.map.txt`, `MediainfoPluginServiceTest.kt`)
+- [x] MediaInfoLib 版本透出与来源清单: `native/upstream.lock.json` 记录上游仓库, 标签, 完整提交, 许可, 工具链和编译选项并原样打入全部 APK; 运行时 `Info_Version` 与锁定标签交叉验证, APK 同时携带 MediaInfoLib / ZenLib 许可原文. (落点: `native/upstream.lock.json`, `GenerateMediaInfoMetadataTask`, `scripts/verify_native_build.py`, `MediainfoPluginServiceTest.kt`)
+- [x] 上游稳定版跟踪: 每周一及手动触发时查询 MediaInfoLib / ZenLib 的最新非 draft, 非 prerelease Release; 只有版本递增才更新固定标签, 完整提交, 许可与来源清单并创建或刷新 Draft PR. 同名标签移动会作为安全错误失败, PR 永不自动合并或发布. (落点: `.github/workflows/update-mediainfo-upstream.yml`, `scripts/update_mediainfo_upstream.py`)
+- [ ] 原生结构化输出评估 (v2.1.x): 评估 MediaInfoLib 的 `Output=JSON` 能力与跨版本字段稳定性. v2.0.0 保持现有 `autojs6-plugin-mediainfo-snapshot-v1` 和文本报告解析路径, 避免在原生引擎迁移版本中同时改变公开结构; 评估通过后再决定是否以新 schema 逐步替换.
+- [x] 16 KB page size 适配: 以 NDK r29 工具链和 `-z,max-page-size=16384` 生成四 ABI 的 16 KB 对齐 ELF; CI 校验每个 LOAD segment, 架构, `DT_NEEDED`, 导出符号和五个 APK 的原生内容, API 37 x86_64 16 KB 页模拟器已通过 JNI / AIDL 核心回归. (落点: `native/CMakeLists.txt`, `scripts/verify_native_build.py`, `.github/workflows/build.yml`)
+- [x] 双版本解析兼容性审查: 在 API 31 ARM64 实体机上对 0.7.83 / 26.05 使用同一批 MP4, WebM, FLAC 与畸形 MP4, 审阅完整报告、固定字段查询和 sections 差异. 容器与核心流保持兼容; 日期 / 单位规范化、字段调整和新增元数据按上游演进接受, `IsTruncated` 明确视为非稳定诊断字段. (落点: `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`)
+- [x] minified Release 防回归: 固定 JNI 精确类名不被 R8 改写, 以独立 androidTest 经公开 AIDL 安装并验证真实 release APK; ARM64 实体机已通过, CI 对 x86_64 release 重复该门禁. (落点: `app/proguard-rules.pro`, `app/src/androidTest/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediainfoReleaseSmokeTest.kt`, `.github/workflows/build.yml`)
+- [x] v2.0.0 发布候选: code 10 与十语言日志已生成; 五个生产签名 APK 的版本、签名连续性、CRC32 文件名、SHA-256、来源清单、许可和原生结构均通过审计, 最终 ARM64 / ARM32 字节在实体机复核并清理. (落点: `version.properties`, `.changelog/`, `benchmark/results/2026-08-31-v2.0.0-release.json`, `MEDIAINFO_UPSTREAM.md`)
 
-验收条件: v1.1.0 标签与 Release 资产保持不变; v2.0.0 可从干净检出构建全部 4 种 ABI; `Info_Version` 与来源清单, 发布说明一致; 4 KB / 16 KB 页设备, API 24 最低版本及当前目标版本均可加载; 合成样本, 真实媒体, 多流, 超时 / 取消, 缓存, 19.37 GiB MP4 与 77.97 GiB MKV 回归通过; 上游更新 PR 不绕过人工审阅.
+验收条件: v1.1.0 标签与 Release 资产保持不变; v2.0.0 可从干净检出构建全部 4 种 ABI; `Info_Version` 与来源清单, 发布说明一致; 4 KB / 16 KB 页设备, API 24 最低版本及当前目标版本均可加载; 合成样本, 真实媒体, 多流, minified Release, 超时 / 取消, 缓存, 19.37 GiB MP4 与 77.97 GiB MKV 回归通过; 上游更新 PR 不绕过人工审阅. 本地构建、运行、解析兼容性与最终资产门禁已于 2026-08-31 全部通过; 当前仅待远端 CI 与 Draft Release 复核, 合并和正式发布仍需人工批准.
 
 ******
 

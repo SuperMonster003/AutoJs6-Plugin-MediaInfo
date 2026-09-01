@@ -5,12 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
+import android.system.Os
+import android.system.OsConstants
+import android.system.StructPollfd
 import org.autojs.plugin.common.api.PluginInfo
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
 import org.json.JSONArray
 import org.json.JSONObject
 import org.mediainfo.android.MediaInfo
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
@@ -206,13 +210,14 @@ class MediainfoPluginService : Service() {
             val file = createMediaTempFile(displayName)
             try {
                 MediaInputAccess.rewindForCopy(descriptor)
+                val inputDescriptor = descriptor.fileDescriptor
                 val input = ParcelFileDescriptor.AutoCloseInputStream(descriptor)
                 descriptorOwnedByStream = true
                 input.use { stream ->
                     call.register(stream)
                     try {
                         FileOutputStream(file).use { output ->
-                            copyWithCancellation(stream, output, call)
+                            copyWithCancellation(stream, inputDescriptor, output, call)
                         }
                     } finally {
                         call.unregister(stream)
@@ -233,14 +238,38 @@ class MediainfoPluginService : Service() {
         }
     }
 
-    private fun copyWithCancellation(input: InputStream, output: OutputStream, call: MediaInfoCallGuard) {
+    private fun copyWithCancellation(
+        input: InputStream,
+        inputDescriptor: FileDescriptor,
+        output: OutputStream,
+        call: MediaInfoCallGuard,
+    ) {
         val buffer = ByteArray(COPY_BUFFER_BYTES)
+        val pollDescriptor = StructPollfd().apply {
+            fd = inputDescriptor
+            events = (OsConstants.POLLIN or OsConstants.POLLERR or OsConstants.POLLHUP).toShort()
+        }
         while (true) {
-            call.throwIfCanceled()
+            waitUntilReadable(pollDescriptor, call)
             val read = input.read(buffer)
             if (read < 0) return
             call.throwIfCanceled()
             output.write(buffer, 0, read)
+        }
+    }
+
+    private fun waitUntilReadable(pollDescriptor: StructPollfd, call: MediaInfoCallGuard) {
+        while (true) {
+            call.throwIfCanceled()
+            pollDescriptor.revents = 0
+            val ready = try {
+                Os.poll(arrayOf(pollDescriptor), COPY_POLL_INTERVAL_MILLISECONDS)
+            } catch (error: Throwable) {
+                call.throwIfCanceled()
+                throw error
+            }
+            call.throwIfCanceled()
+            if (ready > 0) return
         }
     }
 
@@ -278,6 +307,7 @@ class MediainfoPluginService : Service() {
     private companion object {
         const val CALL_TIMEOUT_SECONDS = 30L
         const val COPY_BUFFER_BYTES = 256 * 1_024
+        const val COPY_POLL_INTERVAL_MILLISECONDS = 100
         val SAFE_FILE_EXTENSION = Regex("[A-Za-z0-9]{1,12}")
     }
 }

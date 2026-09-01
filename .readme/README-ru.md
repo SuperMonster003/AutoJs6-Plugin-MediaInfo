@@ -267,6 +267,19 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.0.0
+
+_2026/08/31_
+
+- `Функция` Сборка из официальных исходников: все четыре ABI создаются непосредственно из закрепленных MediaArea MediaInfoLib 26.05 и ZenLib 0.4.41 без готовых библиотек из устаревшего личного репозитория
+- `Функция` Воспроизводимое происхождение: теги, полные коммиты, настройки NDK / CMake и тексты лицензий записываются в файл блокировки и каждый APK, а ELF и пять APK проверяются автоматически
+- `Функция` Отслеживание стабильных версий: еженедельная или ручная проверка предлагает закрепленные обновления официальных Release только через Draft PR, обнаруживает перенос тегов и никогда не выполняет автоматическое слияние или публикацию
+- `Исправление` Точный класс оболочки JNI и его методы сохраняются после R8, а публичный AIDL smoke-тест устанавливает настоящий minified Release APK и предотвращает сбои загрузки нативной библиотеки в релизной сборке
+- `Улучшение` MediaInfoLib 26.05 предоставляет больше метаданных о кодеках, HDR / цвете, контрольных суммах и обложках, сохраняя публичный AIDL и контракт `autojs6-plugin-mediainfo-snapshot-v1`
+- `Улучшение` Все ABI поддерживают страницы 16 KB и проходят проверки на API 24-37, x86 / x86_64, ARM32 / ARM64, тайм-ауты, кеш, реальные медиа и огромные файлы
+- `Улучшение` Полные отчеты, запросы полей и sections версий 0.7.83 и 26.05 проверены на одинаковых реальных образцах; контейнеры и основные потоки совместимы, а текст полей следует анализу upstream
+- `Зависимость` Зафиксированный нативный анализатор обновлен с MediaInfoLib 0.7.83 до 26.05, закреплены ZenLib 0.4.41 и Android NDK 29.0.14206865
+
 #### v1.1.0
 
 _2026/08/31_
@@ -304,6 +317,16 @@ _2026/07/15_
 
 Этот раздел предназначен разработчикам, желающим собрать плагин из исходников.
 
+Перед сборкой клонируйте репозиторий вместе с двумя закрепленными официальными подмодулями:
+
+```powershell
+git clone --recurse-submodules https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo.git
+Set-Location AutoJs6-Plugin-MediaInfo
+git submodule update --init --recursive
+```
+
+- [native/README.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/native/README.md)
+
 Собрать debug APK:
 
 ```powershell
@@ -316,9 +339,9 @@ _2026/07/15_
 .\gradlew.bat :app:assembleRelease
 ```
 
-Для архивирования выпуска запустите задачу `:app:appendDigestToReleasedFiles`, которая копирует APK из `app/release` в `app/releases` и переименовывает их по шаблону `autojs6-plugin-mediainfo-v1.1.0-<abi>-<crc32>.apk`.
+Для архивирования выпуска запустите задачу `:app:appendDigestToReleasedFiles`, которая копирует APK из `app/release` в `app/releases` и переименовывает их по шаблону `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
 
-Параметры сборки собраны в `version.properties`: минимальный SDK 24 (Android 7.0), целевой SDK 36, текущая версия 1.1.0.
+Параметры сборки собраны в `version.properties`: минимальный SDK 24 (Android 7.0), целевой SDK 36, текущая версия 2.0.0.
 
 ******
 
@@ -347,7 +370,9 @@ app/src/main/res/raw-*/plugin_instruction.md
 
 ******
 
-Код проекта распространяется под лицензией [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). Встроенный `libmediainfo.so` собран из [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (MediaArea.net SARL, лицензия в стиле BSD), а JNI обертка происходит из проекта [MediaInfoLib-android](https://github.com/olegazyx/MediaInfoLib-android).
+Код проекта распространяется под лицензией [Mozilla Public License 2.0](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/LICENSE). В ветке v2 `libmediainfo.so` собирается из официальных исходников [MediaInfoLib](https://github.com/MediaArea/MediaInfoLib) (BSD 2-Clause) и [ZenLib](https://github.com/MediaArea/ZenLib) (лицензия zlib), а совместимый JNI-мост поддерживается в этом репозитории. Происхождение замороженного бинарного файла v1.1.0 описано отдельно.
+
+- [MEDIAINFO_UPSTREAM.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_UPSTREAM.md)
 
 ******
 

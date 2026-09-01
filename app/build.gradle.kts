@@ -1,4 +1,13 @@
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import java.util.Properties
+import javax.inject.Inject
 
 plugins {
     id("org.autojs.build.utils")
@@ -10,11 +19,37 @@ plugins {
 
 val globalApplicationId = "io.github.supermonster003.autojs6.plugin.mediainfo"
 
+abstract class GenerateMediaInfoMetadataTask : DefaultTask() {
+
+    @get:InputFile
+    abstract val sourceFile: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDirectory: DirectoryProperty
+
+    @get:Inject
+    abstract val fileSystemOperations: FileSystemOperations
+
+    @TaskAction
+    fun generate() {
+        fileSystemOperations.sync {
+            from(sourceFile)
+            into(outputDirectory)
+            rename { "mediainfo-upstream.lock.json" }
+        }
+    }
+}
+
 var isSignsValid = false
+val useDebugSigningForReleaseSmoke = providers
+    .gradleProperty("mediainfo.releaseSmokeDebugSigning")
+    .map(String::toBoolean)
+    .getOrElse(false)
 
 android {
     namespace = globalApplicationId
     compileSdk = versions.sdkVersionCompile
+    ndkVersion = "29.0.14206865"
 
     defaultConfig {
         applicationId = globalApplicationId
@@ -35,6 +70,13 @@ android {
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments += listOf("-DANDROID_STL=c++_static")
+                targets += listOf("mediainfo")
+            }
         }
     }
 
@@ -73,7 +115,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            niceSigningConfig?.let { signingConfig = it }
+            when {
+                niceSigningConfig != null -> signingConfig = niceSigningConfig
+                useDebugSigningForReleaseSmoke -> signingConfig = signingConfigs.getByName("debug")
+            }
         }
     }
 
@@ -94,6 +139,37 @@ android {
     packaging {
         jniLibs.useLegacyPackaging = true
     }
+
+    externalNativeBuild {
+        cmake {
+            path = file("../native/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        val variantTaskSuffix = variant.name.replaceFirstChar { character ->
+            if (character.isLowerCase()) character.titlecase() else character.toString()
+        }
+        val metadataTask = tasks.register<GenerateMediaInfoMetadataTask>(
+            "generate${variantTaskSuffix}MediaInfoMetadata",
+        ) {
+            description = "Copies the pinned MediaInfo source manifest into the ${variant.name} APK"
+            sourceFile.set(rootProject.layout.projectDirectory.file("native/upstream.lock.json"))
+            outputDirectory.set(layout.buildDirectory.dir("generated/mediainfoMetadataAssets/${variant.name}"))
+        }
+        requireNotNull(variant.sources.assets).addGeneratedSourceDirectory(metadataTask) { task ->
+            task.outputDirectory
+        }
+    }
+}
+
+val standaloneAndroidTestKotlinRuntime by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    isTransitive = true
 }
 
 dependencies {
@@ -103,6 +179,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.test.ext.junit)
     androidTestImplementation(libs.test.runner)
+
+    // The version-difference test deliberately instruments a minified published
+    // release instead of this module's debug APK. Treat the Kotlin runtime as a
+    // file collection so AGP packages it in the test APK rather than assuming
+    // that every tested APK contains the complete unminified runtime.
+    standaloneAndroidTestKotlinRuntime(
+        "org.jetbrains.kotlin:kotlin-stdlib:${KotlinCompilerVersion.VERSION}",
+    )
+    androidTestImplementation(files(standaloneAndroidTestKotlinRuntime))
 }
 
 tasks {
