@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <fcntl.h>
 #include <limits>
+#include <mutex>
 #include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -29,6 +30,7 @@ constexpr std::size_t kReadBufferBytes = 1024U * 1024U;
 constexpr char kOpenError[] = "Error opening file...";
 
 jmethodID gGetIsCanceled = nullptr;
+std::mutex gInformOutputMutex;
 
 static_assert(sizeof(off_t) >= 8, "LARGE_FILES must provide 64-bit file offsets");
 static_assert(sizeof(ZenLib::Char) >= 4, "ENABLE_UNICODE is required on Android");
@@ -72,6 +74,55 @@ public:
 
 private:
     int fd;
+};
+
+class ScopedInformOptions final {
+public:
+    ScopedInformOptions(
+        MediaInfoLib::MediaInfo& mediaInfo,
+        const ZenLib::Ztring& output,
+        bool resetComplete
+    )
+        : target(mediaInfo),
+          restoreComplete(resetComplete),
+          previousOutput(target.Option(__T("Output_Get"))),
+          previousComplete(resetComplete ? target.Option(__T("Complete_Get")) : ZenLib::Ztring()) {
+        try {
+            static_cast<void>(target.Option(__T("Output"), output));
+            if (restoreComplete) {
+                static_cast<void>(target.Option(__T("Complete")));
+            }
+        } catch (...) {
+            Restore();
+            throw;
+        }
+    }
+
+    ~ScopedInformOptions() { Restore(); }
+
+    ScopedInformOptions(const ScopedInformOptions&) = delete;
+    ScopedInformOptions& operator=(const ScopedInformOptions&) = delete;
+
+private:
+    void Restore() noexcept {
+        if (restoreComplete) {
+            try {
+                static_cast<void>(target.Option(__T("Complete"), previousComplete));
+            } catch (...) {
+                // Keep restoring the output format even if this option fails.
+            }
+        }
+        try {
+            static_cast<void>(target.Option(__T("Output"), previousOutput));
+        } catch (...) {
+            // Destructors must not mask the original MediaInfo exception.
+        }
+    }
+
+    MediaInfoLib::MediaInfo& target;
+    bool restoreComplete;
+    ZenLib::Ztring previousOutput;
+    ZenLib::Ztring previousComplete;
 };
 
 ZenLib::Ztring FromJString(JNIEnv* env, jstring value) {
@@ -138,6 +189,19 @@ jstring ToJString(JNIEnv* env, const ZenLib::Ztring& value) {
 
 jstring EmptyJString(JNIEnv* env) {
     return env->NewStringUTF("");
+}
+
+ZenLib::Ztring InformWithOutput(
+    MediaInfoLib::MediaInfo& mediaInfo,
+    const ZenLib::Ztring& output,
+    bool resetComplete
+) {
+    // MediaInfoLib stores Output and Complete in its process-global Config.
+    // Serialize the temporary switch and always restore the caller's options so
+    // a JSON evaluation can never leak into the public text Inform contract.
+    std::lock_guard<std::mutex> lock(gInformOutputMutex);
+    ScopedInformOptions scopedOptions(mediaInfo, output, resetComplete);
+    return mediaInfo.Inform();
 }
 
 bool IsCanceled(JNIEnv* env, jobject self) {
@@ -423,8 +487,7 @@ jstring MediaInfoGetReport(JNIEnv* env, jobject self, jstring filename) {
         report += filenameValue;
         report += __T("\r\n\r\n");
 
-        static_cast<void>(mediaInfo.Option(__T("Complete")));
-        report += mediaInfo.Inform();
+        report += InformWithOutput(mediaInfo, __T("Text"), true);
         if (canceled) {
             report += __T("Getting MediaInfo for '");
             report += filenameValue;
@@ -435,12 +498,27 @@ jstring MediaInfoGetReport(JNIEnv* env, jobject self, jstring filename) {
     });
 }
 
+jstring MediaInfoGetJson(JNIEnv* env, jobject self, jstring filename) {
+    return StringCall(env, [&]() -> jstring {
+        MediaInfoLib::MediaInfo mediaInfo;
+        bool canceled = false;
+        if (!ParseFile(env, self, filename, mediaInfo, canceled)) {
+            return env->ExceptionCheck() == JNI_TRUE ? nullptr : env->NewStringUTF(kOpenError);
+        }
+        if (canceled) {
+            return EmptyJString(env);
+        }
+        return ToJString(env, InformWithOutput(mediaInfo, __T("JSON"), false));
+    });
+}
+
 jstring MediaInfoGetOption(JNIEnv* env, jobject, jstring parameter) {
     return StringCall(env, [&]() -> jstring {
         const ZenLib::Ztring parameterValue = FromJString(env, parameter);
         if (env->ExceptionCheck() == JNI_TRUE) {
             return nullptr;
         }
+        std::lock_guard<std::mutex> lock(gInformOutputMutex);
         MediaInfoLib::MediaInfo mediaInfo;
         return ToJString(env, mediaInfo.Option(parameterValue));
     });
@@ -471,6 +549,11 @@ JNINativeMethod kMethods[] = {
         "getMediaInfo",
         "(Ljava/lang/String;)Ljava/lang/String;",
         MediaInfoGetReport
+    ),
+    AUTOJS6_JNI_METHOD(
+        "getMediaInfoJson",
+        "(Ljava/lang/String;)Ljava/lang/String;",
+        MediaInfoGetJson
     ),
     AUTOJS6_JNI_METHOD(
         "getMediaInfoOption",

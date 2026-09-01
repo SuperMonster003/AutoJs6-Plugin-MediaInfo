@@ -39,6 +39,8 @@ class MediainfoPluginServiceTest {
     fun nativeBridgeReportsPinnedEngineAndPreservesUnicodePaths() {
         val mediaInfo = MediaInfo()
         val engineVersion = mediaInfo.getMIOption("Info_Version")
+        val outputBeforeEvaluation = mediaInfo.getMIOption("Output_Get")
+        val completeBeforeEvaluation = mediaInfo.getMIOption("Complete_Get")
         val upstreamLock = context.assets.open("mediainfo-upstream.lock.json")
             .bufferedReader()
             .use { reader -> JSONObject(reader.readText()) }
@@ -59,12 +61,89 @@ class MediainfoPluginServiceTest {
             assertTrue("Unicode path was not preserved in the report", report.contains(mediaFile.absolutePath))
             assertTrue("MediaInfo report has no Audio section", report.contains("Audio"))
 
+            val nativeJson = JSONObject(mediaInfo.getMIJson(mediaFile.absolutePath))
+            val creatingLibrary = nativeJson.getJSONObject("creatingLibrary")
+            assertEquals("MediaInfoLib", creatingLibrary.getString("name"))
+            assertTrue(
+                "Native JSON engine version does not match Info_Version",
+                engineVersion.contains(creatingLibrary.getString("version")),
+            )
+            val tracks = nativeJson.getJSONObject("media").getJSONArray("track")
+            assertTrue(
+                "Native JSON has no General track",
+                (0 until tracks.length()).any { index ->
+                    tracks.getJSONObject(index).getString("@type") == "General"
+                },
+            )
+            assertTrue(
+                "Native JSON has no Audio track",
+                (0 until tracks.length()).any { index ->
+                    tracks.getJSONObject(index).getString("@type") == "Audio"
+                },
+            )
+
+            val reportAfterJson = mediaInfo.getMI(mediaFile.absolutePath)
+            assertTrue("Native JSON leaked into the text report", reportAfterJson.startsWith("File"))
+            assertTrue("Text report lost its Audio section after native JSON", reportAfterJson.contains("Audio"))
+            assertEquals(outputBeforeEvaluation, mediaInfo.getMIOption("Output_Get"))
+            assertEquals(completeBeforeEvaluation, mediaInfo.getMIOption("Complete_Get"))
+
             val canceledMediaInfo = MediaInfo().apply { cancel() }
             val canceledAt = android.os.SystemClock.elapsedRealtime()
             val canceledReport = canceledMediaInfo.getMI(mediaFile.absolutePath)
             val cancellationMillis = android.os.SystemClock.elapsedRealtime() - canceledAt
             assertTrue("JNI did not preserve the cooperative cancellation marker", canceledReport.contains("terminated"))
             assertTrue("Pre-canceled JNI parsing was not prompt: ${cancellationMillis}ms", cancellationMillis < 2_000)
+            assertEquals(
+                "Canceled native JSON must not return an invalid partial document",
+                "",
+                canceledMediaInfo.getMIJson(mediaFile.absolutePath),
+            )
+        } finally {
+            mediaFile.delete()
+        }
+    }
+
+    @Test
+    fun nativeJsonOutputIsIsolatedFromConcurrentTextReports() {
+        val mediaFile = createWaveFile()
+        try {
+            val start = CountDownLatch(1)
+            val complete = CountDownLatch(2)
+            val failure = AtomicReference<Throwable?>()
+
+            fun launch(name: String, block: () -> Unit) = Thread {
+                try {
+                    check(start.await(5, TimeUnit.SECONDS)) { "Timed out waiting for concurrent JNI start" }
+                    repeat(8) { block() }
+                } catch (error: Throwable) {
+                    failure.compareAndSet(null, error)
+                } finally {
+                    complete.countDown()
+                }
+            }.apply {
+                this.name = name
+                start()
+            }
+
+            val jsonThread = launch("mediainfo-native-json-test") {
+                val json = JSONObject(MediaInfo().getMIJson(mediaFile.absolutePath))
+                check(json.getJSONObject("media").getJSONArray("track").length() >= 2) {
+                    "Native JSON did not contain the expected tracks"
+                }
+            }
+            val textThread = launch("mediainfo-text-inform-test") {
+                val report = MediaInfo().getMI(mediaFile.absolutePath)
+                check(report.startsWith("File") && report.contains("Audio")) {
+                    "Text Inform was contaminated by the native JSON output mode"
+                }
+            }
+
+            start.countDown()
+            assertTrue("Concurrent JNI validation timed out", complete.await(30, TimeUnit.SECONDS))
+            jsonThread.join(1_000)
+            textThread.join(1_000)
+            failure.get()?.let { throw AssertionError("Concurrent native output validation failed", it) }
         } finally {
             mediaFile.delete()
         }

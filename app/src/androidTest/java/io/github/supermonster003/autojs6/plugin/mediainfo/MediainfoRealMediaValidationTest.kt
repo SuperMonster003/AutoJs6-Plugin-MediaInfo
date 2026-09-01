@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
 import org.json.JSONArray
 import org.json.JSONObject
+import org.mediainfo.android.MediaInfo
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -113,6 +114,17 @@ class MediainfoRealMediaValidationTest {
         val cachedSnapshot = timed { withDescriptor(file) { plugin.snapshot(it, file.name, null) } }
         check(coldSnapshot.value == cachedSnapshot.value) { "Cached snapshot differs from the cold snapshot" }
         val snapshot = JSONObject(coldSnapshot.value)
+        val nativeJson = if (captureDetails) {
+            timed { JSONObject(MediaInfo().getMIJson(file.absolutePath)) }.also { result ->
+                val tracks = result.value.getJSONObject("media").getJSONArray("track")
+                check(tracks.length() > 0) { "Native JSON contains no tracks" }
+                check(result.value.getJSONObject("creatingLibrary").getString("name") == "MediaInfoLib") {
+                    "Native JSON does not identify MediaInfoLib"
+                }
+            }
+        } else {
+            null
+        }
 
         return JSONObject()
             .put("stagedName", file.name)
@@ -134,6 +146,8 @@ class MediainfoRealMediaValidationTest {
                 if (captureDetails) {
                     put("snapshot", snapshot)
                     put("queries", captureQueries(plugin, file, snapshot))
+                    put("nativeJsonNanos", requireNotNull(nativeJson).elapsedNanos)
+                    put("nativeJson", nativeJson.value)
                 }
             }
     }
