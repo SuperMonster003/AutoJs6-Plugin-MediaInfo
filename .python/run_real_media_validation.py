@@ -221,7 +221,7 @@ def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("--serial", required=True, help="Exact adb serial; an emulator is required by default")
     result.add_argument("--sample", action="append", required=True, help="Real media path; repeat for each file")
-    result.add_argument("--output", help="Optional metadata-only JSON output path")
+    result.add_argument("--output", help="Optional JSON output path")
     result.add_argument("--overwrite", action="store_true")
     result.add_argument("--skip-build", action="store_true")
     result.add_argument("--allow-physical-device", action="store_true")
@@ -229,7 +229,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument(
         "--capture-details",
         action="store_true",
-        help="Include full reports, parsed sections, and fixed technical field queries in the JSON output",
+        help=(
+            "Include full reports, parsed sections, native MediaInfo JSON, and fixed technical field "
+            "queries in the JSON output"
+        ),
     )
     result.add_argument(
         "--update-existing-package",

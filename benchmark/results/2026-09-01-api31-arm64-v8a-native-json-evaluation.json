@@ -1,0 +1,736 @@
+{
+  "schema": "autojs6-plugin-mediainfo-real-media-v1",
+  "generatedAtUtc": "2026-09-01T05:40:32.094Z",
+  "device": {
+    "manufacturer": "Sony",
+    "model": "XQ-AT72",
+    "sdk": 31,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "armeabi"
+    ]
+  },
+  "files": [
+    {
+      "stagedName": "000-crop-tool.mp4",
+      "sizeBytes": 189397,
+      "informLength": 3275,
+      "informHasGeneral": true,
+      "informHasVideo": true,
+      "informHasAudio": true,
+      "informHasImage": false,
+      "generalFormat": "MPEG-4",
+      "snapshotSectionCount": 4,
+      "coldInformNanos": 101987083,
+      "cachedInformNanos": 278229,
+      "coldGetNanos": 24576823,
+      "cachedGetNanos": 355938,
+      "coldSnapshotNanos": 15247448,
+      "cachedSnapshotNanos": 239270,
+      "snapshot": {
+        "schema": "autojs6-plugin-mediainfo-snapshot-v1",
+        "fileName": "000-crop-tool.mp4",
+        "sizeBytes": 189397,
+        "inform": "File\r\nComplete name                            : /proc/self/fd/82\r\n\r\nGeneral\nFormat                                   : MPEG-4\nFormat profile                           : Base Media / Version 2\nCodec ID                                 : mp42 (isom/iso2/avc1/mp41)\nFile size                                : 185 KiB\nDuration                                 : 8 s 107 ms\nOverall bit rate                         : 187 kb/s\nFrame rate                               : 30.000 FPS\nEncoded date                             : 2021-01-04 19:13:39 UTC\nTagged date                              : 2021-01-04 19:13:39 UTC\nWriting application                      : HandBrake 1.3.3 2020061300\n\nVideo\nID                                       : 1\nFormat                                   : AVC\nFormat/Info                              : Advanced Video Codec\nFormat profile                           : Main@L4\nFormat settings                          : CABAC / 4 Ref Frames\nFormat settings, CABAC                   : Yes\nFormat settings, Reference frames        : 4 frames\nCodec ID                                 : avc1\nCodec ID/Info                            : Advanced Video Coding\nDuration                                 : 8 s 34 ms\nBit rate                                 : 177 kb/s\nWidth                                    : 512 pixels\nHeight                                   : 288 pixels\nDisplay aspect ratio                     : 16:9\nFrame rate mode                          : Constant\nFrame rate                               : 30.000 FPS\nColor space                              : YUV\nChroma subsampling                       : 4:2:0\nBit depth                                : 8 bits\nScan type                                : Progressive\nBits/(Pixel*Frame)                       : 0.040\nStream size                              : 174 KiB (94%)\nEncoded date                             : 2021-01-04 19:13:39 UTC\nTagged date                              : 2021-01-04 19:13:39 UTC\nColor range                              : Limited\nColor primaries                          : BT.601 NTSC\nTransfer characteristics                 : BT.601\nMatrix coefficients                      : BT.601\nCodec configuration box                  : avcC\n\nAudio\nID                                       : 2\nFormat                                   : AAC LC\nFormat/Info                              : Advanced Audio Codec Low Complexity\nCodec ID                                 : mp4a-40-2\nDuration                                 : 8 s 107 ms\nBit rate mode                            : Constant\nBit rate                                 : 2 250 b/s\nChannel(s)                               : 2 channels\nChannel layout                           : L R\nSampling rate                            : 48.0 kHz\nFrame rate                               : 46.875 FPS (1024 SPF)\nCompression mode                         : Lossy\nStream size                              : 2.23 KiB (1%)\nTitle                                    : Stereo\nLanguage                                 : English\nDefault                                  : Yes\nAlternate group                          : 1\nEncoded date                             : 2021-01-04 19:13:39 UTC\nTagged date                              : 2021-01-04 19:13:39 UTC\n\n",
+        "sections": {
+          "file": [
+            {
+              "completeName": "/proc/self/fd/82"
+            }
+          ],
+          "general": [
+            {
+              "format": "MPEG-4",
+              "formatProfile": "Base Media / Version 2",
+              "codecId": "mp42 (isom/iso2/avc1/mp41)",
+              "fileSize": "185 KiB",
+              "duration": "8 s 107 ms",
+              "overallBitRate": "187 kb/s",
+              "frameRate": "30.000 FPS",
+              "encodedDate": "2021-01-04 19:13:39 UTC",
+              "taggedDate": "2021-01-04 19:13:39 UTC",
+              "writingApplication": "HandBrake 1.3.3 2020061300"
+            }
+          ],
+          "video": [
+            {
+              "id": "1",
+              "format": "AVC",
+              "formatInfo": "Advanced Video Codec",
+              "formatProfile": "Main@L4",
+              "formatSettings": "CABAC / 4 Ref Frames",
+              "formatSettingsCabac": "Yes",
+              "formatSettingsReferenceFrames": "4 frames",
+              "codecId": "avc1",
+              "codecIdInfo": "Advanced Video Coding",
+              "duration": "8 s 34 ms",
+              "bitRate": "177 kb/s",
+              "width": "512 pixels",
+              "height": "288 pixels",
+              "displayAspectRatio": "16:9",
+              "frameRateMode": "Constant",
+              "frameRate": "30.000 FPS",
+              "colorSpace": "YUV",
+              "chromaSubsampling": "4:2:0",
+              "bitDepth": "8 bits",
+              "scanType": "Progressive",
+              "bitsPixelFrame": "0.040",
+              "streamSize": "174 KiB (94%)",
+              "encodedDate": "2021-01-04 19:13:39 UTC",
+              "taggedDate": "2021-01-04 19:13:39 UTC",
+              "colorRange": "Limited",
+              "colorPrimaries": "BT.601 NTSC",
+              "transferCharacteristics": "BT.601",
+              "matrixCoefficients": "BT.601",
+              "codecConfigurationBox": "avcC"
+            }
+          ],
+          "audio": [
+            {
+              "id": "2",
+              "format": "AAC LC",
+              "formatInfo": "Advanced Audio Codec Low Complexity",
+              "codecId": "mp4a-40-2",
+              "duration": "8 s 107 ms",
+              "bitRateMode": "Constant",
+              "bitRate": "2 250 b/s",
+              "channels": "2 channels",
+              "channelLayout": "L R",
+              "samplingRate": "48.0 kHz",
+              "frameRate": "46.875 FPS (1024 SPF)",
+              "compressionMode": "Lossy",
+              "streamSize": "2.23 KiB (1%)",
+              "title": "Stereo",
+              "language": "English",
+              "default": "Yes",
+              "alternateGroup": "1",
+              "encodedDate": "2021-01-04 19:13:39 UTC",
+              "taggedDate": "2021-01-04 19:13:39 UTC"
+            }
+          ]
+        }
+      },
+      "queries": {
+        "general[0].Format": "MPEG-4",
+        "general[0].Format_Profile": "Base Media / Version 2",
+        "general[0].CodecID": "mp42",
+        "general[0].FileSize": "189397",
+        "general[0].Duration": "8107",
+        "general[0].OverallBitRate": "186897",
+        "general[0].FrameRate": "30.000",
+        "general[0].FrameCount": "241",
+        "general[0].StreamSize": "8893",
+        "general[0].Encoded_Date": "2021-01-04 19:13:39 UTC",
+        "general[0].Tagged_Date": "2021-01-04 19:13:39 UTC",
+        "general[0].Encoded_Application": "HandBrake 1.3.3 2020061300",
+        "video[0].Format": "AVC",
+        "video[0].Format_Profile": "Main@L4",
+        "video[0].CodecID": "avc1",
+        "video[0].Duration": "8034",
+        "video[0].BitRate": "177484",
+        "video[0].Width": "512",
+        "video[0].Height": "288",
+        "video[0].DisplayAspectRatio": "1.778",
+        "video[0].FrameRate_Mode": "CFR",
+        "video[0].FrameRate": "30.000",
+        "video[0].FrameCount": "241",
+        "video[0].ColorSpace": "YUV",
+        "video[0].ChromaSubsampling": "4:2:0",
+        "video[0].BitDepth": "8",
+        "video[0].ScanType": "Progressive",
+        "video[0].StreamSize": "178224",
+        "audio[0].Format": "AAC",
+        "audio[0].CodecID": "mp4a-40-2",
+        "audio[0].Duration": "8107",
+        "audio[0].BitRate_Mode": "CBR",
+        "audio[0].BitRate": "2250",
+        "audio[0].Channels": "2",
+        "audio[0].ChannelLayout": "L R",
+        "audio[0].SamplingRate": "48000",
+        "audio[0].FrameRate": "46.875",
+        "audio[0].FrameCount": "380",
+        "audio[0].Compression_Mode": "Lossy",
+        "audio[0].StreamSize": "2280",
+        "audio[0].Language": "en",
+        "audio[0].Default": "Yes"
+      },
+      "nativeJsonNanos": 26820312,
+      "nativeJson": {
+        "creatingLibrary": {
+          "name": "MediaInfoLib",
+          "version": "26.05",
+          "url": "https://mediaarea.net/MediaInfo"
+        },
+        "media": {
+          "@ref": "",
+          "track": [
+            {
+              "@type": "General",
+              "VideoCount": "1",
+              "AudioCount": "1",
+              "Format": "MPEG-4",
+              "Format_Profile": "Base Media / Version 2",
+              "CodecID": "mp42",
+              "CodecID_Compatible": "isom/iso2/avc1/mp41",
+              "FileSize": "189397",
+              "Duration": "8.107",
+              "OverallBitRate": "186897",
+              "FrameRate": "30.000",
+              "FrameCount": "241",
+              "StreamSize": "8893",
+              "HeaderSize": "40",
+              "DataSize": "180512",
+              "FooterSize": "8845",
+              "IsStreamable": "No",
+              "Encoded_Date": "2021-01-04 19:13:39 UTC",
+              "Tagged_Date": "2021-01-04 19:13:39 UTC",
+              "Encoded_Application": "HandBrake 1.3.3 2020061300",
+              "Encoded_Application_Name": "HandBrake 1.3.3",
+              "Encoded_Application_Version": "2020061300 / 1.3.3"
+            },
+            {
+              "@type": "Video",
+              "StreamOrder": "0",
+              "ID": "1",
+              "Format": "AVC",
+              "Format_Profile": "Main",
+              "Format_Level": "4",
+              "Format_Settings_CABAC": "Yes",
+              "Format_Settings_RefFrames": "4",
+              "CodecID": "avc1",
+              "Duration": "8.034",
+              "BitRate": "177484",
+              "Width": "512",
+              "Height": "288",
+              "Sampled_Width": "512",
+              "Sampled_Height": "288",
+              "PixelAspectRatio": "1.000",
+              "DisplayAspectRatio": "1.778",
+              "Rotation": "0.000",
+              "FrameRate_Mode": "CFR",
+              "FrameRate_Mode_Original": "VFR",
+              "FrameRate": "30.000",
+              "FrameRate_Num": "30",
+              "FrameRate_Den": "1",
+              "FrameCount": "241",
+              "ColorSpace": "YUV",
+              "ChromaSubsampling": "4:2:0",
+              "BitDepth": "8",
+              "ScanType": "Progressive",
+              "StreamSize": "178224",
+              "Encoded_Date": "2021-01-04 19:13:39 UTC",
+              "Tagged_Date": "2021-01-04 19:13:39 UTC",
+              "colour_description_present": "Yes",
+              "colour_description_present_Source": "Stream",
+              "colour_range": "Limited",
+              "colour_range_Source": "Stream",
+              "colour_primaries": "BT.601 NTSC",
+              "colour_primaries_Source": "Stream",
+              "transfer_characteristics": "BT.601",
+              "transfer_characteristics_Source": "Stream",
+              "matrix_coefficients": "BT.601",
+              "matrix_coefficients_Source": "Stream",
+              "extra": {
+                "CodecConfigurationBox": "avcC"
+              }
+            },
+            {
+              "@type": "Audio",
+              "StreamOrder": "1",
+              "ID": "2",
+              "Format": "AAC",
+              "Format_AdditionalFeatures": "LC",
+              "CodecID": "mp4a-40-2",
+              "Duration": "8.107",
+              "BitRate_Mode": "CBR",
+              "BitRate": "2250",
+              "Channels": "2",
+              "ChannelPositions": "Front: L R",
+              "ChannelLayout": "L R",
+              "SamplesPerFrame": "1024",
+              "SamplingRate": "48000",
+              "SamplingCount": "389136",
+              "FrameRate": "46.875",
+              "FrameCount": "380",
+              "Compression_Mode": "Lossy",
+              "StreamSize": "2280",
+              "Title": "Stereo",
+              "Language": "en",
+              "Default": "Yes",
+              "AlternateGroup": "1",
+              "Encoded_Date": "2021-01-04 19:13:39 UTC",
+              "Tagged_Date": "2021-01-04 19:13:39 UTC"
+            }
+          ]
+        }
+      },
+      "sourceLabel": "normal/crop-tool.mp4",
+      "sha256": "3284f48609f64f2c2f2e870b6aac64e74011e8d30a5fd5668bb8add03d42ed81"
+    },
+    {
+      "stagedName": "001-EdrCalibration.mkv",
+      "sizeBytes": 897810,
+      "informLength": 1990,
+      "informHasGeneral": true,
+      "informHasVideo": true,
+      "informHasAudio": false,
+      "informHasImage": false,
+      "generalFormat": "WebM",
+      "snapshotSectionCount": 3,
+      "coldInformNanos": 32540937,
+      "cachedInformNanos": 216667,
+      "coldGetNanos": 31329218,
+      "cachedGetNanos": 256510,
+      "coldSnapshotNanos": 6311042,
+      "cachedSnapshotNanos": 159791,
+      "snapshot": {
+        "schema": "autojs6-plugin-mediainfo-snapshot-v1",
+        "fileName": "001-EdrCalibration.mkv",
+        "sizeBytes": 897810,
+        "inform": "File\r\nComplete name                            : /proc/self/fd/82\r\n\r\nGeneral\nFormat                                   : WebM\nFormat version                           : Version 2\nFile size                                : 877 KiB\nDuration                                 : 33 s 266 ms\nOverall bit rate                         : 216 kb/s\nFrame rate                               : 30.068 FPS\nWriting application                      : vpxenc 1.4.0\nWriting library                          : libwebm 0.2.1.0\n\nVideo\nID                                       : 1\nFormat                                   : VP9\nFormat profile                           : 2\nHDR format                               : SMPTE ST 2086, HDR10 compatible\nCodec ID                                 : V_VP9\nDuration                                 : 33 s 258 ms\nBit rate                                 : 200 kb/s\nWidth                                    : 3 840 pixels\nHeight                                   : 2 160 pixels\nDisplay aspect ratio                     : 16:9\nFrame rate mode                          : Constant\nFrame rate                               : 30.068 FPS\nColor space                              : YUV\nChroma subsampling                       : 4:2:0\nBit depth                                : 10 bits\nBits/(Pixel*Frame)                       : 0.001\nStream size                              : 814 KiB (93%)\nLanguage                                 : English\nDefault                                  : Yes\nForced                                   : No\nColor range                              : Limited\nColor primaries                          : BT.2020\nTransfer characteristics                 : PQ\nMatrix coefficients                      : BT.2020 non-constant\nMastering display color primaries        : Display P3\nMastering display luminance              : min: 0.0200 cd/m2, max: 1200 cd/m2\nMaximum Content Light Level              : 0 cd/m2\nMaximum Frame-Average Light Level        : 0 cd/m2\n\n",
+        "sections": {
+          "file": [
+            {
+              "completeName": "/proc/self/fd/82"
+            }
+          ],
+          "general": [
+            {
+              "format": "WebM",
+              "formatVersion": "Version 2",
+              "fileSize": "877 KiB",
+              "duration": "33 s 266 ms",
+              "overallBitRate": "216 kb/s",
+              "frameRate": "30.068 FPS",
+              "writingApplication": "vpxenc 1.4.0",
+              "writingLibrary": "libwebm 0.2.1.0"
+            }
+          ],
+          "video": [
+            {
+              "id": "1",
+              "format": "VP9",
+              "formatProfile": "2",
+              "hdrFormat": "SMPTE ST 2086, HDR10 compatible",
+              "codecId": "V_VP9",
+              "duration": "33 s 258 ms",
+              "bitRate": "200 kb/s",
+              "width": "3 840 pixels",
+              "height": "2 160 pixels",
+              "displayAspectRatio": "16:9",
+              "frameRateMode": "Constant",
+              "frameRate": "30.068 FPS",
+              "colorSpace": "YUV",
+              "chromaSubsampling": "4:2:0",
+              "bitDepth": "10 bits",
+              "bitsPixelFrame": "0.001",
+              "streamSize": "814 KiB (93%)",
+              "language": "English",
+              "default": "Yes",
+              "forced": "No",
+              "colorRange": "Limited",
+              "colorPrimaries": "BT.2020",
+              "transferCharacteristics": "PQ",
+              "matrixCoefficients": "BT.2020 non-constant",
+              "masteringDisplayColorPrimaries": "Display P3",
+              "masteringDisplayLuminance": "min: 0.0200 cd/m2, max: 1200 cd/m2",
+              "maximumContentLightLevel": "0 cd/m2",
+              "maximumFrameAverageLightLevel": "0 cd/m2"
+            }
+          ]
+        }
+      },
+      "queries": {
+        "general[0].Format": "WebM",
+        "general[0].Format_Version": "Version 2",
+        "general[0].FileSize": "897810",
+        "general[0].Duration": "33266",
+        "general[0].OverallBitRate": "215911",
+        "general[0].FrameRate": "30.068",
+        "general[0].FrameCount": "1000",
+        "general[0].StreamSize": "64445",
+        "general[0].Encoded_Application": "vpxenc v1.4.0",
+        "general[0].Encoded_Library": "libwebm-0.2.1.0",
+        "video[0].Format": "VP9",
+        "video[0].Format_Profile": "2",
+        "video[0].CodecID": "V_VP9",
+        "video[0].Duration": "33258",
+        "video[0].BitRate": "200461",
+        "video[0].Width": "3840",
+        "video[0].Height": "2160",
+        "video[0].DisplayAspectRatio": "1.778",
+        "video[0].FrameRate_Mode": "CFR",
+        "video[0].FrameRate": "30.068",
+        "video[0].FrameCount": "1000",
+        "video[0].ColorSpace": "YUV",
+        "video[0].ChromaSubsampling": "4:2:0",
+        "video[0].BitDepth": "10",
+        "video[0].HDR_Format": "SMPTE ST 2086",
+        "video[0].StreamSize": "833365",
+        "video[0].Language": "en"
+      },
+      "nativeJsonNanos": 34629115,
+      "nativeJson": {
+        "creatingLibrary": {
+          "name": "MediaInfoLib",
+          "version": "26.05",
+          "url": "https://mediaarea.net/MediaInfo"
+        },
+        "media": {
+          "@ref": "",
+          "track": [
+            {
+              "@type": "General",
+              "VideoCount": "1",
+              "Format": "WebM",
+              "Format_Version": "2",
+              "FileSize": "897810",
+              "Duration": "33.266",
+              "OverallBitRate": "215911",
+              "FrameRate": "30.068",
+              "FrameCount": "1000",
+              "StreamSize": "64445",
+              "IsStreamable": "Yes",
+              "Encoded_Application": "vpxenc v1.4.0",
+              "Encoded_Application_Name": "vpxenc",
+              "Encoded_Application_Version": "1.4.0",
+              "Encoded_Library": "libwebm-0.2.1.0",
+              "Encoded_Library_Name": "libwebm",
+              "Encoded_Library_Version": "0.2.1.0"
+            },
+            {
+              "@type": "Video",
+              "StreamOrder": "0",
+              "ID": "1",
+              "UniqueID": "35295300490701771",
+              "Format": "VP9",
+              "Format_Profile": "2",
+              "HDR_Format": "SMPTE ST 2086",
+              "HDR_Format_Compatibility": "HDR10",
+              "CodecID": "V_VP9",
+              "Duration": "33.258",
+              "BitRate": "200461",
+              "Width": "3840",
+              "Height": "2160",
+              "Sampled_Width": "3840",
+              "Sampled_Height": "2160",
+              "PixelAspectRatio": "1.000",
+              "DisplayAspectRatio": "1.778",
+              "FrameRate_Mode": "CFR",
+              "FrameRate": "30.068",
+              "FrameCount": "1000",
+              "ColorSpace": "YUV",
+              "ChromaSubsampling": "4:2:0",
+              "BitDepth": "10",
+              "Delay": "0.000",
+              "Delay_Source": "Container",
+              "StreamSize": "833365",
+              "Language": "en",
+              "Default": "Yes",
+              "Forced": "No",
+              "colour_description_present": "Yes",
+              "colour_description_present_Source": "Container",
+              "colour_range": "Limited",
+              "colour_range_Source": "Stream",
+              "colour_primaries": "BT.2020",
+              "colour_primaries_Source": "Container",
+              "transfer_characteristics": "PQ",
+              "transfer_characteristics_Source": "Container",
+              "matrix_coefficients": "BT.2020 non-constant",
+              "matrix_coefficients_Source": "Stream",
+              "MasteringDisplay_ColorPrimaries": "Display P3",
+              "MasteringDisplay_ColorPrimaries_Source": "Container",
+              "MasteringDisplay_Luminance": "min: 0.0200 cd/m2, max: 1200 cd/m2",
+              "MasteringDisplay_Luminance_Source": "Container",
+              "MasteringDisplay_Luminance_Min": "0.0200",
+              "MasteringDisplay_Luminance_Max": "1200",
+              "MaxCLL": "0",
+              "MaxCLL_Source": "Container",
+              "MaxFALL": "0",
+              "MaxFALL_Source": "Container"
+            }
+          ]
+        }
+      },
+      "sourceLabel": "normal/EdrCalibration.mkv",
+      "sha256": "a806a68a6605d37aef448101299fc7f06acb6020ff6b21d39d09101bd1a16cdf"
+    },
+    {
+      "stagedName": "002-Marika Takeuchi - Night Photography.flac",
+      "sizeBytes": 6654332,
+      "informLength": 2723,
+      "informHasGeneral": true,
+      "informHasVideo": false,
+      "informHasAudio": true,
+      "informHasImage": true,
+      "generalFormat": "FLAC",
+      "snapshotSectionCount": 4,
+      "coldInformNanos": 233456094,
+      "cachedInformNanos": 283646,
+      "coldGetNanos": 225043490,
+      "cachedGetNanos": 312812,
+      "coldSnapshotNanos": 7068803,
+      "cachedSnapshotNanos": 147188,
+      "snapshot": {
+        "schema": "autojs6-plugin-mediainfo-snapshot-v1",
+        "fileName": "002-Marika Takeuchi - Night Photography.flac",
+        "sizeBytes": 6654332,
+        "inform": "File\r\nComplete name                            : /proc/self/fd/82\r\n\r\nGeneral\nFormat                                   : FLAC\nFormat/Info                              : Free Lossless Audio Codec\nFile size                                : 6.35 MiB\nDuration                                 : 1 min 52 s\nOverall bit rate mode                    : Variable\nOverall bit rate                         : 473 kb/s\nTitle                                    : Night Photography\nAlbum                                    : Night Dream\nPart/Position                            : 1\nPart/Total                               : 1\nTrack name/Position                      : 1\nTrack name/Total                         : 6\nPerformer                                : Marika Takeuchi\nProducer                                 : Wooly Recordings\nEncoded by                               : MPEG 1 Layer III\nGenre                                    : New Age, Easy Listening\nDescription                              : 曲子很短 但很有韵味 每次周围安静的时候 脑中会自然出现曲子的前奏 然后就忍不住打开听一遍 试图再次刷洗心上浮尘\nRecorded date                            : 2020-02-23/2011-08-13\nBPM                                      : 194\nCopyright                                : ©BCYY\nCover                                    : Yes\nCover type                               : Cover\nCover MIME                               : image/jpeg\nComment                                  : 曲子很短 但很有韵味 每次周围安静的时候 脑中会自然出现曲子的前奏 然后就忍不住打开听一遍 试图再次刷洗心上浮尘\n\nAudio\nFormat                                   : FLAC\nFormat/Info                              : Free Lossless Audio Codec\nDuration                                 : 1 min 52 s\nBit rate mode                            : Variable\nBit rate                                 : 450 kb/s\nChannel(s)                               : 2 channels\nChannel layout                           : L R\nSampling rate                            : 44.1 kHz\nBit depth                                : 16 bits\nCompression mode                         : Lossless\nStream size                              : 6.04 MiB (95%)\nWriting library                          : libFLAC 1.3.2 (2017-01-01)\nMD5 of the unencoded content             : D44B3392BF7779A6E1FDDB5055CB4966\n\nImage\nType                                     : Cover\nFormat                                   : JPEG\nMuxing mode                              : FLAC Picture\nWidth                                    : 1 000 pixels\nHeight                                   : 1 000 pixels\nColor space                              : YUV\nChroma subsampling                       : 4:4:4\nBit depth                                : 8 bits\nCompression mode                         : Lossy\nStream size                              : 307 KiB (5%)\n\n",
+        "sections": {
+          "file": [
+            {
+              "completeName": "/proc/self/fd/82"
+            }
+          ],
+          "general": [
+            {
+              "format": "FLAC",
+              "formatInfo": "Free Lossless Audio Codec",
+              "fileSize": "6.35 MiB",
+              "duration": "1 min 52 s",
+              "overallBitRateMode": "Variable",
+              "overallBitRate": "473 kb/s",
+              "title": "Night Photography",
+              "album": "Night Dream",
+              "partPosition": "1",
+              "partTotal": "1",
+              "trackNamePosition": "1",
+              "trackNameTotal": "6",
+              "performer": "Marika Takeuchi",
+              "producer": "Wooly Recordings",
+              "encodedBy": "MPEG 1 Layer III",
+              "genre": "New Age, Easy Listening",
+              "description": "曲子很短 但很有韵味 每次周围安静的时候 脑中会自然出现曲子的前奏 然后就忍不住打开听一遍 试图再次刷洗心上浮尘",
+              "recordedDate": "2020-02-23/2011-08-13",
+              "bpm": "194",
+              "copyright": "©BCYY",
+              "cover": "Yes",
+              "coverType": "Cover",
+              "coverMime": "image/jpeg",
+              "comment": "曲子很短 但很有韵味 每次周围安静的时候 脑中会自然出现曲子的前奏 然后就忍不住打开听一遍 试图再次刷洗心上浮尘"
+            }
+          ],
+          "audio": [
+            {
+              "format": "FLAC",
+              "formatInfo": "Free Lossless Audio Codec",
+              "duration": "1 min 52 s",
+              "bitRateMode": "Variable",
+              "bitRate": "450 kb/s",
+              "channels": "2 channels",
+              "channelLayout": "L R",
+              "samplingRate": "44.1 kHz",
+              "bitDepth": "16 bits",
+              "compressionMode": "Lossless",
+              "streamSize": "6.04 MiB (95%)",
+              "writingLibrary": "libFLAC 1.3.2 (2017-01-01)",
+              "md5OfTheUnencodedContent": "D44B3392BF7779A6E1FDDB5055CB4966"
+            }
+          ],
+          "image": [
+            {
+              "type": "Cover",
+              "format": "JPEG",
+              "muxingMode": "FLAC Picture",
+              "width": "1 000 pixels",
+              "height": "1 000 pixels",
+              "colorSpace": "YUV",
+              "chromaSubsampling": "4:4:4",
+              "bitDepth": "8 bits",
+              "compressionMode": "Lossy",
+              "streamSize": "307 KiB (5%)"
+            }
+          ]
+        }
+      },
+      "queries": {
+        "general[0].Format": "FLAC",
+        "general[0].FileSize": "6654332",
+        "general[0].Duration": "112651",
+        "general[0].OverallBitRate_Mode": "VBR",
+        "general[0].OverallBitRate": "472563",
+        "general[0].StreamSize": "0",
+        "audio[0].Format": "FLAC",
+        "audio[0].Duration": "112651",
+        "audio[0].BitRate_Mode": "VBR",
+        "audio[0].BitRate": "449880",
+        "audio[0].Channels": "2",
+        "audio[0].ChannelLayout": "L R",
+        "audio[0].SamplingRate": "44100",
+        "audio[0].BitDepth": "16",
+        "audio[0].Compression_Mode": "Lossless",
+        "audio[0].StreamSize": "6334927",
+        "image[0].Format": "JPEG",
+        "image[0].Width": "1000",
+        "image[0].Height": "1000",
+        "image[0].ColorSpace": "YUV",
+        "image[0].BitDepth": "8",
+        "image[0].StreamSize": "314516"
+      },
+      "nativeJsonNanos": 221927865,
+      "nativeJson": {
+        "creatingLibrary": {
+          "name": "MediaInfoLib",
+          "version": "26.05",
+          "url": "https://mediaarea.net/MediaInfo"
+        },
+        "media": {
+          "@ref": "",
+          "track": [
+            {
+              "@type": "General",
+              "AudioCount": "1",
+              "ImageCount": "1",
+              "Format": "FLAC",
+              "FileSize": "6654332",
+              "Duration": "112.651",
+              "OverallBitRate_Mode": "VBR",
+              "OverallBitRate": "472563",
+              "StreamSize": "0",
+              "Title": "Night Photography",
+              "Album": "Night Dream",
+              "Part_Position": "1",
+              "Part_Position_Total": "1",
+              "Track": "Night Photography",
+              "Track_Position": "1",
+              "Track_Position_Total": "6",
+              "Performer": "Marika Takeuchi",
+              "Producer": "Wooly Recordings",
+              "EncodedBy": "MPEG 1 Layer III",
+              "Genre": "New Age, Easy Listening",
+              "Description": "曲子很短 但很有韵味 每次周围安静的时候 脑中会自然出现曲子的前奏 然后就忍不住打开听一遍 试图再次刷洗心上浮尘",
+              "Recorded_Date": "2020-02-23/2011-08-13",
+              "BPM": "194",
+              "Copyright": "©BCYY",
+              "Cover": "Yes",
+              "Cover_Type": "Cover",
+              "Cover_Mime": "image/jpeg",
+              "Comment": "曲子很短 但很有韵味 每次周围安静的时候 脑中会自然出现曲子的前奏 然后就忍不住打开听一遍 试图再次刷洗心上浮尘"
+            },
+            {
+              "@type": "Audio",
+              "Format": "FLAC",
+              "Duration": "112.651",
+              "BitRate_Mode": "VBR",
+              "BitRate": "449880",
+              "Channels": "2",
+              "ChannelPositions": "Front: L R",
+              "ChannelLayout": "L R",
+              "SamplingRate": "44100",
+              "SamplingCount": "4967919",
+              "BitDepth": "16",
+              "Compression_Mode": "Lossless",
+              "StreamSize": "6334927",
+              "Encoded_Library": "reference libFLAC 1.3.2 20170101",
+              "Encoded_Library_Name": "libFLAC",
+              "Encoded_Library_Version": "1.3.2",
+              "Encoded_Library_Date": "2017-01-01",
+              "extra": {
+                "MD5_Unencoded": "D44B3392BF7779A6E1FDDB5055CB4966"
+              }
+            },
+            {
+              "@type": "Image",
+              "Type": "Cover",
+              "Format": "JPEG",
+              "MuxingMode": "FLAC Picture",
+              "Width": "1000",
+              "Height": "1000",
+              "ColorSpace": "YUV",
+              "ChromaSubsampling": "4:4:4",
+              "BitDepth": "8",
+              "Compression_Mode": "Lossy",
+              "StreamSize": "314516"
+            }
+          ]
+        }
+      },
+      "sourceLabel": "normal/Marika Takeuchi - Night Photography.flac",
+      "sha256": "3c5776362b8d2e5f71fc7928451a24ad46ba6bcaa611eff86395b8e0a6f87023"
+    },
+    {
+      "stagedName": "003-20240726.mp4",
+      "sizeBytes": 588251136,
+      "informLength": 303,
+      "informHasGeneral": true,
+      "informHasVideo": false,
+      "informHasAudio": false,
+      "informHasImage": false,
+      "generalFormat": "MPEG-4",
+      "snapshotSectionCount": 2,
+      "coldInformNanos": 22009219,
+      "cachedInformNanos": 244010,
+      "coldGetNanos": 21220573,
+      "cachedGetNanos": 265052,
+      "coldSnapshotNanos": 1227864,
+      "cachedSnapshotNanos": 128282,
+      "snapshot": {
+        "schema": "autojs6-plugin-mediainfo-snapshot-v1",
+        "fileName": "003-20240726.mp4",
+        "sizeBytes": 588251136,
+        "inform": "File\r\nComplete name                            : /proc/self/fd/82\r\n\r\nGeneral\nFormat                                   : MPEG-4\nFormat profile                           : Base Media\nCodec ID                                 : isom (isom/iso2/avc1/mp41)\nFile size                                : 561 MiB\n\n",
+        "sections": {
+          "file": [
+            {
+              "completeName": "/proc/self/fd/82"
+            }
+          ],
+          "general": [
+            {
+              "format": "MPEG-4",
+              "formatProfile": "Base Media",
+              "codecId": "isom (isom/iso2/avc1/mp41)",
+              "fileSize": "561 MiB"
+            }
+          ]
+        }
+      },
+      "queries": {
+        "general[0].Format": "MPEG-4",
+        "general[0].Format_Profile": "Base Media",
+        "general[0].CodecID": "isom",
+        "general[0].FileSize": "588251136",
+        "general[0].StreamSize": "588251136"
+      },
+      "nativeJsonNanos": 21783594,
+      "nativeJson": {
+        "creatingLibrary": {
+          "name": "MediaInfoLib",
+          "version": "26.05",
+          "url": "https://mediaarea.net/MediaInfo"
+        },
+        "media": {
+          "@ref": "",
+          "track": [
+            {
+              "@type": "General",
+              "Format": "MPEG-4",
+              "Format_Profile": "Base Media",
+              "CodecID": "isom",
+              "CodecID_Compatible": "isom/iso2/avc1/mp41",
+              "FileSize": "588251136",
+              "StreamSize": "588251136",
+              "HeaderSize": "40",
+              "DataSize": "588251096",
+              "FooterSize": "0",
+              "IsStreamable": "No",
+              "extra": {
+                "IsTruncated": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      "sourceLabel": "bad/20240726.mp4",
+      "sha256": "8984e343d9d986680e55ca752df47fc3a949965a7d0b368f0937417a52b439e6"
+    }
+  ],
+  "failureCount": 0,
+  "capturedDetails": true,
+  "source": {
+    "revision": "636a83cf024725c049367d43c849c727a4a93aec",
+    "dirty": true,
+    "benchmarkInputsSha256": "3b53208a3fad51ac32e2bb0dd203f4082718b5e18649f9c51ef0cdcfed832dc3"
+  }
+}

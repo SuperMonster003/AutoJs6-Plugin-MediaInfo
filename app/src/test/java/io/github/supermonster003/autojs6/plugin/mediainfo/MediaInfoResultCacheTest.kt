@@ -1,5 +1,6 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -21,6 +22,25 @@ class MediaInfoResultCacheTest {
         assertEquals("", cache.getQuery(identity, query)?.value)
         assertEquals("{\"schema\":\"snapshot\"}", cache.getSnapshot(identity, snapshot))
         assertEquals(MediaCacheStats(1, 1, 1, cache.stats().estimatedCharacters), cache.stats())
+    }
+
+    @Test
+    fun snapshotSchemasHaveIndependentCacheEntries() {
+        val cache = cache()
+        val identity = identity(1)
+        val v1 = MediaSnapshotRequest(
+            includeInform = false,
+            includeSections = true,
+            schema = MediainfoSnapshotSchemas.V1,
+        )
+        val v2 = v1.copy(schema = MediainfoSnapshotSchemas.V2)
+
+        cache.putSnapshot(identity, v1, "v1")
+        cache.putSnapshot(identity, v2, "v2")
+
+        assertEquals("v1", cache.getSnapshot(identity, v1))
+        assertEquals("v2", cache.getSnapshot(identity, v2))
+        assertEquals(2, cache.stats().snapshotCount)
     }
 
     @Test

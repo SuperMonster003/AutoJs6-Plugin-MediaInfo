@@ -1,5 +1,6 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -92,6 +93,7 @@ class MediaInfoReportParserTest {
 
         assertTrue(options.includeInform)
         assertTrue(options.includeSections)
+        assertEquals(SnapshotSchema.V1, options.schema)
         assertEquals(2, requestedDefaults.size)
         assertTrue(requestedDefaults.all { it.second })
     }
@@ -102,5 +104,45 @@ class MediaInfoReportParserTest {
 
         assertFalse(options.includeInform)
         assertTrue(options.includeSections)
+        assertEquals(SnapshotSchema.V1, options.schema)
+    }
+
+    @Test
+    fun `snapshot schema requires an explicit supported identifier`() {
+        val v1 = parseSnapshotOptions(
+            readBoolean = { _, defaultValue -> defaultValue },
+            readString = { MediainfoSnapshotSchemas.V1 },
+        )
+        val v2 = parseSnapshotOptions(
+            readBoolean = { _, defaultValue -> defaultValue },
+            readString = { MediainfoSnapshotSchemas.V2 },
+        )
+        val blank = parseSnapshotOptions(
+            readBoolean = { _, defaultValue -> defaultValue },
+            readString = { "  " },
+        )
+
+        assertEquals(SnapshotSchema.V1, v1.schema)
+        assertEquals(SnapshotSchema.V2, v2.schema)
+        assertEquals(SnapshotSchema.V1, blank.schema)
+
+        val failure = runCatching {
+            parseSnapshotOptions(
+                readBoolean = { _, defaultValue -> defaultValue },
+                readString = { "snapshot-latest" },
+            )
+        }.exceptionOrNull()
+        assertTrue(
+            "Unknown schema did not produce a useful validation error: $failure",
+            failure is IllegalArgumentException && failure.message.orEmpty().contains("snapshot-latest"),
+        )
+
+        val paddedFailure = runCatching {
+            parseSnapshotOptions(
+                readBoolean = { _, defaultValue -> defaultValue },
+                readString = { " ${MediainfoSnapshotSchemas.V2} " },
+            )
+        }.exceptionOrNull()
+        assertTrue("A padded schema identifier must not be accepted", paddedFailure is IllegalArgumentException)
     }
 }
