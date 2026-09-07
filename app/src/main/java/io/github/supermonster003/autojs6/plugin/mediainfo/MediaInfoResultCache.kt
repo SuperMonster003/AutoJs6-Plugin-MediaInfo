@@ -1,5 +1,6 @@
 package io.github.supermonster003.autojs6.plugin.mediainfo
 
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import java.util.LinkedHashMap
 
 internal data class MediaFileIdentity(
@@ -22,6 +23,7 @@ internal data class MediaGetRequest(
 internal data class MediaSnapshotRequest(
     val includeInform: Boolean,
     val includeSections: Boolean,
+    val schema: String = MediainfoSnapshotSchemas.V1,
 )
 
 internal data class MediaCacheHit<out T>(val value: T)
@@ -170,7 +172,7 @@ internal class MediaInfoResultCache(
         const val DEFAULT_MAX_CHARACTERS = 2 * 1_024 * 1_024
 
         private const val NANOS_PER_MILLISECOND = 1_000_000L
-        private const val SNAPSHOT_KEY_ESTIMATE = 2
+        private const val SNAPSHOT_KEY_ESTIMATE = 64
         private const val QUERY_KEY_ESTIMATE = 8
     }
 }

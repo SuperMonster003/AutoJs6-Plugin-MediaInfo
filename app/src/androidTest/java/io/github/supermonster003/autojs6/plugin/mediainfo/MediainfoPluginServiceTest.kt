@@ -13,9 +13,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.autojs.plugin.common.api.PluginCapabilityKeys
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
 import org.autojs.plugin.mediainfo.api.MediainfoOptionKeys
+import org.autojs.plugin.mediainfo.api.MediainfoPluginCapabilityKeys
 import org.autojs.plugin.mediainfo.api.MediainfoPluginIds
+import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
 import org.json.JSONObject
 import org.mediainfo.android.MediaInfo
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -39,6 +42,8 @@ class MediainfoPluginServiceTest {
     fun nativeBridgeReportsPinnedEngineAndPreservesUnicodePaths() {
         val mediaInfo = MediaInfo()
         val engineVersion = mediaInfo.getMIOption("Info_Version")
+        val outputBeforeEvaluation = mediaInfo.getMIOption("Output_Get")
+        val completeBeforeEvaluation = mediaInfo.getMIOption("Complete_Get")
         val upstreamLock = context.assets.open("mediainfo-upstream.lock.json")
             .bufferedReader()
             .use { reader -> JSONObject(reader.readText()) }
@@ -59,12 +64,89 @@ class MediainfoPluginServiceTest {
             assertTrue("Unicode path was not preserved in the report", report.contains(mediaFile.absolutePath))
             assertTrue("MediaInfo report has no Audio section", report.contains("Audio"))
 
+            val nativeJson = JSONObject(mediaInfo.getMIJson(mediaFile.absolutePath))
+            val creatingLibrary = nativeJson.getJSONObject("creatingLibrary")
+            assertEquals("MediaInfoLib", creatingLibrary.getString("name"))
+            assertTrue(
+                "Native JSON engine version does not match Info_Version",
+                engineVersion.contains(creatingLibrary.getString("version")),
+            )
+            val tracks = nativeJson.getJSONObject("media").getJSONArray("track")
+            assertTrue(
+                "Native JSON has no General track",
+                (0 until tracks.length()).any { index ->
+                    tracks.getJSONObject(index).getString("@type") == "General"
+                },
+            )
+            assertTrue(
+                "Native JSON has no Audio track",
+                (0 until tracks.length()).any { index ->
+                    tracks.getJSONObject(index).getString("@type") == "Audio"
+                },
+            )
+
+            val reportAfterJson = mediaInfo.getMI(mediaFile.absolutePath)
+            assertTrue("Native JSON leaked into the text report", reportAfterJson.startsWith("File"))
+            assertTrue("Text report lost its Audio section after native JSON", reportAfterJson.contains("Audio"))
+            assertEquals(outputBeforeEvaluation, mediaInfo.getMIOption("Output_Get"))
+            assertEquals(completeBeforeEvaluation, mediaInfo.getMIOption("Complete_Get"))
+
             val canceledMediaInfo = MediaInfo().apply { cancel() }
             val canceledAt = android.os.SystemClock.elapsedRealtime()
             val canceledReport = canceledMediaInfo.getMI(mediaFile.absolutePath)
             val cancellationMillis = android.os.SystemClock.elapsedRealtime() - canceledAt
             assertTrue("JNI did not preserve the cooperative cancellation marker", canceledReport.contains("terminated"))
             assertTrue("Pre-canceled JNI parsing was not prompt: ${cancellationMillis}ms", cancellationMillis < 2_000)
+            assertEquals(
+                "Canceled native JSON must not return an invalid partial document",
+                "",
+                canceledMediaInfo.getMIJson(mediaFile.absolutePath),
+            )
+        } finally {
+            mediaFile.delete()
+        }
+    }
+
+    @Test
+    fun nativeJsonOutputIsIsolatedFromConcurrentTextReports() {
+        val mediaFile = createWaveFile()
+        try {
+            val start = CountDownLatch(1)
+            val complete = CountDownLatch(2)
+            val failure = AtomicReference<Throwable?>()
+
+            fun launch(name: String, block: () -> Unit) = Thread {
+                try {
+                    check(start.await(5, TimeUnit.SECONDS)) { "Timed out waiting for concurrent JNI start" }
+                    repeat(8) { block() }
+                } catch (error: Throwable) {
+                    failure.compareAndSet(null, error)
+                } finally {
+                    complete.countDown()
+                }
+            }.apply {
+                this.name = name
+                start()
+            }
+
+            val jsonThread = launch("mediainfo-native-json-test") {
+                val json = JSONObject(MediaInfo().getMIJson(mediaFile.absolutePath))
+                check(json.getJSONObject("media").getJSONArray("track").length() >= 2) {
+                    "Native JSON did not contain the expected tracks"
+                }
+            }
+            val textThread = launch("mediainfo-text-inform-test") {
+                val report = MediaInfo().getMI(mediaFile.absolutePath)
+                check(report.startsWith("File") && report.contains("Audio")) {
+                    "Text Inform was contaminated by the native JSON output mode"
+                }
+            }
+
+            start.countDown()
+            assertTrue("Concurrent JNI validation timed out", complete.await(30, TimeUnit.SECONDS))
+            jsonThread.join(1_000)
+            textThread.join(1_000)
+            failure.get()?.let { throw AssertionError("Concurrent native output validation failed", it) }
         } finally {
             mediaFile.delete()
         }
@@ -116,6 +198,40 @@ class MediainfoPluginServiceTest {
                         .getString("format")
                         .contains("PCM", ignoreCase = true),
                 )
+
+                val v2Options = Bundle(options).apply {
+                    putString(
+                        MediainfoOptionKeys.SCHEMA,
+                        MediainfoSnapshotSchemas.V2,
+                    )
+                }
+                val v2SnapshotText = withMediaDescriptor(mediaFile) { descriptor ->
+                    plugin.snapshot(descriptor, mediaFile.name, v2Options)
+                }
+                val v2Snapshot = JSONObject(v2SnapshotText)
+                assertEquals(MediainfoSnapshotSchemas.V2, v2Snapshot.getString("schema"))
+                assertFalse("snapshot-v2 leaked the v1 fileName field", v2Snapshot.has("fileName"))
+                assertFalse("snapshot-v2 leaked the v1 sections field", v2Snapshot.has("sections"))
+                assertEquals(mediaFile.name, v2Snapshot.getJSONObject("file").getString("name"))
+                assertEquals(mediaFile.length(), v2Snapshot.getJSONObject("file").getLong("sizeBytes"))
+                assertEquals("", v2Snapshot.getString("inform"))
+                assertEquals("MediaInfoLib", v2Snapshot.getJSONObject("engine").getString("name"))
+                assertTrue(v2Snapshot.getJSONObject("engine").getString("version").isNotBlank())
+                val tracks = v2Snapshot.getJSONObject("tracks")
+                assertTrue("snapshot-v2 has no General track", tracks.getJSONArray("general").length() > 0)
+                val audioTracks = tracks.getJSONArray("audio")
+                assertTrue("snapshot-v2 has no Audio track", audioTracks.length() > 0)
+                assertTrue(
+                    "snapshot-v2 audio format is not PCM",
+                    audioTracks.getJSONObject(0)
+                        .getJSONObject("fields")
+                        .getString("Format")
+                        .contains("PCM", ignoreCase = true),
+                )
+                val cachedV2Snapshot = withMediaDescriptor(mediaFile) { descriptor ->
+                    plugin.snapshot(descriptor, mediaFile.name, v2Options)
+                }
+                assertEquals(v2SnapshotText, cachedV2Snapshot)
             } finally {
                 mediaFile.delete()
             }
@@ -185,6 +301,40 @@ class MediainfoPluginServiceTest {
         }
     }
 
+    @Test
+    fun unsupportedSnapshotSchemaClosesTheServiceOwnedDescriptor() {
+        withBoundPlugin { plugin ->
+            val mediaFile = createWaveFile()
+            try {
+                val descriptor = ParcelFileDescriptor.open(mediaFile, ParcelFileDescriptor.MODE_READ_ONLY)
+                try {
+                    val failure = runCatching {
+                        plugin.snapshot(
+                            descriptor,
+                            mediaFile.name,
+                            Bundle().apply {
+                                putString(MediainfoOptionKeys.SCHEMA, "snapshot-latest")
+                            },
+                        )
+                    }.exceptionOrNull()
+                    assertTrue(
+                        "Unsupported snapshot schema did not produce the expected error: $failure",
+                        failure is IllegalArgumentException &&
+                            failure.message.orEmpty().contains("snapshot-latest"),
+                    )
+                    assertFalse(
+                        "The service retained its descriptor after snapshot validation failed",
+                        descriptor.fileDescriptor.valid(),
+                    )
+                } finally {
+                    runCatching { descriptor.close() }
+                }
+            } finally {
+                mediaFile.delete()
+            }
+        }
+    }
+
     private fun assertRuntimeInfo(plugin: IMediainfoPlugin) {
         val info = plugin.info
         assertEquals(MediainfoPluginIds.ID, info.id)
@@ -213,6 +363,18 @@ class MediainfoPluginServiceTest {
 
         val capabilities = requireNotNull(info.capabilities) { "Plugin capabilities are missing" }
         assertEquals(3923, capabilities.getInt(PluginCapabilityKeys.REQUIRES_HOST_VERSION))
+        assertArrayEquals(
+            MediainfoSnapshotSchemas.VALUES.toTypedArray(),
+            capabilities.getStringArray(MediainfoPluginCapabilityKeys.SNAPSHOT_SCHEMAS),
+        )
+        assertEquals(
+            MediainfoSnapshotSchemas.V1,
+            capabilities.getString(MediainfoPluginCapabilityKeys.DEFAULT_SNAPSHOT_SCHEMA),
+        )
+        assertEquals(
+            MediaInfo().getMIOption("Info_Version").trim(),
+            capabilities.getString(MediainfoPluginCapabilityKeys.ENGINE_VERSION),
+        )
     }
 
     private fun withBoundPlugin(block: (IMediainfoPlugin) -> Unit) {
