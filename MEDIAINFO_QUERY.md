@@ -71,3 +71,32 @@ inside the text report; other metadata and line endings are preserved.
 
 The two-audio Matroska fixture and its generation command are stored in
 `app/src/androidTest/assets/`.
+
+The 2026-09-10 validation record is
+`benchmark/results/2026-09-10-mediainfo-m2-validation.json`. It binds the plugin
+source, companion repository commits, fixture hash and five signed APK hashes.
+The final plugin passed 9 service tests on each of ARM64/API 31 and x86_64/API 36,
+plus public-contract minified Release checks on both. The host passed all 7 tests
+in the MediaInfo Rhino and Node media integration classes; Node Runtime passed
+the full 12-test NPM and Android conformance group.
+
+The host baseline's full Android test source set has two unrelated console test
+compilation failures (`ConsoleViewLayoutDeviceTest` and
+`ConsoleViewStackFrameLinkDeviceTest`). A temporary external Gradle init script
+excluded those two files for the focused APK; production sources compiled
+normally. This exception is recorded in the validation JSON.
+
+## Coordinated integration
+
+The companion changes are committed on `feature/mediainfo-m2-query` in AutoJs6,
+Node Runtime, Documentation, TypeScript Declarations, Ace Editor and Offline
+Documentation. Exact commit IDs are recorded in the validation JSON. They were
+prepared in isolated worktrees to preserve concurrent host and runtime work.
+
+The full source path fix includes the host change: an older host that sends only
+a basename cannot supply the original full path to a new plugin. The updated
+host repairs reports from both old and new plugins. Install or integrate the
+host update together with the plugin when validating the media details page.
+
+Companion versions are Node Runtime 1.4.0 (148), declarations 4.9.0, Ace Editor
+1.1.24 (35), documentation 6.8.0 (60) and Offline Documentation 6.8.0 (19).
