@@ -1,3 +1,5 @@
+// @Hint: declared here, applied by the modules. The settings platform plugin selects the version.
+//  ! zh-CN: 在根项目集中声明并由模块应用, 具体版本由 settings 平台插件选择.
 plugins {
     id("com.android.application") version System.getProperty("gradle.agp.version") apply false
 }
