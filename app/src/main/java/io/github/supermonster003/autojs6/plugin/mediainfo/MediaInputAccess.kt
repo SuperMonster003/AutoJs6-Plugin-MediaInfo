@@ -16,13 +16,14 @@ internal data class MediaInputSource(
     val sizeBytes: Long,
     val kind: MediaInputKind,
     val cacheIdentity: MediaFileIdentity? = null,
+    val sourceName: String = "",
 )
 
 internal object MediaInputAccess {
 
     const val TEMP_FILE_PREFIX = "autojs6-mediainfo-"
 
-    fun directSource(descriptor: ParcelFileDescriptor, displayName: String? = null): MediaInputSource? {
+    fun directSource(descriptor: ParcelFileDescriptor, displayName: String? = null, sourceName: String? = displayName): MediaInputSource? {
         val stat = runCatching { Os.fstat(descriptor.fileDescriptor) }.getOrNull() ?: return null
         if (!OsConstants.S_ISREG(stat.st_mode)) return null
 
@@ -32,11 +33,13 @@ internal object MediaInputAccess {
             path = path,
             sizeBytes = stat.st_size.coerceAtLeast(0L),
             kind = MediaInputKind.DIRECT_DESCRIPTOR,
+            sourceName = sourceName.orEmpty(),
             cacheIdentity = stat.run {
                 val resolvedDisplayName = displayName.orEmpty()
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1 ||
                     st_dev == 0L || st_ino == 0L || st_size < 0L || st_mtime <= 0L || st_ctime <= 0L ||
-                    resolvedDisplayName.length > MAX_CACHE_DISPLAY_NAME_CHARS
+                    resolvedDisplayName.length > MAX_CACHE_DISPLAY_NAME_CHARS ||
+                    sourceName.orEmpty().length > MAX_CACHE_DISPLAY_NAME_CHARS
                 ) {
                     null
                 } else {
@@ -49,6 +52,7 @@ internal object MediaInputAccess {
                         changedSeconds = st_ctime,
                         changedNanoseconds = st_ctim.tv_nsec,
                         displayName = resolvedDisplayName,
+                        sourceName = sourceName.orEmpty(),
                     )
                 }
             },

@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 On the returned object, `path` and `inform` hold the resolved path and the full text report; each stream kind (such as `general`, `video`, `audio`) works both as a property exposing parsed fields (such as `mi.video.width`, field names in camelCase) and as a function for live raw parameter queries (such as `mi.audio("BitRate")`). Rhino scripts may access any path the host is allowed to read.
 
+MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### Snapshot Structure and Options
@@ -202,7 +225,7 @@ Yes. On Android 8.1 (API 27) and later, for an unchanged regular file with a sta
 
 #### The file has multiple audio tracks or subtitles; how do I read the second and later streams?
 
-The snapshot `sections` keeps every section of the report (with multiple streams, section names carry an index such as `audio #2`), so read them from there; `get()` currently always queries the first stream of a kind, and stream index selection is planned in [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md).
+With the updated host and Node runtime, use get(path, "audio", "Format", {streamNumber: 1}) for the second audio stream. Use countGet(path, "audio") to count streams and infoKind: "MEASURE" to query a unit. Check capabilities() before using extended queries. See [the query contract](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md).
 
 #### Does the plugin access the network or request sensitive permissions?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` exposes four methods, `getInfo`/`inform`/`get`/`snapshot`, through the AIDL interface `IMediainfoPlugin`; media content is passed as a read-only `ParcelFileDescriptor` plus a display name, and `snapshot` additionally accepts a `Bundle` of options carrying `includeInform`/`includeSections`. Both the service and `WakeActivity` are guarded by the `org.autojs.permission.PLUGIN` permission.
+`MediainfoPluginService` exposes six methods, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, through the AIDL interface `IMediainfoPlugin`; media content is passed as a read-only `ParcelFileDescriptor` plus a display name, and `snapshot` additionally accepts a `Bundle` of options carrying `includeInform`/`includeSections`. Both the service and `WakeActivity` are guarded by the `org.autojs.permission.PLUGIN` permission.
 
 Media parsing is powered by the bundled MediaInfoLib native libraries.
 
@@ -249,6 +272,14 @@ The plugin's planned capabilities and their completion status are maintained as 
 ### Release History
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `Feature` MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities
+- `Feature` Opt-in snapshot v2 groups native JSON tracks into arrays and exposes the engine version while keeping snapshot v1 as the default
+- `Fix` MediaInfo details and snapshots show the original source path in Complete name instead of a private cache or descriptor path, while preserving the snapshot display filename
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `Improvement` Hardened snapshot section parsing for repeated and numbered streams, malformed lines, embedded colons, duplicate fields, and independent output options
 - `Improvement` Added reproducible synthetic benchmark and real-media validation tooling, with complete x86, x86_64, and ARM64 performance baselines
 - `Improvement` Rebuilt the 10-language README, plugin instructions, and changelog generation pipeline with drift validation and GitHub Actions gates
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `Feature` First stable release: brings MediaInfoLib-powered media file inspection to AutoJs6, fetching container format, codec, duration, resolution, bit rate, channels, and more in a single call
-- `Feature` Script API: the Node environment gets async `read`/`get` via `require("mediainfo")`; the Rhino environment gets the global `mediainfo(path)` module returning a property-accessible parsed object synchronously
-- `Feature` Three reading capabilities: full text report (`inform`), single parameter lookup (`get`), and structured JSON snapshot (`snapshot`, schema `autojs6-plugin-mediainfo-snapshot-v1`)
-- `Feature` Discovered automatically by AutoJs6 through `org.autojs.plugin.MEDIAINFO`; the plugin receives and parses media content in its own process via read-only file descriptors, requesting no network or sensitive system permissions
-- `Feature` Ships four single-ABI packages (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) plus an all-architecture `universal` package, with release filenames carrying version, ABI, and CRC32 digest
-- `Feature` Plugin metadata, instructions, README, and changelog cover 10 languages: Simplified Chinese, Hong Kong Traditional Chinese, Taiwan Traditional Chinese, English, French, Spanish, Japanese, Korean, Russian, and Arabic
 
 ##### For more release history
 
@@ -323,9 +343,9 @@ Build release APKs:
 .\gradlew.bat :app:assembleRelease
 ```
 
-For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` pattern.
+For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` pattern.
 
-Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.0.0.
+Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.1.0.
 
 ******
 

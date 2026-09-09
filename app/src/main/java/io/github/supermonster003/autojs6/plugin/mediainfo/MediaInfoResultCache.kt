@@ -12,12 +12,14 @@ internal data class MediaFileIdentity(
     val changedSeconds: Long,
     val changedNanoseconds: Long,
     val displayName: String,
+    val sourceName: String = displayName,
 )
 
 internal data class MediaGetRequest(
     val streamKind: String,
     val streamNumber: Int,
     val parameter: String,
+    val infoKind: String = "TEXT",
 )
 
 internal data class MediaSnapshotRequest(
@@ -56,12 +58,12 @@ internal class MediaInfoResultCache(
         }
 
         fun estimatedCharacters(identity: MediaFileIdentity): Int {
-            var result = identity.displayName.length + (inform?.length ?: 0)
+            var result = identity.displayName.length + identity.sourceName.length + (inform?.length ?: 0)
             snapshots.forEach { (_, value) ->
                 result += value.length + SNAPSHOT_KEY_ESTIMATE
             }
             queries.forEach { (request, value) ->
-                result += request.streamKind.length + request.parameter.length + value.length + QUERY_KEY_ESTIMATE
+                result += request.streamKind.length + request.parameter.length + request.infoKind.length + value.length + QUERY_KEY_ESTIMATE
             }
             return result
         }

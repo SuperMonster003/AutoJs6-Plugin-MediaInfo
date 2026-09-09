@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 En el objeto devuelto, `path` e `inform` contienen la ruta resuelta y el informe de texto completo; cada tipo de flujo (como `general`, `video`, `audio`) funciona tanto como propiedad que expone los campos analizados (como `mi.video.width`, nombres de campo en camelCase) como función para consultar en vivo parámetros sin procesar (como `mi.audio("BitRate")`). Los scripts Rhino pueden acceder a cualquier ruta que el host tenga permiso de leer.
 
+Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### Estructura De La Instantánea Y Opciones
@@ -202,7 +225,7 @@ Sí. En Android 8.1 (API 27) y versiones posteriores, para un archivo normal con
 
 #### El archivo tiene varias pistas de audio o subtítulos; ¿cómo leo la segunda y siguientes?
 
-La instantánea `sections` conserva todas las secciones del informe (con varios flujos, los nombres de sección llevan un índice como `audio #2`), así que léalas desde allí; `get()` actualmente consulta siempre el primer flujo de cada tipo, y la selección por índice de flujo está planificada en [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md).
+Con el host y Node actualizados, get(path, "audio", "Format", {streamNumber: 1}) consulta el segundo audio. countGet(path, "audio") cuenta los flujos e infoKind: "MEASURE" obtiene la unidad. Consulte capabilities() y [el contrato](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md).
 
 #### ¿El plugin accede a la red o solicita permisos sensibles?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` expone cuatro métodos, `getInfo`/`inform`/`get`/`snapshot`, a través de la interfaz AIDL `IMediainfoPlugin`; el contenido multimedia se pasa como `ParcelFileDescriptor` de solo lectura más un nombre para mostrar, y `snapshot` acepta además un `Bundle` de opciones con `includeInform`/`includeSections`. Tanto el servicio como `WakeActivity` están protegidos por el permiso `org.autojs.permission.PLUGIN`.
+`MediainfoPluginService` expone seis métodos, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, a través de la interfaz AIDL `IMediainfoPlugin`; el contenido multimedia se pasa como `ParcelFileDescriptor` de solo lectura más un nombre para mostrar, y `snapshot` acepta además un `Bundle` de opciones con `includeInform`/`includeSections`. Tanto el servicio como `WakeActivity` están protegidos por el permiso `org.autojs.permission.PLUGIN`.
 
 El análisis multimedia utiliza las bibliotecas nativas MediaInfoLib incluidas.
 
@@ -249,6 +272,14 @@ Las capacidades planificadas del plugin y su estado de finalización se mantiene
 ### Historial De Versiones
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `Función` Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin
+- `Función` El esquema snapshot v2 opcional agrupa los flujos JSON nativos en matrices y expone la version del motor, manteniendo snapshot v1 por defecto
+- `Corrección` Complete name muestra la ruta original en los detalles y las instantáneas MediaInfo en lugar de la caché privada o del descriptor, conservando el nombre de archivo de la instantánea
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `Mejora` El analizador de instantáneas tolera mejor etiquetas localizadas, grupos repetidos, campos desconocidos y salidas parciales de MediaInfoLib
 - `Mejora` Se añadieron herramientas de benchmark reproducibles para llamadas en frío y en caliente, concurrencia, tiempos límite y validación con medios reales, con manifiesto de fuentes y resumen SHA-256
 - `Mejora` La generación documental validada ahora cubre 10 idiomas y produce de forma determinista README, instrucciones integradas y registros de cambios
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `Función` Primera versión estable: aporta a AutoJs6 la lectura de información de archivos multimedia mediante MediaInfoLib, obteniendo formato del contenedor, códec, duración, resolución, tasa de bits, canales y más en una sola llamada
-- `Función` API de script: el entorno Node recibe `read`/`get` asíncronos mediante `require("mediainfo")`; el entorno Rhino recibe el módulo global `mediainfo(path)` que devuelve de forma síncrona un objeto analizado accesible por propiedades
-- `Función` Tres capacidades de lectura: informe de texto completo (`inform`), consulta de parámetro único (`get`) e instantánea JSON estructurada (`snapshot`, esquema `autojs6-plugin-mediainfo-snapshot-v1`)
-- `Función` Descubierto automáticamente por AutoJs6 mediante `org.autojs.plugin.MEDIAINFO`; el plugin recibe y analiza el contenido multimedia en su propio proceso mediante descriptores de archivo de solo lectura, sin permisos de red ni permisos sensibles del sistema
-- `Función` Incluye cuatro paquetes de una sola arquitectura (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) más un paquete `universal` con todas las arquitecturas, con nombres de archivo de publicación que llevan versión, ABI y resumen CRC32
-- `Función` Los metadatos del plugin, las instrucciones, README y el registro de cambios cubren 10 idiomas: chino simplificado, chino tradicional de Hong Kong, chino tradicional de Taiwan, inglés, francés, español, japonés, coreano, ruso y árabe
 
 ##### Para más historial de versiones
 
@@ -323,9 +343,9 @@ Compilar los APK release:
 .\gradlew.bat :app:assembleRelease
 ```
 
-Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
+Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk`.
 
-Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 2.0.0.
+Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 2.1.0.
 
 ******
 

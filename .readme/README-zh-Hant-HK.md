@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 返回對象上, `path` 與 `inform` 分別為解析後的路徑與完整文本報告; 各流類型 (如 `general`, `video`, `audio`) 既可作為屬性讀取已解析字段 (如 `mi.video.width`, 字段名為 camelCase), 也可作為函數實時查詢原始參數 (如 `mi.audio("BitRate")`). Rhino 腳本可存取宿主有權讀取的任意路徑.
 
+MediaInfo 查詢支援從 0 開始的 streamNumber, countGet 串流計數以及用於單位, 說明和可讀名稱的 infoKind; Rhino 和 Node 保持預設第 1 條串流的 TEXT 查詢, 並協商外掛擴充能力:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### 快照結構與選項
@@ -202,7 +225,7 @@ Node 引擎出於安全限制只允許存取工程目錄內的文件. 請將媒�
 
 #### 文件有多條音軌或字幕, 如何讀取第二條及之後的流?
 
-快照 `sections` 會完整保留報告中的全部小節 (多流時小節名帶編號, 如 `audio #2`), 可直接從中讀取; `get()` 目前固定查詢同類流中的第 1 條, 指定流序號的能力已列入 [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md).
+升級宿主和 Node 執行環境後, 使用 get(path, "audio", "Format", {streamNumber: 1}) 查詢第 2 條音軌, 使用 countGet(path, "audio") 取得串流數量, 使用 infoKind: "MEASURE" 查詢單位. 擴充查詢前可檢查 capabilities(). 詳見 [查詢契約](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md).
 
 #### 插件會聯網或申請敏感權限嗎?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` 通過 AIDL 接口 `IMediainfoPlugin` 暴露 `getInfo`/`inform`/`get`/`snapshot` 四個方法; 媒體內容以只讀 `ParcelFileDescriptor` 加顯示名傳參, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 選項. 服務與 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 權限保護.
+`MediainfoPluginService` 通過 AIDL 接口 `IMediainfoPlugin` 暴露 `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet` 六個方法; 媒體內容以只讀 `ParcelFileDescriptor` 加顯示名傳參, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 選項. 服務與 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 權限保護.
 
 媒體解析由內置的 MediaInfoLib 原生庫提供.
 
@@ -249,6 +272,14 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ### 發行歷史
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `新增` MediaInfo 查詢支援從 0 開始的 streamNumber, countGet 串流計數以及用於單位, 說明和可讀名稱的 infoKind; Rhino 和 Node 保持預設第 1 條串流的 TEXT 查詢, 並協商外掛擴充能力
+- `新增` 明確選擇的 snapshot v2 將原生 JSON 同類串流按陣列分組並提供引擎版本, snapshot v1 繼續作為預設協定
+- `修復` MediaInfo 詳情與快照的 Complete name 顯示原始檔案路徑, 避免顯示私有快取或描述符路徑, 同時保留快照的顯示檔案名稱
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `優化` 增強快照小節解析, 正確處理重複和編號流, 畸形行, 值內冒號, 重複字段與獨立輸出選項
 - `優化` 加入可重現的合成基準與真實媒體驗證工具, 並記錄 x86, x86_64 與 ARM64 的完整效能基線
 - `優化` 重建 10 語言 README, 插件使用說明與更新日誌生成鏈路, 加入漂移校驗和 GitHub Actions 門禁
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `新增` 首個正式版本: 為 AutoJs6 提供基於 MediaInfoLib 的媒體文件信息讀取能力, 一次調用即可獲取容器格式, 編碼, 時長, 分辨率, 碼率, 聲道等技術參數
-- `新增` 腳本 API: Node 環境 `require("mediainfo")` 提供異步 `read`/`get`; Rhino 環境全局模塊 `mediainfo(path)` 同步返回可屬性存取的解析對象
-- `新增` 三種讀取能力: 完整文本報告 (`inform`), 單項參數查詢 (`get`), 結構化 JSON 快照 (`snapshot`, schema 為 `autojs6-plugin-mediainfo-snapshot-v1`)
-- `新增` 支援被 AutoJs6 通過 `org.autojs.plugin.MEDIAINFO` 自動發現; 插件在獨立進程中以只讀文件描述符接收並解析媒體內容, 不申請網絡與任何敏感系統權限
-- `新增` 提供 `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` 四種單架構安裝包與包含全部架構的 `universal` 包, 發布文件名含版本號, 架構與 CRC32 摘要
-- `新增` 插件信息, 使用說明, README 與更新日誌覆蓋 10 種語言: 簡體中文, 香港繁體, 台灣繁體, 英語, 法語, 西班牙語, 日語, 韓語, 俄語與阿拉伯語
 
 ##### 更多發行歷史可參閱
 
@@ -323,9 +343,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 形式.
+發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` 形式.
 
-構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.0.0.
+構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.1.0.
 
 ******
 

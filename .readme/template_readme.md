@@ -110,6 +110,29 @@ console.log(mi.audio("BitRate"));
 
 {{ p_script_api_rhino_note }}
 
+{{ p_query_options }}:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### {{ h3_snapshot }}

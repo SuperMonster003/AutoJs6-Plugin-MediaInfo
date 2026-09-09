@@ -78,7 +78,7 @@
     },
     {
       "q": "Le fichier a plusieurs pistes audio ou sous-titres; comment lire la deuxième piste et les suivantes?",
-      "a": "L'instantané `sections` conserve toutes les sections du rapport (avec plusieurs flux, les noms de sections portent un indice comme `audio #2`), lisez-les donc directement; `get()` interroge actuellement toujours le premier flux d'un type, et la sélection par indice de flux est prévue dans [ROADMAP.md]({{ roadmap_url }})."
+      "a": "Après mise à jour de l'hôte et du runtime Node, get(path, \"audio\", \"Format\", {streamNumber: 1}) interroge le deuxième flux audio. countGet(path, \"audio\") compte les flux et infoKind: \"MEASURE\" renvoie l'unité. Vérifiez capabilities(). Voir [le contrat]({{ repo_url }}/blob/master/MEDIAINFO_QUERY.md)."
     },
     {
       "q": "Le plugin accède-t-il au réseau ou demande-t-il des permissions sensibles?",
@@ -97,7 +97,7 @@
   "p_security_permission": "N'installez le plugin que depuis la page officielle [Releases]({{ repo_url }}/releases) ou d'autres canaux de confiance; des paquets d'origine inconnue peuvent être altérés même si le nom et le numéro de version semblent identiques.",
   "h3_plugin_interface": "Interface Du Plugin",
   "p_plugin_interface": "Les informations suivantes s'adressent aux développeurs de l'hôte AutoJs6 et de plugins; l'hôte utilise ces identifiants pour découvrir le plugin et négocier les capacités",
-  "p_contract_service": "`MediainfoPluginService` expose quatre méthodes, `getInfo`/`inform`/`get`/`snapshot`, via l'interface AIDL `IMediainfoPlugin`; le contenu multimédia est transmis sous forme de `ParcelFileDescriptor` en lecture seule plus un nom d'affichage, et `snapshot` accepte en outre un `Bundle` d'options portant `includeInform`/`includeSections`. Le service et `WakeActivity` sont tous deux protégés par la permission `org.autojs.permission.PLUGIN`.",
+  "p_contract_service": "`MediainfoPluginService` expose six méthodes, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, via l'interface AIDL `IMediainfoPlugin`; le contenu multimédia est transmis sous forme de `ParcelFileDescriptor` en lecture seule plus un nom d'affichage, et `snapshot` accepte en outre un `Bundle` d'options portant `includeInform`/`includeSections`. Le service et `WakeActivity` sont tous deux protégés par la permission `org.autojs.permission.PLUGIN`.",
   "p_abi_reporting": "L'analyse multimédia utilise les bibliothèques natives MediaInfoLib incluses.",
   "h3_roadmap": "Feuille De Route",
   "p_roadmap": "Les capacités prévues du plugin et leur état d'avancement sont maintenus sous forme de liste cochable dans ROADMAP.md, organisée par jalons avec critères d'acceptation, couvrant les requêtes par indice de flux, l'analyse sans copie, le rapport ABI dynamique, l'évolution de la bibliothèque native et l'intégration continue. Les éléments non cochés sont des intentions et non des capacités livrées; les discussions via Issues sont bienvenues.",
@@ -120,5 +120,6 @@
   "text_link_mediainfo_official": "Site officiel MediaInfo",
   "text_link_mediainfolib_official": "Projet MediaInfoLib",
   "text_link_mediainfo_android": "Enveloppe MediaInfoLib Android",
-  "p_instruction_docs": "Pour plus de détails d'utilisation et la référence des champs, consultez la [documentation AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) et la [page du projet]({{ repo_url }})."
+  "p_instruction_docs": "Pour plus de détails d'utilisation et la référence des champs, consultez la [documentation AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) et la [page du projet]({{ repo_url }}).",
+  "p_query_options": "Les requêtes MediaInfo prennent en charge streamNumber à partir de 0, countGet et infoKind pour les unités, descriptions et noms lisibles; Rhino et Node conservent TEXT sur le premier flux par défaut et négocient les capacités du plugin"
 }

@@ -78,7 +78,7 @@
     },
     {
       "q": "يحتوي الملف على عدة مسارات صوتية أو ترجمات; كيف أقرأ الثاني وما بعده?",
-      "a": "تحتفظ لقطة `sections` بكل أقسام التقرير (مع تعدد التدفقات تحمل أسماء الأقسام رقما مثل `audio #2`), فاقرأها من هناك مباشرة; أما `get()` فتستعلم حاليا عن أول تدفق من كل نوع دائما, واختيار رقم التدفق مخطط له في [ROADMAP.md]({{ roadmap_url }})."
+      "a": "بعد تحديث المضيف وNode استخدم get(path, \"audio\", \"Format\", {streamNumber: 1}) للمسار الصوتي الثاني وcountGet(path, \"audio\") لعدد المسارات وinfoKind: \"MEASURE\" للوحدة. تحقق من capabilities() و[العقد]({{ repo_url }}/blob/master/MEDIAINFO_QUERY.md)."
     },
     {
       "q": "هل يصل المكون الإضافي إلى الشبكة أو يطلب أذونات حساسة?",
@@ -97,7 +97,7 @@
   "p_security_permission": "ثبت المكون الإضافي فقط من صفحة [Releases]({{ repo_url }}/releases) الرسمية أو من قنوات موثوقة أخرى; فقد تكون الحزم مجهولة المصدر معدلة حتى لو بدا الاسم ورقم الإصدار متطابقين.",
   "h3_plugin_interface": "واجهة المكون الإضافي",
   "p_plugin_interface": "المعلومات التالية موجهة لمطوري مضيف AutoJs6 والمكونات الإضافية; يستخدم المضيف هذه المعرفات لاكتشاف المكون والتفاوض على القدرات",
-  "p_contract_service": "تكشف `MediainfoPluginService` أربع طرق, `getInfo`/`inform`/`get`/`snapshot`, عبر واجهة AIDL باسم `IMediainfoPlugin`; يمرر محتوى الوسائط كـ `ParcelFileDescriptor` للقراءة فقط مع اسم للعرض, وتقبل `snapshot` إضافة إلى ذلك حزمة `Bundle` من الخيارات تحمل `includeInform`/`includeSections`. الخدمة و `WakeActivity` كلتاهما محميتان بإذن `org.autojs.permission.PLUGIN`.",
+  "p_contract_service": "تكشف `MediainfoPluginService` ست طرق, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, عبر واجهة AIDL باسم `IMediainfoPlugin`; يمرر محتوى الوسائط كـ `ParcelFileDescriptor` للقراءة فقط مع اسم للعرض, وتقبل `snapshot` إضافة إلى ذلك حزمة `Bundle` من الخيارات تحمل `includeInform`/`includeSections`. الخدمة و `WakeActivity` كلتاهما محميتان بإذن `org.autojs.permission.PLUGIN`.",
   "p_abi_reporting": "يعتمد تحليل الوسائط على مكتبات MediaInfoLib الأصلية المضمنة.",
   "h3_roadmap": "خارطة الطريق",
   "p_roadmap": "تدار قدرات المكون المخطط لها وحالة إنجازها كقائمة قابلة للتأشير في ROADMAP.md, منظمة حسب مراحل رئيسية مع معايير قبول, وتغطي الاستعلام برقم التدفق, والتحليل دون نسخ, والإبلاغ الديناميكي عن ABI, وتطور المكتبة الأصلية, والتكامل المستمر. البنود غير المؤشرة نوايا وليست قدرات مسلمة; والنقاش عبر Issues موضع ترحيب.",
@@ -120,5 +120,6 @@
   "text_link_mediainfo_official": "موقع MediaInfo الرسمي",
   "text_link_mediainfolib_official": "مشروع MediaInfoLib",
   "text_link_mediainfo_android": "غلاف MediaInfoLib Android",
-  "p_instruction_docs": "لمزيد من تفاصيل الاستخدام ومرجع الحقول, راجع [وثائق AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) و [صفحة المشروع]({{ repo_url }})."
+  "p_instruction_docs": "لمزيد من تفاصيل الاستخدام ومرجع الحقول, راجع [وثائق AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) و [صفحة المشروع]({{ repo_url }}).",
+  "p_query_options": "تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة"
 }

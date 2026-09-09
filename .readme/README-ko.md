@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 반환된 객체의 `path` 와 `inform` 은 각각 해석된 경로와 전체 텍스트 보고서입니다. 각 스트림 종류 (`general`, `video`, `audio` 등) 는 분석된 필드를 노출하는 속성 (예: `mi.video.width`, 필드명은 camelCase) 이자 원본 매개변수를 실시간 조회하는 함수 (예: `mi.audio("BitRate")`) 로도 동작합니다. Rhino 스크립트는 호스트가 읽을 수 있는 모든 경로에 접근할 수 있습니다.
 
+MediaInfo 쿼리는 0부터 시작하는 streamNumber, countGet 스트림 수, 단위와 설명 및 표시 이름을 위한 infoKind를 지원; Rhino와 Node는 첫 스트림의 TEXT 기본 쿼리를 유지하고 플러그인 확장 기능을 확인:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### 스냅샷 구조와 옵션
@@ -202,7 +225,7 @@ Node 엔진은 보안상 프로젝트 디렉터리 안의 파일만 접근을 �
 
 #### 파일에 오디오 트랙이나 자막이 여러 개인데, 두 번째 이후 스트림은 어떻게 읽나요?
 
-스냅샷의 `sections` 는 보고서의 모든 섹션을 보존하므로 (스트림이 여러 개면 섹션 이름에 `audio #2` 처럼 번호가 붙습니다) 거기서 바로 읽으면 됩니다. `get()` 은 현재 같은 종류 스트림 중 첫 번째만 조회하며, 스트림 번호 지정 기능은 [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md) 에 계획되어 있습니다.
+호스트와 Node 업데이트 후 get(path, "audio", "Format", {streamNumber: 1})로 두 번째 오디오를 조회합니다. countGet(path, "audio")는 스트림 수, infoKind: "MEASURE"는 단위를 반환합니다. capabilities()와 [쿼리 계약](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md)을 확인하세요.
 
 #### 플러그인이 네트워크에 접속하거나 민감한 권한을 요청하나요?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` 는 AIDL 인터페이스 `IMediainfoPlugin` 을 통해 `getInfo`/`inform`/`get`/`snapshot` 네 가지 메서드를 노출합니다. 미디어 내용은 읽기 전용 `ParcelFileDescriptor` 와 표시 이름으로 전달되며, `snapshot` 은 추가로 `includeInform`/`includeSections` 를 담은 `Bundle` 옵션을 받습니다. 서비스와 `WakeActivity` 모두 `org.autojs.permission.PLUGIN` 권한으로 보호됩니다.
+`MediainfoPluginService` 는 AIDL 인터페이스 `IMediainfoPlugin` 을 통해 `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet` 여섯 가지 메서드를 노출합니다. 미디어 내용은 읽기 전용 `ParcelFileDescriptor` 와 표시 이름으로 전달되며, `snapshot` 은 추가로 `includeInform`/`includeSections` 를 담은 `Bundle` 옵션을 받습니다. 서비스와 `WakeActivity` 모두 `org.autojs.permission.PLUGIN` 권한으로 보호됩니다.
 
 미디어 분석에는 포함된 MediaInfoLib 네이티브 라이브러리를 사용합니다.
 
@@ -249,6 +272,14 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ### 릴리스 기록
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `추가` MediaInfo 쿼리는 0부터 시작하는 streamNumber, countGet 스트림 수, 단위와 설명 및 표시 이름을 위한 infoKind를 지원; Rhino와 Node는 첫 스트림의 TEXT 기본 쿼리를 유지하고 플러그인 확장 기능을 확인
+- `추가` 명시적으로 선택하는 snapshot v2는 네이티브 JSON의 같은 종류 스트림을 배열로 묶고 엔진 버전을 제공하며 snapshot v1 기본값은 유지
+- `수정` MediaInfo 상세 정보와 스냅샷의 Complete name에 비공개 캐시나 디스크립터 경로 대신 원본 파일 경로를 표시하고 스냅샷의 표시 파일 이름은 유지
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `개선` 스냅샷 파서가 현지화된 레이블, 반복 그룹, 알 수 없는 필드, MediaInfoLib의 부분 출력을 더 견고하게 처리합니다
 - `개선` 콜드와 웜 호출, 동시성, 시간 제한, 실제 미디어 검증을 위한 재현 가능한 벤치마크 도구를 추가하고 소스 매니페스트와 SHA-256 요약을 기록합니다
 - `개선` 검증된 문서 생성이 이제 10개 언어를 지원하며 README, 내장 지침, 변경 기록을 결정적으로 생성합니다
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `추가` 첫 안정 버전: MediaInfoLib 기반 미디어 파일 정보 읽기를 AutoJs6 에 제공하여, 한 번의 호출로 컨테이너 형식, 코덱, 재생 시간, 해상도, 비트레이트, 채널 수 등을 얻을 수 있음
-- `추가` 스크립트 API: Node 환경은 `require("mediainfo")` 로 비동기 `read`/`get` 을, Rhino 환경은 속성 접근 가능한 분석 객체를 동기적으로 반환하는 전역 모듈 `mediainfo(path)` 를 사용 가능
-- `추가` 세 가지 읽기 기능: 전체 텍스트 보고서 (`inform`), 단일 매개변수 조회 (`get`), 구조화된 JSON 스냅샷 (`snapshot`, 스키마 `autojs6-plugin-mediainfo-snapshot-v1`)
-- `추가` `org.autojs.plugin.MEDIAINFO` 를 통해 AutoJs6 이 자동 발견; 플러그인은 독립 프로세스에서 읽기 전용 파일 디스크립터로 미디어 내용을 받아 분석하며, 네트워크나 민감한 시스템 권한을 요청하지 않음
-- `추가` 단일 아키텍처 패키지 4 종 (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) 과 모든 아키텍처를 포함한 `universal` 패키지 제공, 릴리스 파일명에 버전, ABI, CRC32 요약 포함
-- `추가` 플러그인 정보, 사용 설명, README, 변경 로그가 10 개 언어 지원: 중국어 간체, 홍콩 번체, 대만 번체, 영어, 프랑스어, 스페인어, 일본어, 한국어, 러시아어, 아랍어
 
 ##### 더 많은 릴리스 기록
 
@@ -323,9 +343,9 @@ release APK 빌드:
 .\gradlew.bat :app:assembleRelease
 ```
 
-릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
+릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
 
-빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 2.0.0.
+빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 2.1.0.
 
 ******
 
