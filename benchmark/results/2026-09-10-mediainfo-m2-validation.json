@@ -1,0 +1,217 @@
+{
+  "schema": "autojs6-plugin-mediainfo-m2-validation-v1",
+  "generatedAtUtc": "2026-09-09T19:45:07.132740+00:00",
+  "sourceRevision": "c18602ce6044e395cfe8ad893b309b13f5ae4c70",
+  "version": {
+    "name": "2.1.0",
+    "code": 11,
+    "published": false
+  },
+  "companionRevisions": {
+    "autojs6": {
+      "branch": "feature/mediainfo-m2-query",
+      "commit": "f07f4294cd5e0bcc177abc7b1a2e45b28facc6c7"
+    },
+    "nodeRuntime": {
+      "branch": "feature/mediainfo-m2-query",
+      "commit": "8f3fca8502c24e5614c25739ae97e9021493fa28"
+    },
+    "documentation": {
+      "branch": "feature/mediainfo-m2-query",
+      "commit": "027a39870c3534e0eb28f81f3e24a6f86e314f8d"
+    },
+    "typescriptDeclarations": {
+      "branch": "feature/mediainfo-m2-query",
+      "commit": "29777c4414962806d3640c3303df480e70578639"
+    },
+    "aceEditor": {
+      "branch": "feature/mediainfo-m2-query",
+      "commit": "992446316f36323ebec0facd75bac96e957d366a"
+    },
+    "offlineDocumentation": {
+      "branch": "feature/mediainfo-m2-query",
+      "commit": "f0d90a6326ef63897e786be9e4f3f2d7d9121792"
+    }
+  },
+  "fixture": {
+    "path": "app/src/androidTest/assets/mediainfo-two-audio.mka",
+    "sha256": "fa26e03f372ac7a31a094a210a9ac6ef57a24a47199a8b372efb856a7a2a1113",
+    "tracks": [
+      "PCM 8000 Hz mono",
+      "PCM 16000 Hz stereo"
+    ],
+    "durationMs": 100
+  },
+  "unitTests": {
+    "plugin": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "sharedApi": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "nodeRuntime": {
+      "tests": 75,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "offlineDocs": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "deviceChecks": {
+    "pluginArm64": {
+      "result": "passed",
+      "summary": "OK (9 tests)",
+      "logSha256": "7a9b0146ebee1bcce41ad96400168ab787bc03cf1f37ba978601f73165b3889e"
+    },
+    "pluginX86_64": {
+      "result": "passed",
+      "summary": "OK (9 tests)",
+      "logSha256": "7f7ed3f0e9f6433e66ea781dfe7fe85c28ae8af5b04d2c7e9762b92fa25c5e9c"
+    },
+    "releaseArm64": {
+      "result": "passed",
+      "summary": "OK (1 test)",
+      "logSha256": "16fe76918cdd4189edcdd10508d48e11dc37d95ba315f8a1226fd8ad7874680f"
+    },
+    "releaseX86_64": {
+      "result": "passed",
+      "summary": "OK (1 test)",
+      "logSha256": "77d9dcc73ca686d8506cff5e3b1799508d314876ff1501ea8fd9b2f8e70cafd3"
+    },
+    "hostRhinoAndNode": {
+      "result": "passed",
+      "summary": "OK (7 tests)",
+      "logSha256": "95c700c9b1e6ac98726085993899e344e9c706b4475c4f5e7f239382b6681def"
+    },
+    "nodeConformanceAndNpm": {
+      "result": "passed",
+      "summary": "OK (12 tests)",
+      "logSha256": "5ad996b4cdef43c5ece9afd6726605e6013f8bc95d476e24996164420aff9e2c"
+    }
+  },
+  "devices": [
+    {
+      "serial": "QV710AF65F",
+      "abi": "arm64-v8a",
+      "api": 31,
+      "kind": "physical"
+    },
+    {
+      "serial": "emulator-5582",
+      "abi": "x86_64",
+      "api": 36,
+      "kind": "emulator"
+    }
+  ],
+  "behaviorVerified": [
+    "Original source identity in Complete name for direct FD and pipe-copy reports",
+    "Original identity in snapshot v1/v2 inform with unchanged display filename",
+    "Old-plugin report and snapshot identity normalization in the host",
+    "Second audio stream value and MEASURE unit through real Rhino and Node/compat providers",
+    "Stream counting, absent streams, strict query validation and cache isolation",
+    "Old-host detailed queries and countGet fail before sending an unsupported query",
+    "All six public AIDL methods remain reachable in a minified Release APK"
+  ],
+  "buildChecks": {
+    "plugin": "gradlew --offline :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest :app:assembleRelease",
+    "native": "verify_native_build.py --ndk <NDK 29.0.14206865> --apk-dir app/build/outputs/apk/release",
+    "sharedApi": "Release AAR class bytes match the host-built shared API (13 classes)",
+    "node": "NDK compile_commands.json -fsyntax-only; testDebugUnitTest, assembleDebug, assembleDebugAndroidTest, typeCheckNodeTypescriptSmoke, verifyNodePluginExamples",
+    "types": "aj6dts.bat -Publish with isolated host/declaration/Ace roots; TypeScript declaration validation and mediainfo-query-smoke.ts",
+    "ace": "generateAutoJs6LspDeclarations",
+    "docs": "normalize-markdown.py --check; full generation --check; BAT --dry-run then --verify-offline",
+    "offline": "testDebugUnitTest, verifyOfflineDocsApks, verifyReleaseSigning; final source provenance binds documentation commit",
+    "markdown": "MediaInfo languages=10 artifacts=36; Node generated-files=35; host, Ace and Offline generated from multilingual JSON"
+  },
+  "hostAndroidTestLimitation": {
+    "fullSourceSetCompiled": false,
+    "cause": "Existing console instrumentation tests reference removed or changed ConsoleView methods in the selected host baseline.",
+    "excludedFiles": [
+      "ConsoleViewLayoutDeviceTest.kt",
+      "ConsoleViewStackFrameLinkDeviceTest.kt"
+    ],
+    "missingApis": [
+      "setCommandInputVisible",
+      "createClickableContent old overload"
+    ],
+    "scope": "Temporary external Gradle init script excluded only these two baseline files; production APK and the two complete MediaInfo/Rhino/Node test classes compiled and passed. No exclusion was added to source control."
+  },
+  "offlineContent": {
+    "files": 184,
+    "bytes": 10542542,
+    "canonicalSha256": "1183ed5d038ca82cfe045fa1e173cb47b439cbee1c2e6c7f3e360551d53c6812",
+    "changedAssets": [
+      "assets/offline-search-index.js",
+      "changelog.html",
+      "mediainfo.html",
+      "progress.html"
+    ],
+    "removedAssets": 0
+  },
+  "releaseAssets": [
+    {
+      "abi": "arm64-v8a",
+      "path": "build/releases/v2.1.0/autojs6-plugin-mediainfo-v2.1.0-arm64-v8a-edcd2557.apk",
+      "sizeBytes": 2963511,
+      "crc32": "edcd2557",
+      "sha256": "9753f120f18cfe07328a94cbe4fb6c900008d9c0f502ac8754f0f009199ff3a5",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 11
+    },
+    {
+      "abi": "armeabi-v7a",
+      "path": "build/releases/v2.1.0/autojs6-plugin-mediainfo-v2.1.0-armeabi-v7a-a4798d19.apk",
+      "sizeBytes": 2733557,
+      "crc32": "a4798d19",
+      "sha256": "d7a42d6ccd0e4092b70085ec0500e870692622a43ccea7f39b38917ac31ea2fb",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 11
+    },
+    {
+      "abi": "universal",
+      "path": "build/releases/v2.1.0/autojs6-plugin-mediainfo-v2.1.0-universal-9c0dc331.apk",
+      "sizeBytes": 11733737,
+      "crc32": "9c0dc331",
+      "sha256": "019578189f94334ffb342da7fe8d3c87c966f8d9f9676cc406e51968b1615fb2",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 11
+    },
+    {
+      "abi": "x86",
+      "path": "build/releases/v2.1.0/autojs6-plugin-mediainfo-v2.1.0-x86-4a6abdd4.apk",
+      "sizeBytes": 3351845,
+      "crc32": "4a6abdd4",
+      "sha256": "73bf0e80fa1e1f6fb2ff45db196d57cfdc9efdd334c023474867c3c1473ffcab",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 11
+    },
+    {
+      "abi": "x86_64",
+      "path": "build/releases/v2.1.0/autojs6-plugin-mediainfo-v2.1.0-x86_64-144abd17.apk",
+      "sizeBytes": 3085872,
+      "crc32": "144abd17",
+      "sha256": "811dd990317018b6f36c982f52fc0d1104aa46d315dc08c47062e07f54327482",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 11
+    }
+  ],
+  "deferred": [
+    "Info_Parameters remains deferred; it is not carried in discovery capabilities."
+  ]
+}
