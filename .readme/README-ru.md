@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 У возвращаемого объекта `path` и `inform` содержат разрешенный путь и полный текстовый отчет; каждый тип потока (например `general`, `video`, `audio`) работает и как свойство с разобранными полями (например `mi.video.width`, имена полей в camelCase), и как функция для живого запроса исходных параметров (например `mi.audio("BitRate")`). Скрипты Rhino могут обращаться к любому пути, доступному хосту для чтения.
 
+Запросы MediaInfo поддерживают streamNumber с нуля, подсчет потоков countGet и infoKind для единиц, описаний и читаемых имен; Rhino и Node сохраняют TEXT первого потока по умолчанию и согласуют возможности плагина:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### Структура Снимка И Параметры
@@ -202,7 +225,7 @@ general, video, audio, text, other, image, menu
 
 #### В файле несколько аудиодорожек или субтитров; как прочитать вторую и последующие?
 
-Снимок `sections` сохраняет все разделы отчета (при нескольких потоках имена разделов содержат номер, например `audio #2`), читайте их оттуда; `get()` пока всегда запрашивает первый поток каждого типа, а выбор по номеру потока запланирован в [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md).
+После обновления хоста и Node запрос get(path, "audio", "Format", {streamNumber: 1}) читает второй аудиопоток. countGet(path, "audio") считает потоки, infoKind: "MEASURE" возвращает единицу. Проверьте capabilities() и [контракт](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md).
 
 #### Обращается ли плагин к сети или запрашивает чувствительные разрешения?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` предоставляет четыре метода, `getInfo`/`inform`/`get`/`snapshot`, через AIDL интерфейс `IMediainfoPlugin`; медиаконтент передается как `ParcelFileDescriptor` только для чтения плюс отображаемое имя, а `snapshot` дополнительно принимает `Bundle` с параметрами `includeInform`/`includeSections`. Сервис и `WakeActivity` защищены разрешением `org.autojs.permission.PLUGIN`.
+`MediainfoPluginService` предоставляет шесть методов, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, через AIDL интерфейс `IMediainfoPlugin`; медиаконтент передается как `ParcelFileDescriptor` только для чтения плюс отображаемое имя, а `snapshot` дополнительно принимает `Bundle` с параметрами `includeInform`/`includeSections`. Сервис и `WakeActivity` защищены разрешением `org.autojs.permission.PLUGIN`.
 
 Для анализа медиафайлов используются встроенные нативные библиотеки MediaInfoLib.
 
@@ -249,6 +272,14 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ### История Выпусков
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `Функция` Запросы MediaInfo поддерживают streamNumber с нуля, подсчет потоков countGet и infoKind для единиц, описаний и читаемых имен; Rhino и Node сохраняют TEXT первого потока по умолчанию и согласуют возможности плагина
+- `Функция` Явно выбранная схема snapshot v2 группирует потоки из нативного JSON в массивы и предоставляет версию движка, сохраняя snapshot v1 по умолчанию
+- `Исправление` Complete name в подробностях и снимках MediaInfo показывает исходный путь вместо приватного кеша или дескриптора, сохраняя отображаемое имя файла снимка
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `Улучшение` Парсер снимков надежнее обрабатывает локализованные метки, повторяющиеся группы, неизвестные поля и частичный вывод MediaInfoLib
 - `Улучшение` Добавлены воспроизводимые инструменты тестирования холодных и теплых вызовов, параллельности, тайм-аутов и реальных медиа с манифестом источников и сводкой SHA-256
 - `Улучшение` Проверяемая генерация документации теперь охватывает 10 языков и детерминированно создает README, встроенные инструкции и журналы изменений
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `Функция` Первый стабильный выпуск: приносит в AutoJs6 чтение информации о медиафайлах на базе MediaInfoLib, получая формат контейнера, кодек, длительность, разрешение, битрейт, каналы и другое за один вызов
-- `Функция` API скриптов: среда Node получает асинхронные `read`/`get` через `require("mediainfo")`; среда Rhino получает глобальный модуль `mediainfo(path)`, синхронно возвращающий разобранный объект с доступом по свойствам
-- `Функция` Три возможности чтения: полный текстовый отчет (`inform`), запрос отдельного параметра (`get`) и структурированный JSON снимок (`snapshot`, схема `autojs6-plugin-mediainfo-snapshot-v1`)
-- `Функция` Автоматически обнаруживается AutoJs6 через `org.autojs.plugin.MEDIAINFO`; плагин получает и разбирает медиаконтент в собственном процессе через файловые дескрипторы только для чтения, не запрашивая сетевых и чувствительных системных разрешений
-- `Функция` Поставляются четыре пакета под одну архитектуру (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) плюс пакет `universal` со всеми архитектурами; имена файлов выпуска содержат версию, ABI и дайджест CRC32
-- `Функция` Метаданные плагина, инструкции, README и журнал изменений охватывают 10 языков: упрощенный китайский, традиционный китайский Гонконга, традиционный китайский Тайваня, английский, французский, испанский, японский, корейский, русский и арабский
 
 ##### Больше истории выпусков
 
@@ -323,9 +343,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-Для архивирования выпуска запустите задачу `:app:appendDigestToReleasedFiles`, которая копирует APK из `app/release` в `app/releases` и переименовывает их по шаблону `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
+Для архивирования выпуска запустите задачу `:app:appendDigestToReleasedFiles`, которая копирует APK из `app/release` в `app/releases` и переименовывает их по шаблону `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk`.
 
-Параметры сборки собраны в `version.properties`: минимальный SDK 24 (Android 7.0), целевой SDK 36, текущая версия 2.0.0.
+Параметры сборки собраны в `version.properties`: минимальный SDK 24 (Android 7.0), целевой SDK 36, текущая версия 2.1.0.
 
 ******
 

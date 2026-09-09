@@ -11,6 +11,9 @@ import android.system.StructPollfd
 import org.autojs.plugin.common.api.PluginInfo
 import org.autojs.plugin.mediainfo.api.IMediainfoPlugin
 import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
+import org.autojs.plugin.mediainfo.api.MediainfoOptionKeys
+import org.autojs.plugin.mediainfo.api.MediainfoQueryOptions
+import org.autojs.plugin.mediainfo.api.MediainfoReportIdentity
 import org.json.JSONArray
 import org.json.JSONObject
 import org.mediainfo.android.MediaInfo
@@ -63,11 +66,7 @@ class MediainfoPluginService : Service() {
         override fun inform(mediaFd: ParcelFileDescriptor?, displayName: String?): String {
             return withCallTimeout { call ->
                 withMediaSource(mediaFd, displayName, call) { source ->
-                    resultCache.getInform(source.cacheIdentity)?.let { cached ->
-                        return@withMediaSource MediaParseAttempt(cached, true)
-                    }
-                    val inform = call.withMediaInfo { it.getMI(source.path).orEmpty() }
-                    if (inform.isNotBlank()) resultCache.putInform(source.cacheIdentity, inform)
+                    val inform = getOrParseInform(source, call)
                     MediaParseAttempt(inform, inform.isNotBlank())
                 }
             }
@@ -79,8 +78,23 @@ class MediainfoPluginService : Service() {
             streamKind: String?,
             streamNumber: Int,
             parameter: String?,
+        ): String = getDetail(mediaFd, displayName, streamKind, streamNumber, parameter, "TEXT")
+
+        override fun getDetail(
+            mediaFd: ParcelFileDescriptor?,
+            displayName: String?,
+            streamKind: String?,
+            streamNumber: Int,
+            parameter: String?,
+            infoKind: String?,
         ): String {
             return withCallTimeout { call ->
+                val query = try {
+                    MediainfoQueryOptions.parse(streamNumber, infoKind)
+                } catch (error: Throwable) {
+                    runCatching { mediaFd?.close() }
+                    throw error
+                }
                 val resolvedStreamKind = try {
                     streamKind.toMediaInfoStreamKind()
                 } catch (error: Throwable) {
@@ -92,6 +106,7 @@ class MediainfoPluginService : Service() {
                     streamKind = resolvedStreamKind.name,
                     streamNumber = streamNumber,
                     parameter = resolvedParameter,
+                    infoKind = query.infoKind,
                 )
                 withMediaSource(mediaFd, displayName, call) { source ->
                     resultCache.getQuery(source.cacheIdentity, request)?.let { cached ->
@@ -104,11 +119,12 @@ class MediainfoPluginService : Service() {
                             resolvedStreamKind,
                             streamNumber,
                             resolvedParameter,
+                            MediaInfo.InfoKind.valueOf(query.infoKind),
                         )
                         val validationReport = if (
                             source.kind == MediaInputKind.DIRECT_DESCRIPTOR && value.isEmpty() && cachedInform == null
                         ) {
-                            mediaInfo.getMI(source.path).orEmpty()
+                            MediainfoReportIdentity.inform(mediaInfo.getMI(source.path), source.sourceName)
                         } else {
                             null
                         }
@@ -124,16 +140,42 @@ class MediainfoPluginService : Service() {
                     if (!parsed) {
                         MediaParseAttempt("", false)
                     } else {
-                        resultCache.putQuery(source.cacheIdentity, request, nativeResult.value)
-                        MediaParseAttempt(nativeResult.value, true)
+                        val value = if (resolvedStreamKind == MediaInfo.StreamKind.GENERAL &&
+                            streamNumber == 0 && resolvedParameter == "CompleteName" && query.infoKind == "TEXT"
+                        ) source.sourceName else nativeResult.value
+                        resultCache.putQuery(source.cacheIdentity, request, value)
+                        MediaParseAttempt(value, true)
                     }
                 }
             }
         }
 
+        override fun countGet(mediaFd: ParcelFileDescriptor?, displayName: String?, streamKind: String?): Int =
+            withCallTimeout { call ->
+                val kind = try {
+                    streamKind.toMediaInfoStreamKind().also {
+                        require(it != MediaInfo.StreamKind.MAX) { "Unsupported MediaInfo stream kind: $streamKind" }
+                    }
+                } catch (error: Throwable) {
+                    runCatching { mediaFd?.close() }
+                    throw error
+                }
+                val request = MediaGetRequest(kind.name, -1, "", "COUNT")
+                withMediaSource(mediaFd, displayName, call) { source ->
+                    resultCache.getQuery(source.cacheIdentity, request)?.let { cached ->
+                        return@withMediaSource MediaParseAttempt(cached.value.toInt(), true)
+                    }
+                    val count = call.withMediaInfo { it.countGet(source.path, kind) }
+                    if (count >= 0) resultCache.putQuery(source.cacheIdentity, request, count.toString())
+                    MediaParseAttempt(count, count >= 0)
+                }
+            }
+
         override fun snapshot(mediaFd: ParcelFileDescriptor?, displayName: String?, options: Bundle?): String {
             return withCallTimeout { call ->
+                var sourceName = displayName
                 val snapshotOptions = try {
+                    sourceName = options?.getString(MediainfoOptionKeys.SOURCE_NAME) ?: displayName
                     parseSnapshotOptions(
                         readBoolean = { key, defaultValue ->
                             options?.getBoolean(key, defaultValue) ?: defaultValue
@@ -144,7 +186,7 @@ class MediainfoPluginService : Service() {
                     runCatching { mediaFd?.close() }
                     throw error
                 }
-                withMediaSource(mediaFd, displayName, call) { source ->
+                withMediaSource(mediaFd, displayName, call, sourceName) { source ->
                     val request = MediaSnapshotRequest(
                         includeInform = snapshotOptions.includeInform,
                         includeSections = snapshotOptions.includeSections,
@@ -219,7 +261,9 @@ class MediainfoPluginService : Service() {
 
     private fun getOrParseInform(source: MediaInputSource, call: MediaInfoCallGuard): String =
         resultCache.getInform(source.cacheIdentity)
-            ?: call.withMediaInfo { it.getMI(source.path).orEmpty() }.also { report ->
+            ?: call.withMediaInfo {
+                MediainfoReportIdentity.inform(it.getMI(source.path), source.sourceName)
+            }.also { report ->
                 if (report.isNotBlank()) resultCache.putInform(source.cacheIdentity, report)
             }
 
@@ -251,13 +295,14 @@ class MediainfoPluginService : Service() {
         mediaFd: ParcelFileDescriptor?,
         displayName: String?,
         call: MediaInfoCallGuard,
+        sourceName: String? = displayName,
         parse: (MediaInputSource) -> MediaParseAttempt<T>,
     ): T {
         val descriptor = requireNotNull(mediaFd) { getString(R.string.error_media_file_descriptor_null) }
         var descriptorOwnedByStream = false
         try {
             call.throwIfCanceled()
-            MediaInputAccess.directSource(descriptor, displayName)?.let { directSource ->
+            MediaInputAccess.directSource(descriptor, displayName, sourceName)?.let { directSource ->
                 val attempt = parse(directSource)
                 if (attempt.parsed) return attempt.value
             }
@@ -283,6 +328,7 @@ class MediainfoPluginService : Service() {
                         path = file.absolutePath,
                         sizeBytes = file.length(),
                         kind = MediaInputKind.PRIVATE_COPY,
+                        sourceName = sourceName.orEmpty(),
                     ),
                 ).value
             } finally {

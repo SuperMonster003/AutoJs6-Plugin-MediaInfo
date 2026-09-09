@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 返回对象上, `path` 与 `inform` 分别为解析后的路径与完整文本报告; 各流类型 (如 `general`, `video`, `audio`) 既可作为属性读取已解析字段 (如 `mi.video.width`, 字段名为 camelCase), 也可作为函数实时查询原始参数 (如 `mi.audio("BitRate")`). Rhino 脚本可访问宿主有权读取的任意路径.
 
+MediaInfo 查询支持从 0 开始的 streamNumber, countGet 流计数以及用于单位, 说明和可读名称的 infoKind; Rhino 和 Node 保持默认第 1 条流的 TEXT 查询, 并协商插件扩展能力:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### 快照结构与选项
@@ -202,7 +225,7 @@ Node 引擎出于安全限制只允许访问工程目录内的文件. 请将媒�
 
 #### 文件有多条音轨或字幕, 如何读取第二条及之后的流?
 
-快照 `sections` 会完整保留报告中的全部小节 (多流时小节名带编号, 如 `audio #2`), 可直接从中读取; `get()` 目前固定查询同类流中的第 1 条, 指定流序号的能力已列入 [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md).
+升级宿主和 Node 运行时后, 使用 get(path, "audio", "Format", {streamNumber: 1}) 查询第 2 条音轨, 使用 countGet(path, "audio") 取得流数量, 使用 infoKind: "MEASURE" 查询单位. 扩展查询前可检查 capabilities(). 详见 [查询契约](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md).
 
 #### 插件会联网或申请敏感权限吗?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` 通过 AIDL 接口 `IMediainfoPlugin` 暴露 `getInfo`/`inform`/`get`/`snapshot` 四个方法; 媒体内容以只读 `ParcelFileDescriptor` 加显示名传参, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 选项. 服务与 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 权限保护.
+`MediainfoPluginService` 通过 AIDL 接口 `IMediainfoPlugin` 暴露 `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet` 六个方法; 媒体内容以只读 `ParcelFileDescriptor` 加显示名传参, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 选项. 服务与 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 权限保护.
 
 媒体解析由内置的 MediaInfoLib 原生库提供.
 
@@ -249,6 +272,14 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ### 发行历史
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `新增` MediaInfo 查询支持从 0 开始的 streamNumber, countGet 流计数以及用于单位, 说明和可读名称的 infoKind; Rhino 和 Node 保持默认第 1 条流的 TEXT 查询, 并协商插件扩展能力
+- `新增` 显式选择的 snapshot v2 将原生 JSON 同类流按数组分组并提供引擎版本, snapshot v1 继续作为默认协议
+- `修复` MediaInfo 详情与快照的 Complete name 显示原始文件路径, 避免显示私有缓存或描述符路径, 同时保留快照的显示文件名
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `优化` 增强快照小节解析, 正确处理重复和编号流, 畸形行, 值内冒号, 重复字段与独立输出选项
 - `优化` 加入可复现的合成基准与真实媒体验证工具, 并记录 x86, x86_64 与 ARM64 的完整性能基线
 - `优化` 重建 10 语言 README, 插件使用说明与更新日志生成链路, 加入漂移校验和 GitHub Actions 门禁
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `新增` 首个正式版本: 为 AutoJs6 提供基于 MediaInfoLib 的媒体文件信息读取能力, 一次调用即可获取容器格式, 编码, 时长, 分辨率, 码率, 声道等技术参数
-- `新增` 脚本 API: Node 环境 `require("mediainfo")` 提供异步 `read`/`get`; Rhino 环境全局模块 `mediainfo(path)` 同步返回可属性访问的解析对象
-- `新增` 三种读取能力: 完整文本报告 (`inform`), 单项参数查询 (`get`), 结构化 JSON 快照 (`snapshot`, schema 为 `autojs6-plugin-mediainfo-snapshot-v1`)
-- `新增` 支持被 AutoJs6 通过 `org.autojs.plugin.MEDIAINFO` 自动发现; 插件在独立进程中以只读文件描述符接收并解析媒体内容, 不申请网络与任何敏感系统权限
-- `新增` 提供 `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` 四种单架构安装包与包含全部架构的 `universal` 包, 发布文件名含版本号, 架构与 CRC32 摘要
-- `新增` 插件信息, 使用说明, README 与更新日志覆盖 10 种语言: 简体中文, 香港繁体, 台湾繁体, 英语, 法语, 西班牙语, 日语, 韩语, 俄语与阿拉伯语
 
 ##### 更多发行历史可参阅
 
@@ -323,9 +343,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 形式.
+发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` 形式.
 
-构建参数集中于 `version.properties`: 最低 SDK 24 (Android 7.0), 目标 SDK 36, 当前版本 2.0.0.
+构建参数集中于 `version.properties`: 最低 SDK 24 (Android 7.0), 目标 SDK 36, 当前版本 2.1.0.
 
 ******
 

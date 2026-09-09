@@ -78,7 +78,7 @@
     },
     {
       "q": "В файле несколько аудиодорожек или субтитров; как прочитать вторую и последующие?",
-      "a": "Снимок `sections` сохраняет все разделы отчета (при нескольких потоках имена разделов содержат номер, например `audio #2`), читайте их оттуда; `get()` пока всегда запрашивает первый поток каждого типа, а выбор по номеру потока запланирован в [ROADMAP.md]({{ roadmap_url }})."
+      "a": "После обновления хоста и Node запрос get(path, \"audio\", \"Format\", {streamNumber: 1}) читает второй аудиопоток. countGet(path, \"audio\") считает потоки, infoKind: \"MEASURE\" возвращает единицу. Проверьте capabilities() и [контракт]({{ repo_url }}/blob/master/MEDIAINFO_QUERY.md)."
     },
     {
       "q": "Обращается ли плагин к сети или запрашивает чувствительные разрешения?",
@@ -97,7 +97,7 @@
   "p_security_permission": "Устанавливайте плагин только с официальной страницы [Releases]({{ repo_url }}/releases) или из других доверенных каналов; пакеты неизвестного происхождения могут быть подменены, даже если имя и номер версии выглядят одинаково.",
   "h3_plugin_interface": "Интерфейс Плагина",
   "p_plugin_interface": "Следующая информация предназначена разработчикам хоста AutoJs6 и плагинов; хост использует эти идентификаторы для обнаружения плагина и согласования возможностей",
-  "p_contract_service": "`MediainfoPluginService` предоставляет четыре метода, `getInfo`/`inform`/`get`/`snapshot`, через AIDL интерфейс `IMediainfoPlugin`; медиаконтент передается как `ParcelFileDescriptor` только для чтения плюс отображаемое имя, а `snapshot` дополнительно принимает `Bundle` с параметрами `includeInform`/`includeSections`. Сервис и `WakeActivity` защищены разрешением `org.autojs.permission.PLUGIN`.",
+  "p_contract_service": "`MediainfoPluginService` предоставляет шесть методов, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, через AIDL интерфейс `IMediainfoPlugin`; медиаконтент передается как `ParcelFileDescriptor` только для чтения плюс отображаемое имя, а `snapshot` дополнительно принимает `Bundle` с параметрами `includeInform`/`includeSections`. Сервис и `WakeActivity` защищены разрешением `org.autojs.permission.PLUGIN`.",
   "p_abi_reporting": "Для анализа медиафайлов используются встроенные нативные библиотеки MediaInfoLib.",
   "h3_roadmap": "Дорожная Карта",
   "p_roadmap": "Запланированные возможности плагина и их статус ведутся в ROADMAP.md как отмечаемый список, организованный по вехам с критериями приемки и охватывающий запросы по номеру потока, разбор без копирования, динамическое определение ABI, эволюцию нативной библиотеки и непрерывную интеграцию. Неотмеченные пункты являются намерениями, а не готовыми возможностями; обсуждение через Issues приветствуется.",
@@ -120,5 +120,6 @@
   "text_link_mediainfo_official": "Официальный сайт MediaInfo",
   "text_link_mediainfolib_official": "Проект MediaInfoLib",
   "text_link_mediainfo_android": "Обертка MediaInfoLib Android",
-  "p_instruction_docs": "Подробности использования и справку по полям смотрите в [документации AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) и на [странице проекта]({{ repo_url }})."
+  "p_instruction_docs": "Подробности использования и справку по полям смотрите в [документации AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) и на [странице проекта]({{ repo_url }}).",
+  "p_query_options": "Запросы MediaInfo поддерживают streamNumber с нуля, подсчет потоков countGet и infoKind для единиц, описаний и читаемых имен; Rhino и Node сохраняют TEXT первого потока по умолчанию и согласуют возможности плагина"
 }

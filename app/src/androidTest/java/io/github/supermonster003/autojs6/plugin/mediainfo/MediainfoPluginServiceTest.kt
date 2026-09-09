@@ -39,6 +39,77 @@ class MediainfoPluginServiceTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
+    fun sourceIdentityIsPreservedAcrossSnapshotSchemasAndCacheEntries() {
+        withBoundPlugin { plugin ->
+            val file = createWaveFile()
+            try {
+                for (name in listOf("/storage/emulated/0/Movies/媒体:01.wav", "/storage/emulated/0/Other/媒体:01.wav")) {
+                    for (schema in MediainfoSnapshotSchemas.VALUES) {
+                        val options = Bundle().apply {
+                            putString(MediainfoOptionKeys.SCHEMA, schema)
+                            putString(MediainfoOptionKeys.SOURCE_NAME, name)
+                        }
+                        val result = withMediaDescriptor(file) { JSONObject(plugin.snapshot(it, file.name, options)) }
+                        assertTrue(result.getString("inform"), result.getString("inform").contains(" : $name\r\n"))
+                        assertFalse(result.toString().contains(MediaInputAccess.TEMP_FILE_PREFIX))
+                        if (schema == MediainfoSnapshotSchemas.V1) {
+                            assertEquals(file.name, result.getString("fileName"))
+                            assertEquals(name, result.getJSONObject("sections").getJSONArray("file").getJSONObject(0).getString("completeName"))
+                        } else {
+                            assertEquals(file.name, result.getJSONObject("file").getString("name"))
+                        }
+                    }
+                    assertEquals(name, withMediaDescriptor(file) { plugin.get(it, name, "general", 0, "CompleteName") })
+                }
+            } finally { file.delete() }
+        }
+    }
+
+    @Test
+    fun streamCountsAndInfoKindsAreAvailableThroughBinder() {
+        withBoundPlugin { plugin ->
+            val file = createWaveFile()
+            try {
+                repeat(2) {
+                    assertEquals(1, withMediaDescriptor(file) { plugin.countGet(it, file.name, "audio") })
+                    assertEquals(0, withMediaDescriptor(file) { plugin.countGet(it, file.name, "text") })
+                    assertEquals("8000", withMediaDescriptor(file) { plugin.get(it, file.name, "audio", 0, "SamplingRate") })
+                    assertEquals("Hz", withMediaDescriptor(file) { plugin.getDetail(it, file.name, "audio", 0, "SamplingRate", "MEASURE") }.trim())
+                    assertEquals("Sampling rate", withMediaDescriptor(file) { plugin.getDetail(it, file.name, "audio", 0, "SamplingRate", "NAME_TEXT") })
+                    assertEquals("", withMediaDescriptor(file) { plugin.get(it, file.name, "audio", 1, "Format") })
+                }
+                for ((number, kind) in listOf(-1 to "TEXT", 0 to "MAX", 0 to "COUNT")) {
+                    val descriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+                    try {
+                        val failure = runCatching { plugin.getDetail(descriptor, file.name, "audio", number, "Format", kind) }.exceptionOrNull()
+                        assertTrue("Invalid query accepted: $failure", failure is IllegalArgumentException)
+                        assertFalse("Invalid query retained its FD", descriptor.fileDescriptor.valid())
+                    } finally { runCatching { descriptor.close() } }
+                }
+            } finally { file.delete() }
+        }
+    }
+
+    @Test
+    fun multipleAudioTracksCanBeCountedAndQueriedIndependently() {
+        val file = File(context.cacheDir, "mediainfo-two-audio.mka")
+        InstrumentationRegistry.getInstrumentation().context.assets.open(file.name).use { input ->
+            file.outputStream().use { input.copyTo(it) }
+        }
+        try {
+            withBoundPlugin { plugin ->
+                repeat(2) {
+                    assertEquals(2, withMediaDescriptor(file) { plugin.countGet(it, file.name, "audio") })
+                    assertEquals("8000", withMediaDescriptor(file) { plugin.get(it, file.name, "audio", 0, "SamplingRate") })
+                    assertEquals("16000", withMediaDescriptor(file) { plugin.get(it, file.name, "audio", 1, "SamplingRate") })
+                    assertEquals("Hz", withMediaDescriptor(file) { plugin.getDetail(it, file.name, "audio", 1, "SamplingRate", "MEASURE") }.trim())
+                    assertEquals("", withMediaDescriptor(file) { plugin.get(it, file.name, "audio", 2, "Format") })
+                }
+            }
+        } finally { file.delete() }
+    }
+
+    @Test
     fun nativeBridgeReportsPinnedEngineAndPreservesUnicodePaths() {
         val mediaInfo = MediaInfo()
         val engineVersion = mediaInfo.getMIOption("Info_Version")
@@ -167,6 +238,8 @@ class MediainfoPluginServiceTest {
                 assertTrue("MediaInfo inform report is empty", inform.isNotBlank())
                 assertTrue("MediaInfo inform report has no General section", inform.contains("General"))
                 assertTrue("MediaInfo inform report has no Audio section", inform.contains("Audio"))
+                assertTrue("Report lost the caller's file name: $inform", inform.contains(" : ${mediaFile.name}\r\n"))
+                assertFalse("Report exposed a descriptor path: $inform", inform.contains("/proc/self/fd/"))
                 val cachedInform = withMediaDescriptor(mediaFile) { descriptor ->
                     plugin.inform(descriptor, mediaFile.name)
                 }
@@ -269,6 +342,8 @@ class MediainfoPluginServiceTest {
             writerFailure.get()?.let { throw AssertionError("Pipe writer failed", it) }
             assertTrue("Fallback inform report is empty", inform.isNotBlank())
             assertTrue("Fallback report has no Audio section", inform.contains("Audio"))
+            assertTrue("Fallback report lost the source name: $inform", inform.contains(" : mediainfo-pipe.wav\r\n"))
+            assertFalse("Fallback report exposed a temporary path: $inform", inform.contains(MediaInputAccess.TEMP_FILE_PREFIX))
         }
         assertEquals(temporaryFilesBefore, mediaTempFileNames())
     }

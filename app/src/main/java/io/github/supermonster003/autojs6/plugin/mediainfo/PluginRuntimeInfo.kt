@@ -7,6 +7,7 @@ import org.autojs.plugin.common.api.PluginInfo
 import org.autojs.plugin.mediainfo.api.MediainfoPluginCapabilityKeys
 import org.autojs.plugin.mediainfo.api.MediainfoPluginIds
 import org.autojs.plugin.mediainfo.api.MediainfoSnapshotSchemas
+import org.autojs.plugin.mediainfo.api.MediainfoQueryOptions
 
 internal fun Context.pluginInfo(name: String, description: String, engineVersion: String?): PluginInfo {
     val appContext = applicationContext
@@ -24,6 +25,8 @@ internal fun Context.pluginInfo(name: String, description: String, engineVersion
         supportedAbis = NativeLibraryInventory.supportedAbis(appContext)
         capabilities = android.os.Bundle().apply {
             putInt(PluginCapabilityKeys.REQUIRES_HOST_VERSION, 3923)
+            putBoolean(MediainfoPluginCapabilityKeys.STREAM_COUNT, true)
+            putStringArray(MediainfoPluginCapabilityKeys.INFO_KINDS, MediainfoQueryOptions.INFO_KINDS.toTypedArray())
             putStringArray(
                 MediainfoPluginCapabilityKeys.SNAPSHOT_SCHEMAS,
                 MediainfoSnapshotSchemas.VALUES.toTypedArray(),

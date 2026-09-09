@@ -4,6 +4,14 @@
 
 ******
 
+# v2.1.0
+
+###### 2026/09/10
+
+* `Nouveauté` Les requêtes MediaInfo prennent en charge streamNumber à partir de 0, countGet et infoKind pour les unités, descriptions et noms lisibles; Rhino et Node conservent TEXT sur le premier flux par défaut et négocient les capacités du plugin
+* `Nouveauté` Le schéma snapshot v2 optionnel regroupe les flux JSON natifs en tableaux et expose la version du moteur, avec snapshot v1 par défaut
+* `Correction` Complete name affiche le chemin du fichier source dans les détails et instantanés MediaInfo au lieu du cache privé ou du descripteur, sans modifier le nom de fichier de l'instantané
+
 # v2.0.0
 
 ###### 2026/09/01

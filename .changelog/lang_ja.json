@@ -5,6 +5,16 @@
   "changelog_label_improvement": "改善",
   "changelog_label_dependency": "依存関係",
   "$data": {
+    "v2.1.0": {
+      "released_date": "2026/09/10",
+      "feature": [
+        "MediaInfo クエリが 0 始まりの streamNumber, countGet によるストリーム数, 単位や説明や表示名を取得する infoKind に対応; Rhino と Node は既定の先頭ストリームの TEXT クエリを維持し, プラグインの拡張機能を確認",
+        "明示的に選択する snapshot v2 はネイティブ JSON の同種ストリームを配列にまとめてエンジンバージョンを提供し, 既定は snapshot v1 を維持"
+      ],
+      "fix": [
+        "MediaInfo 詳細とスナップショットの Complete name に元のファイルパスを表示し, プライベートキャッシュや記述子のパスを表示しないよう改善; スナップショットの表示ファイル名は維持"
+      ]
+    },
     "v2.0.0": {
       "released_date": "2026/09/01",
       "feature": [

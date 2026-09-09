@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 في الكائن المعاد, يحمل `path` و `inform` المسار المحلول والتقرير النصي الكامل; ويعمل كل نوع تدفق (مثل `general` و `video` و `audio`) كخاصية تعرض الحقول المحللة (مثل `mi.video.width`, وأسماء الحقول بنمط camelCase) وكدالة للاستعلام الحي عن المعلمات الخام (مثل `mi.audio("BitRate")`). يمكن لبرامج Rhino النصية الوصول إلى أي مسار يحق للمضيف قراءته.
 
+تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### بنية اللقطة وخياراتها
@@ -202,7 +225,7 @@ general, video, audio, text, other, image, menu
 
 #### يحتوي الملف على عدة مسارات صوتية أو ترجمات; كيف أقرأ الثاني وما بعده?
 
-تحتفظ لقطة `sections` بكل أقسام التقرير (مع تعدد التدفقات تحمل أسماء الأقسام رقما مثل `audio #2`), فاقرأها من هناك مباشرة; أما `get()` فتستعلم حاليا عن أول تدفق من كل نوع دائما, واختيار رقم التدفق مخطط له في [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md).
+بعد تحديث المضيف وNode استخدم get(path, "audio", "Format", {streamNumber: 1}) للمسار الصوتي الثاني وcountGet(path, "audio") لعدد المسارات وinfoKind: "MEASURE" للوحدة. تحقق من capabilities() و[العقد](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md).
 
 #### هل يصل المكون الإضافي إلى الشبكة أو يطلب أذونات حساسة?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-تكشف `MediainfoPluginService` أربع طرق, `getInfo`/`inform`/`get`/`snapshot`, عبر واجهة AIDL باسم `IMediainfoPlugin`; يمرر محتوى الوسائط كـ `ParcelFileDescriptor` للقراءة فقط مع اسم للعرض, وتقبل `snapshot` إضافة إلى ذلك حزمة `Bundle` من الخيارات تحمل `includeInform`/`includeSections`. الخدمة و `WakeActivity` كلتاهما محميتان بإذن `org.autojs.permission.PLUGIN`.
+تكشف `MediainfoPluginService` ست طرق, `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet`, عبر واجهة AIDL باسم `IMediainfoPlugin`; يمرر محتوى الوسائط كـ `ParcelFileDescriptor` للقراءة فقط مع اسم للعرض, وتقبل `snapshot` إضافة إلى ذلك حزمة `Bundle` من الخيارات تحمل `includeInform`/`includeSections`. الخدمة و `WakeActivity` كلتاهما محميتان بإذن `org.autojs.permission.PLUGIN`.
 
 يعتمد تحليل الوسائط على مكتبات MediaInfoLib الأصلية المضمنة.
 
@@ -249,6 +272,14 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ### سجل الإصدارات
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `ميزة` تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة
+- `ميزة` يجمع snapshot v2 الاختياري مسارات JSON الأصلية في مصفوفات ويعرض إصدار المحرك مع إبقاء snapshot v1 افتراضيا
+- `إصلاح` يعرض Complete name في تفاصيل ولقطات MediaInfo مسار الملف الأصلي بدلا من ذاكرة التخزين الخاصة أو مسار الواصف مع الحفاظ على اسم الملف المعروض في اللقطة
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `تحسين` يتعامل محلل اللقطات بمتانة أكبر مع التسميات المترجمة والمجموعات المتكررة والحقول غير المعروفة والمخرجات الجزئية من MediaInfoLib
 - `تحسين` أضيفت أدوات قياس قابلة لإعادة الإنتاج للاستدعاءات الباردة والدافئة والتزامن والمهل والتحقق بوسائط حقيقية مع بيان للمصادر وملخص SHA-256
 - `تحسين` يغطي توليد الوثائق المتحقق منه الآن 10 لغات وينتج README والتعليمات المضمنة وسجلات التغييرات بصورة حتمية
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `ميزة` أول إصدار مستقر: يجلب إلى AutoJs6 قراءة معلومات ملفات الوسائط عبر MediaInfoLib, فيحصل باستدعاء واحد على تنسيق الحاوية والترميز والمدة والدقة ومعدل البت والقنوات وغيرها
-- `ميزة` واجهة برمجة النصوص: بيئة Node تحصل على `read`/`get` غير المتزامنين عبر `require("mediainfo")`; وبيئة Rhino تحصل على الوحدة العامة `mediainfo(path)` التي تعيد بشكل متزامن كائنا محللا يمكن الوصول إلى خصائصه
-- `ميزة` ثلاث قدرات قراءة: تقرير نصي كامل (`inform`), واستعلام معلمة واحدة (`get`), ولقطة JSON منظمة (`snapshot`, بالمخطط `autojs6-plugin-mediainfo-snapshot-v1`)
-- `ميزة` يكتشفه AutoJs6 تلقائيا عبر `org.autojs.plugin.MEDIAINFO`; يتلقى المكون الإضافي محتوى الوسائط ويحلله في عمليته الخاصة عبر واصفات ملفات للقراءة فقط, دون طلب أذونات شبكة أو أذونات نظام حساسة
-- `ميزة` يوفر أربع حزم أحادية البنية (`arm64-v8a` و `armeabi-v7a` و `x86` و `x86_64`) بالإضافة إلى حزمة `universal` بكل البنى; وتحمل أسماء ملفات الإصدار رقم الإصدار و ABI وملخص CRC32
-- `ميزة` بيانات المكون الإضافي والتعليمات و README وسجل التغييرات تغطي 10 لغات: الصينية المبسطة, والصينية التقليدية لهونغ كونغ, والصينية التقليدية لتايوان, والإنجليزية, والفرنسية, والإسبانية, واليابانية, والكورية, والروسية, والعربية
 
 ##### لمزيد من سجل الإصدارات
 
@@ -323,9 +343,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-لأرشفة الإصدارات, شغل المهمة `:app:appendDigestToReleasedFiles` التي تنسخ حزم APK من `app/release` إلى `app/releases` وتعيد تسميتها بالنمط `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk`.
+لأرشفة الإصدارات, شغل المهمة `:app:appendDigestToReleasedFiles` التي تنسخ حزم APK من `app/release` إلى `app/releases` وتعيد تسميتها بالنمط `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk`.
 
-معاملات البناء مجمعة في `version.properties`: الحد الأدنى من SDK هو 24 (Android 7.0), و SDK الهدف 36, والإصدار الحالي 2.0.0.
+معاملات البناء مجمعة في `version.properties`: الحد الأدنى من SDK هو 24 (Android 7.0), و SDK الهدف 36, والإصدار الحالي 2.1.0.
 
 ******
 

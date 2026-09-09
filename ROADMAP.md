@@ -1,6 +1,6 @@
 # AutoJs6-Plugin-MediaInfo 开发路线图 (Roadmap)
 
-更新日期: 2026-09-01
+更新日期: 2026-09-10
 
 本文档以可勾选清单维护 MediaInfo 插件的能力现状与演进规划, 按里程碑组织.
 未勾选条目表示规划意向而非当前版本能力; 欢迎通过 [Issues](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/issues) 参与讨论或认领条目.
@@ -26,7 +26,7 @@
 |---|---|---|
 | M0 | 基线能力 (v1.0.0) | 已完成 |
 | M1 | 文档与工程化 | 进行中 |
-| M2 | 读取能力增强 | 进行中 |
+| M2 | 读取能力增强 | 核心能力已完成, 参数表延后 |
 | M3 | 性能与大文件 | 已完成 |
 | M4 | 健壮性与诊断 | 进行中 |
 | M5 | 原生库演进 (v2.0.0+) | 进行中 |
@@ -71,18 +71,19 @@
 
 ******
 
-说明: JNI 封装 `MediaInfo.kt` 已具备 `streamNum`, `InfoKind`, `countGet`, `getMIOption` 等完整能力; AIDL 与插件服务已可接收 `streamNumber`, 但当前宿主 Node / Rhino API 仍固定查询同类流第 1 条, InfoKind 也固定为参数值文本. 本里程碑以 "接线已有能力" 为主, 原生层无需改动.
+说明: JNI 封装 `MediaInfo.kt` 已具备 `streamNum`, `InfoKind`, `countGet`, `getMIOption` 等完整能力. 宿主 Node / Rhino API 现已透出流序号, 流计数和 InfoKind, 缺省仍查询同类流第 1 条的 TEXT 值. 原有 4 个 AIDL 事务号保持不变, 新增方法追加在末尾, 原生层无需改动.
 
 当前进度: snapshot-v2 已完成插件, 共享 API, AutoJs6 宿主, Rhino / Node 公共入口, 类型声明与文档的协同接入. 缺省及空白 schema 仍返回 v1, 只有精确请求且插件明确广告 v2 时才启用 v2, 未知或两侧带空白的 schema 显式拒绝. v2 以 MediaInfoLib 原生 JSON 为数据源, 将同类流按数组分组并隔离动态字段, 属性与诊断扩展; `Info_Version` 已通过 capability 按需暴露, `Info_Parameters` 继续延后. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `PluginRuntimeInfo.kt`, `libs/mediainfo-api.aar`, AutoJs6 `MediainfoPluginHost.kt` / `Mediainfo.kt` / `NodeBridgeProtocol.kt`)
 
-- [ ] `get` 支持流序号 (协同项): AIDL 层以选项或新方法携带 `streamNumber`, Node / Rhino API 同步透出, 使脚本可查询第 2 条及之后的音轨 / 字幕. (落点: `MediaInfo.kt` 的 `get(filename, streamKind, streamNum, parameter)`, `MediainfoPluginService.kt`)
-- [ ] 流计数查询 (协同项): 透出 `countGet`, 返回某流类型的流数量, 配合流序号实现多流遍历. (落点: `MediaInfo.kt` 的 `countGet`)
-- [ ] InfoKind 扩展查询 (协同项): 支持 `MEASURE` / `INFO` / `NAME_TEXT` 等信息种类, 获取参数单位, 说明与本地化名称. (落点: `MediaInfo.kt` 的 `InfoKind` 枚举)
+- [x] `get` 支持流序号 (协同项): Node / Rhino 的查询选项和 Rhino 流访问器透出从 0 开始的 `streamNumber`, 可查询第 2 条及之后的音轨 / 字幕; 严格拒绝负数, 小数和数字字符串. (落点: `MEDIAINFO_QUERY.md`, `MediainfoPluginServiceTest.kt`, `app/src/androidTest/assets/mediainfo-two-audio.mka`, AutoJs6 `MediainfoQueryOptions.kt` / `Mediainfo.kt` / `MediainfoNativeObject.kt` / `NodeBridgeProtocol.kt`, Node Runtime `node_bridge_sources.cpp`)
+- [x] 流计数查询 (协同项): 追加 `countGet` AIDL 事务, 返回某流类型的流数量, 配合流序号实现多流遍历; 通过 `streamCount` 能力协商后调用. (落点: `MediainfoPluginService.kt`, `PluginRuntimeInfo.kt`, `libs/mediainfo-api.aar`, `MEDIAINFO_QUERY.md`)
+- [x] InfoKind 扩展查询 (协同项): 追加 `getDetail` AIDL 事务, 通过 `infoKinds` 协商 9 种查询类型, 包括 `MEASURE` / `INFO` / `NAME_TEXT`; 查询缓存区分流序号和信息种类. (落点: `MediainfoPluginService.kt`, `MediaInfoResultCache.kt`, `MediaInfoResultCacheTest.kt`, `MEDIAINFO_QUERY.md`)
+- [x] 原始路径显示 (协同项): 修复媒体详情页 Complete name 暴露 `/proc/self/fd` 或插件私有副本路径的问题; 显示身份与 FD 解析路径分离, 宿主同时修复旧插件报告, snapshot 文件名契约保持不变. (落点: `MediaInputAccess.kt`, `MediainfoPluginService.kt`, `MEDIAINFO_QUERY.md`, AutoJs6 `MediainfoReportIdentity.kt` / `MediainfoPluginHost.kt`)
 - [x] 引擎版本透出 (协同项): 插件发现 capability 以小体积 `Info_Version` 提供 `engineVersion`, 共享 API 定义稳定键名, Rhino `mediainfo.capabilities()` 与 Node `require("mediainfo").capabilities()` 均可查询; 查询失败时安全省略版本字段. (落点: `MediaInfo.kt` 的 `getMIOption`, `PluginRuntimeInfo.kt`, `MEDIAINFO_SNAPSHOT_V2.md`, `libs/mediainfo-api.aar`, AutoJs6 `MediainfoPluginHost.kt` / `Mediainfo.kt` / `NodeBridgeProtocol.kt`)
 - [ ] `Info_Parameters` 按需查询 (协同项, 继续延后): 大体积参数表不进入发现阶段的 capability Bundle; 如后续需要公开, 使用专用 AIDL / 宿主脚本入口并补充响应大小与 Binder 边界测试. (落点: `MediaInfo.kt` 的 `getMIOption`, `MEDIAINFO_SNAPSHOT_V2.md`)
 - [x] 快照 schema v2 (协同项): 规范化多流表示 (以数组下标取代 `audio #1` 式小节名), 明确字段分区, 命名边界与 schema 版本协商方式, 保持 v1 为默认协议. 插件契约, opt-in 实现, 缓存隔离, 共享 API 常量, 宿主能力协商, Rhino / Node 公共入口, 类型声明, 文档与 ARM64 实体机端到端验收均已完成. (落点: `MEDIAINFO_SNAPSHOT_V2.md`, `MediainfoSnapshot.kt`, `MediainfoPluginService.kt`, `MediaInfoSnapshotV2ContractTest.kt`, `libs/mediainfo-api.aar`, AutoJs6 `MediainfoSnapshotSchemas.kt` / `MediainfoPluginHost.kt` / `MediainfoSnapshotRhinoInstrumentationTest.kt` / `NodeMediaBridgeInstrumentationTest.kt`)
 
-验收进度: snapshot-v2 子项已在 QV710AF65F 上通过插件真实 AIDL, Rhino 生产引擎, Node 直连 / compat 门面与真实 Android Provider 验证, 双引擎类型声明及文档已同步; 本里程碑整体仍等待直接 `get` 流序号, 流计数与 InfoKind 单位信息. 涉及未来 AIDL 变更的条目仍须与宿主版本要求 (`REQUIRES_HOST_VERSION`) 联动更新.
+验收进度: snapshot-v2 及直接查询核心能力均已通过真实 AIDL, Rhino 生产引擎, Node 直连 / compat 门面与 Android Provider 验证. 双音轨样本覆盖冷查询与缓存命中, 原始路径覆盖 regular FD, pipe 副本及旧插件兼容. 双引擎类型声明, Ace Editor 补全与在线 / 离线文档已协同更新. `Info_Parameters` 继续延后; `REQUIRES_HOST_VERSION` 保持 3923, 旧事务与默认值继续兼容, 扩展事务仅在协商成功后调用. 本轮验证记录见 `benchmark/results/2026-09-10-mediainfo-m2-validation.json`.
 
 ******
 

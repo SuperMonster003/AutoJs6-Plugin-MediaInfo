@@ -4,6 +4,14 @@
 
 ******
 
+# v2.1.0
+
+###### 2026/09/10
+
+* `新增` MediaInfo 查询支持从 0 开始的 streamNumber, countGet 流计数以及用于单位, 说明和可读名称的 infoKind; Rhino 和 Node 保持默认第 1 条流的 TEXT 查询, 并协商插件扩展能力
+* `新增` 显式选择的 snapshot v2 将原生 JSON 同类流按数组分组并提供引擎版本, snapshot v1 继续作为默认协议
+* `修复` MediaInfo 详情与快照的 Complete name 显示原始文件路径, 避免显示私有缓存或描述符路径, 同时保留快照的显示文件名
+
 # v2.0.0
 
 ###### 2026/09/01

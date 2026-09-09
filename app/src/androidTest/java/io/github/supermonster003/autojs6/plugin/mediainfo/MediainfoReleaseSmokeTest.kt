@@ -51,11 +51,21 @@ class MediainfoReleaseSmokeTest {
                 assertTrue("Minified APK could not load or call MediaInfoLib", inform.isNotBlank())
                 assertTrue("Release smoke report has no General section", inform.contains("General"))
                 assertTrue("Release smoke report has no Audio section", inform.contains("Audio"))
+                assertTrue(inform.lineSequence().any { it.startsWith("Complete name") && it.substringAfter(':').trim() == mediaFile.name })
 
                 val format = withDescriptor(mediaFile) { descriptor ->
                     plugin.get(descriptor, mediaFile.name, "audio", 0, "Format")
                 }
                 assertTrue("Unexpected release audio format: $format", format.contains("PCM", ignoreCase = true))
+
+                val audioCount = withDescriptor(mediaFile) { descriptor ->
+                    plugin.countGet(descriptor, mediaFile.name, "audio")
+                }
+                assertEquals(1, audioCount)
+                val unit = withDescriptor(mediaFile) { descriptor ->
+                    plugin.getDetail(descriptor, mediaFile.name, "audio", 0, "SamplingRate", "MEASURE")
+                }
+                assertEquals("Hz", unit.trim())
 
                 val options = Bundle().apply {
                     putBoolean(MediainfoOptionKeys.INCLUDE_INFORM, false)

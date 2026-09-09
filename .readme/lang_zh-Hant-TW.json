@@ -78,7 +78,7 @@
     },
     {
       "q": "檔案有多條音軌或字幕, 如何讀取第二條及之後的串流?",
-      "a": "快照 `sections` 會完整保留報告中的全部小節 (多串流時小節名帶編號, 如 `audio #2`), 可直接從中讀取; `get()` 目前固定查詢同類串流中的第 1 條, 指定串流序號的能力已列入 [ROADMAP.md]({{ roadmap_url }})."
+      "a": "升級宿主和 Node 執行環境後, 使用 get(path, \"audio\", \"Format\", {streamNumber: 1}) 查詢第 2 條音軌, 使用 countGet(path, \"audio\") 取得串流數量, 使用 infoKind: \"MEASURE\" 查詢單位. 擴充查詢前可檢查 capabilities(). 詳見 [查詢契約]({{ repo_url }}/blob/master/MEDIAINFO_QUERY.md)."
     },
     {
       "q": "外掛會連網或申請敏感權限嗎?",
@@ -97,7 +97,7 @@
   "p_security_permission": "請僅從官方 [Releases]({{ repo_url }}/releases) 頁面或其他可信渠道取得外掛安裝套件; 來源不明的安裝套件即使名稱與版本號相同, 也可能被竄改.",
   "h3_plugin_interface": "外掛介面",
   "p_plugin_interface": "以下資訊面向 AutoJs6 主程式與外掛開發者, 主程式透過這些識別碼發現外掛並完成能力協商",
-  "p_contract_service": "`MediainfoPluginService` 透過 AIDL 介面 `IMediainfoPlugin` 公開 `getInfo`/`inform`/`get`/`snapshot` 四個方法; 媒體內容以唯讀 `ParcelFileDescriptor` 加顯示名傳參, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 選項. 服務與 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 權限保護.",
+  "p_contract_service": "`MediainfoPluginService` 透過 AIDL 介面 `IMediainfoPlugin` 公開 `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet` 六個方法; 媒體內容以唯讀 `ParcelFileDescriptor` 加顯示名傳參, `snapshot` 另接受包含 `includeInform`/`includeSections` 的 `Bundle` 選項. 服務與 `WakeActivity` 均受 `org.autojs.permission.PLUGIN` 權限保護.",
   "p_abi_reporting": "媒體解析由內建的 MediaInfoLib 原生程式庫提供.",
   "h3_roadmap": "開發路線圖",
   "p_roadmap": "外掛的能力規劃與完成情況以可勾選清單維護在 ROADMAP.md 中, 按里程碑組織並附驗收條件, 涵蓋跨串流查詢, 免複製解析, 動態 ABI 上報, 原生程式庫演進與持續整合等方向. 未勾選條目表示規劃意向而非目前版本能力, 歡迎透過 Issues 參與討論.",
@@ -120,5 +120,6 @@
   "text_link_mediainfo_official": "MediaInfo 官方網站",
   "text_link_mediainfolib_official": "MediaInfoLib 專案",
   "text_link_mediainfo_android": "MediaInfoLib Android 封裝",
-  "p_instruction_docs": "更多用法與欄位說明可參閱 [AutoJs6 MediaInfo 文件]({{ docs_mediainfo_url }}) 與 [專案主頁]({{ repo_url }})."
+  "p_instruction_docs": "更多用法與欄位說明可參閱 [AutoJs6 MediaInfo 文件]({{ docs_mediainfo_url }}) 與 [專案主頁]({{ repo_url }}).",
+  "p_query_options": "MediaInfo 查詢支援從 0 開始的 streamNumber, countGet 串流計數以及用於單位, 說明和可讀名稱的 infoKind; Rhino 和 Node 保持預設第 1 條串流的 TEXT 查詢, 並協商外掛擴充能力"
 }

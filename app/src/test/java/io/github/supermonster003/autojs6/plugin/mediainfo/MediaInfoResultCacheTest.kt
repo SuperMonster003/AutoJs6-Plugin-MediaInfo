@@ -8,6 +8,27 @@ import org.junit.Test
 class MediaInfoResultCacheTest {
 
     @Test
+    fun sourceNamesStreamNumbersAndInfoKindsRemainIndependent() {
+        val cache = cache()
+        val first = identity(1).copy(sourceName = "/first/movie.mkv")
+        val second = first.copy(sourceName = "/second/movie.mkv")
+        val text = MediaGetRequest("AUDIO", 0, "SamplingRate")
+        val unit = text.copy(infoKind = "MEASURE")
+        val next = text.copy(streamNumber = 1)
+        cache.putInform(first, "first path")
+        cache.putInform(second, "second path")
+        cache.putQuery(first, text, "48000")
+        cache.putQuery(first, unit, "Hz")
+        cache.putQuery(first, next, "8000")
+        assertEquals("first path", cache.getInform(first))
+        assertEquals("second path", cache.getInform(second))
+        assertEquals("48000", cache.getQuery(first, text)?.value)
+        assertEquals("Hz", cache.getQuery(first, unit)?.value)
+        assertEquals("8000", cache.getQuery(first, next)?.value)
+        assertNull(cache.getQuery(second, unit))
+    }
+
+    @Test
     fun storesAllMetadataKindsIncludingEmptyQueryValues() {
         val cache = cache()
         val identity = identity(1)

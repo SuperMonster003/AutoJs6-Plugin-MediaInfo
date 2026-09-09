@@ -128,6 +128,29 @@ console.log(mi.audio("BitRate"));
 
 返されたオブジェクトの `path` と `inform` はそれぞれ解決済みパスと完全なテキストレポートです. 各ストリーム種別 (`general`, `video`, `audio` など) は, 解析済みフィールドを公開するプロパティ (例: `mi.video.width`, フィールド名は camelCase) としても, 生パラメータをリアルタイムに問い合わせる関数 (例: `mi.audio("BitRate")`) としても機能します. Rhino スクリプトはホストが読み取り可能な任意のパスにアクセスできます.
 
+MediaInfo クエリが 0 始まりの streamNumber, countGet によるストリーム数, 単位や説明や表示名を取得する infoKind に対応; Rhino と Node は既定の先頭ストリームの TEXT クエリを維持し, プラグインの拡張機能を確認:
+
+```javascript
+// Rhino
+const path = "/sdcard/Download/movie.mkv";
+const count = mediainfo.countGet(path, "audio");
+for (let index = 0; index < count; index++) {
+  console.log(mediainfo.get(path, "audio", "SamplingRate", { streamNumber: index }));
+}
+console.log(mediainfo.get(path, "audio", "SamplingRate", { infoKind: "MEASURE" }));
+```
+
+```javascript
+"nodejs";
+const mi = require("mediainfo");
+(async () => {
+  const count = await mi.countGet("movie.mkv", "audio");
+  for (let index = 0; index < count; index++) {
+    console.log(await mi.get("movie.mkv", "audio", "SamplingRate", { streamNumber: index }));
+  }
+})();
+```
+
 ******
 
 ### スナップショットの構造とオプション
@@ -202,7 +225,7 @@ Node エンジンは安全上の制限により, プロジェクトディレク�
 
 #### 複数の音声トラックや字幕がある場合, 2 番目以降のストリームをどう読み取りますか?
 
-スナップショットの `sections` はレポートの全セクションを保持します (複数ストリームの場合, セクション名に `audio #2` のような番号が付きます) ので, そこから直接読み取れます. `get()` は現在, 同種ストリームの 1 番目のみを検索します. ストリーム番号指定は [ROADMAP.md](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/ROADMAP.md) で計画されています.
+ホストと Node を更新すると, get(path, "audio", "Format", {streamNumber: 1}) で 2 番目の音声を取得できます. countGet(path, "audio") はストリーム数, infoKind: "MEASURE" は単位を返します. capabilities() と [クエリ仕様](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/MEDIAINFO_QUERY.md) を確認してください.
 
 #### プラグインはネットワークにアクセスしたり機密権限を要求したりしますか?
 
@@ -230,7 +253,7 @@ native library: libmediainfo.so
 snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ```
 
-`MediainfoPluginService` は AIDL インターフェース `IMediainfoPlugin` を通じて `getInfo`/`inform`/`get`/`snapshot` の 4 メソッドを公開します. メディア内容は読み取り専用 `ParcelFileDescriptor` と表示名で渡され, `snapshot` はさらに `includeInform`/`includeSections` を含む `Bundle` オプションを受け取ります. サービスと `WakeActivity` はいずれも `org.autojs.permission.PLUGIN` 権限で保護されています.
+`MediainfoPluginService` は AIDL インターフェース `IMediainfoPlugin` を通じて `getInfo`/`inform`/`get`/`snapshot`/`getDetail`/`countGet` の 6 メソッドを公開します. メディア内容は読み取り専用 `ParcelFileDescriptor` と表示名で渡され, `snapshot` はさらに `includeInform`/`includeSections` を含む `Bundle` オプションを受け取ります. サービスと `WakeActivity` はいずれも `org.autojs.permission.PLUGIN` 権限で保護されています.
 
 メディア解析には同梱の MediaInfoLib ネイティブライブラリを使用します.
 
@@ -249,6 +272,14 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 ### リリース履歴
 
 ******
+
+#### v2.1.0
+
+_2026/09/10_
+
+- `追加` MediaInfo クエリが 0 始まりの streamNumber, countGet によるストリーム数, 単位や説明や表示名を取得する infoKind に対応; Rhino と Node は既定の先頭ストリームの TEXT クエリを維持し, プラグインの拡張機能を確認
+- `追加` 明示的に選択する snapshot v2 はネイティブ JSON の同種ストリームを配列にまとめてエンジンバージョンを提供し, 既定は snapshot v1 を維持
+- `修正` MediaInfo 詳細とスナップショットの Complete name に元のファイルパスを表示し, プライベートキャッシュや記述子のパスを表示しないよう改善; スナップショットの表示ファイル名は維持
 
 #### v2.0.0
 
@@ -277,17 +308,6 @@ _2026/08/31_
 - `改善` スナップショット解析がローカライズされたラベル, 重複グループ, 未知のフィールド, MediaInfoLib の部分出力をより堅牢に処理します
 - `改善` コールドとウォーム呼び出し, 並行実行, タイムアウト, 実メディア検証に対応する再現可能なベンチマークツールを追加し, ソースマニフェストと SHA-256 要約を記録します
 - `改善` 検証付きドキュメント生成が10言語を対象とし, README, 内蔵説明, 変更履歴を決定的に生成します
-
-#### v1.0.0
-
-_2026/07/15_
-
-- `追加` 初の安定版: MediaInfoLib によるメディアファイル情報読み取りを AutoJs6 に提供し, コンテナ形式, コーデック, 再生時間, 解像度, ビットレート, チャンネル数などを 1 回の呼び出しで取得可能に
-- `追加` スクリプト API: Node 環境は `require("mediainfo")` で非同期の `read`/`get` を, Rhino 環境はプロパティアクセス可能な解析オブジェクトを同期的に返すグローバルモジュール `mediainfo(path)` を利用可能に
-- `追加` 3 つの読み取り機能: 完全なテキストレポート (`inform`), 単一パラメータ検索 (`get`), 構造化 JSON スナップショット (`snapshot`, スキーマ `autojs6-plugin-mediainfo-snapshot-v1`)
-- `追加` `org.autojs.plugin.MEDIAINFO` により AutoJs6 から自動検出; プラグインは独立プロセス内で読み取り専用ファイルディスクリプタによりメディア内容を受け取って解析し, ネットワーク権限や機密性の高いシステム権限を要求しない設計に
-- `追加` 4 種類の単一アーキテクチャ版 (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) と全アーキテクチャ同梱の `universal` 版を提供, リリースファイル名にバージョン, ABI, CRC32 ダイジェストを付与
-- `追加` プラグイン情報, 使用説明, README, 更新履歴が 10 言語に対応: 簡体字中国語, 香港繁体字, 台湾繁体字, 英語, フランス語, スペイン語, 日本語, 韓国語, ロシア語, アラビア語
 
 ##### その他のリリース履歴
 
@@ -323,9 +343,9 @@ release APK をビルド:
 .\gradlew.bat :app:assembleRelease
 ```
 
-リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.0.0-<abi>-<crc32>.apk` 形式にリネームします.
+リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` 形式にリネームします.
 
-ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 2.0.0.
+ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 2.1.0.
 
 ******
 
