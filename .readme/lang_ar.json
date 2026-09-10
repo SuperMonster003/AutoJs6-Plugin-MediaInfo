@@ -37,7 +37,7 @@
   "p_choose_apk_note": "يحمل المكون الإضافي المكتبة الأصلية داخل عمليته الخاصة. إذا ثبتت بالخطأ حزمة أحادية البنية لا تطابق الجهاز, تفشل الاستدعاءات برسالة `MediaInfo library is not available`; والتحول إلى حزمة `universal` يحل المشكلة.",
   "h3_script_api": "واجهة برمجة النصوص",
   "p_script_api_node": "في بيئة Node (البرامج النصية التي تبدأ بالتوجيه `\"nodejs\"`), احصل على الوحدة عبر `require(\"mediainfo\")`; وتعيد كل الطرق Promise",
-  "p_script_api_node_note": "تعيد `read(path, options?)` كائن لقطة منظم (انظر `بنية اللقطة وخياراتها` أدناه); وتعيد `get(path, streamKind?, parameter)` النص الخام للمعلمة, والقيمة الافتراضية لـ `streamKind` هي `general`. لأسباب أمنية, لا يمكن لبرامج Node النصية الوصول إلا إلى الملفات داخل دليل المشروع, وتحل المسارات النسبية اعتبارا من جذر المشروع.",
+  "p_script_api_node_note": "تعيد `read(path, options?)` لقطة منظمة (انظر أدناه), وتعيد `get(path, streamKind, parameter, options?)` النص الأصلي للمعامل. تُحل المسارات النسبية من مجلد العمل; وتُقبل المسارات المطلقة والمجلدات الأعلى إذا سمح Android للمضيف بقراءتها. مرر مسار ملف وليس content URI.",
   "p_script_api_rhino": "في بيئة Rhino (محرك البرمجة النصية الافتراضي في AutoJs6), تكون `mediainfo` وحدة عامة; و `mediainfo(path)` و `mediainfo.read(path)` متكافئان ويعيدان كائنا محللا بشكل متزامن",
   "p_script_api_rhino_note": "في الكائن المعاد, يحمل `path` و `inform` المسار المحلول والتقرير النصي الكامل; ويعمل كل نوع تدفق (مثل `general` و `video` و `audio`) كخاصية تعرض الحقول المحللة (مثل `mi.video.width`, وأسماء الحقول بنمط camelCase) وكدالة للاستعلام الحي عن المعلمات الخام (مثل `mi.audio(\"BitRate\")`). يمكن لبرامج Rhino النصية الوصول إلى أي مسار يحق للمضيف قراءته.",
   "h3_snapshot": "بنية اللقطة وخياراتها",
@@ -61,8 +61,8 @@
       "a": "هذا متوقع. لا يملك المكون واجهة مستقلة ولا ينشئ أيقونة تشغيل; وبعد التثبيت يكتشفه AutoJs6 ويديره بالكامل في الخلفية, ويجري كل تفاعل داخل AutoJs6."
     },
     {
-      "q": "برنامج Node نصي يفشل برسالة `path must stay inside the scoped working directory`?",
-      "a": "لأسباب أمنية, لا يسمح محرك Node إلا بالوصول إلى الملفات داخل دليل المشروع. انقل ملف الوسائط أو انسخه إلى دليل المشروع قبل قراءته; وللوصول إلى مواقع أخرى (مثل المعرض أو مجلد التنزيلات), استخدم برنامجا نصيا بمحرك Rhino بدلا من ذلك."
+      "q": "يعرض سكربت Node الخطأ `path must stay inside the scoped working directory`?",
+      "a": "حدّث AutoJs6 وملحق Node Runtime معاً. تقبل الإصدارات الحالية مسارات الملفات العادية خارج المشروع وفق أذونات Android. قد تبقى قيود مجلد المشروع القديمة في الإصدارات السابقة من المضيف أو بيئة التشغيل."
     },
     {
       "q": "أعادت `get()` سلسلة فارغة?",
@@ -121,5 +121,11 @@
   "text_link_mediainfolib_official": "مشروع MediaInfoLib",
   "text_link_mediainfo_android": "غلاف MediaInfoLib Android",
   "p_instruction_docs": "لمزيد من تفاصيل الاستخدام ومرجع الحقول, راجع [وثائق AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) و [صفحة المشروع]({{ repo_url }}).",
-  "p_query_options": "تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة"
+  "p_query_options": "تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة",
+  "h3_demo": "عرض توضيحي",
+  "p_demo_intro": "شاشات AutoJs6 فعلية بالمظهرين الفاتح والداكن. يقرأ مثال Rhino مسارين صوتيين PCM بترددي 8 kHz و16 kHz; ويفتح زر MediaInfo التقرير الكامل مع مسار الملف الأصلي.",
+  "th_demo_script": "مخرجات سكربت Rhino",
+  "th_demo_dialog": "معلومات ملف الوسائط",
+  "th_demo_details": "تفاصيل MediaInfo",
+  "p_demo_reproduce": "شغّل [سكربت العرض]({{ repo_url }}/blob/master/demo/mediainfo.js) باستخدام [العينة ذات المسارين]({{ repo_url }}/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka), أو غيّر المسار إلى ملفك. تحتوي العينة على صمت مولّد. يتطلب عرض المسار الأصلي والاستعلامات الموسعة تحديثات متوافقة للمضيف والملحقات."
 }

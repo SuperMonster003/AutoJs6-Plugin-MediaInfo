@@ -37,7 +37,7 @@
   "p_choose_apk_note": "El plugin carga la biblioteca nativa dentro de su propio proceso. Si por error se instaló un paquete de una sola arquitectura que no coincide con el dispositivo, las llamadas fallan con `MediaInfo library is not available`; cambiar al paquete `universal` lo resuelve.",
   "h3_script_api": "API De Script",
   "p_script_api_node": "En el entorno Node (scripts que comienzan con la directiva `\"nodejs\"`), obtenga el módulo mediante `require(\"mediainfo\")`; todos los métodos devuelven una Promise",
-  "p_script_api_node_note": "`read(path, options?)` devuelve un objeto instantánea estructurado (vea `Estructura De La Instantánea Y Opciones` más abajo); `get(path, streamKind?, parameter)` devuelve el texto sin procesar del parámetro, con `streamKind` por defecto `general`. Por seguridad, los scripts Node solo pueden acceder a archivos dentro del directorio del proyecto, y las rutas relativas se resuelven desde la raíz del proyecto.",
+  "p_script_api_node_note": "`read(path, options?)` devuelve una instantánea estructurada (ver abajo); `get(path, streamKind, parameter, options?)` devuelve el texto original del parámetro. Las rutas relativas parten del directorio de trabajo; también se admiten rutas absolutas y directorios superiores cuando Android permite al anfitrión leerlos. Use una ruta de archivo, no un URI content.",
   "p_script_api_rhino": "En el entorno Rhino (el motor de script predeterminado de AutoJs6), `mediainfo` es un módulo global; `mediainfo(path)` y `mediainfo.read(path)` son equivalentes y devuelven de forma síncrona un objeto analizado",
   "p_script_api_rhino_note": "En el objeto devuelto, `path` e `inform` contienen la ruta resuelta y el informe de texto completo; cada tipo de flujo (como `general`, `video`, `audio`) funciona tanto como propiedad que expone los campos analizados (como `mi.video.width`, nombres de campo en camelCase) como función para consultar en vivo parámetros sin procesar (como `mi.audio(\"BitRate\")`). Los scripts Rhino pueden acceder a cualquier ruta que el host tenga permiso de leer.",
   "h3_snapshot": "Estructura De La Instantánea Y Opciones",
@@ -61,8 +61,8 @@
       "a": "Es lo esperado. El plugin no tiene interfaz propia ni crea icono de lanzador; tras la instalación, AutoJs6 lo descubre y lo controla por completo en segundo plano, y toda interacción ocurre dentro de AutoJs6."
     },
     {
-      "q": "¿Un script Node falla con `path must stay inside the scoped working directory`?",
-      "a": "Por seguridad, el motor Node solo permite acceder a archivos dentro del directorio del proyecto. Mueva o copie el archivo multimedia al directorio del proyecto antes de leerlo; para acceder a otras ubicaciones (como la galería o descargas), use en su lugar un script del motor Rhino."
+      "q": "¿Un script Node muestra `path must stay inside the scoped working directory`?",
+      "a": "Actualice AutoJs6 y el plugin Node Runtime. Las versiones actuales aceptan rutas de archivos normales fuera del proyecto, sujetas a los permisos de Android. El anfitrión o runtime anterior puede mantener la antigua restricción al directorio del proyecto."
     },
     {
       "q": "¿`get()` devolvió una cadena vacía?",
@@ -121,5 +121,11 @@
   "text_link_mediainfolib_official": "Proyecto MediaInfoLib",
   "text_link_mediainfo_android": "Envoltorio MediaInfoLib Android",
   "p_instruction_docs": "Para más detalles de uso y referencia de campos, consulte la [documentación de AutoJs6 MediaInfo]({{ docs_mediainfo_url }}) y la [página del proyecto]({{ repo_url }}).",
-  "p_query_options": "Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin"
+  "p_query_options": "Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin",
+  "h3_demo": "Demostración",
+  "p_demo_intro": "Pantallas reales de AutoJs6 con temas claro y oscuro. El ejemplo Rhino consulta dos pistas PCM de 8 kHz y 16 kHz; el botón MediaInfo abre el informe completo con la ruta original.",
+  "th_demo_script": "Salida del script Rhino",
+  "th_demo_dialog": "Información del archivo multimedia",
+  "th_demo_details": "Detalles de MediaInfo",
+  "p_demo_reproduce": "Ejecute el [script de demostración]({{ repo_url }}/blob/master/demo/mediainfo.js) con la [muestra de dos pistas]({{ repo_url }}/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka), o cambie la ruta por su propio archivo. La muestra contiene silencio generado. La ruta original y las consultas ampliadas requieren las actualizaciones coordinadas del anfitrión y los plugins."
 }

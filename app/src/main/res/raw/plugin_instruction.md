@@ -26,7 +26,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` returns a structured snapshot object (see `Snapshot Structure and Options` below); `get(path, streamKind?, parameter)` returns the raw parameter text, with `streamKind` defaulting to `general`. For safety, Node scripts can only access files inside the project directory, and relative paths resolve against the project root.
+`read(path, options?)` returns a structured snapshot (see below); `get(path, streamKind, parameter, options?)` returns the raw parameter text. Relative paths resolve against the working directory; absolute paths and parent directories are also supported when Android permits the host to read them. Pass a file path, not a content URI.
 
 In the Rhino environment (the default AutoJs6 script engine), `mediainfo` is a global module; `mediainfo(path)` and `mediainfo.read(path)` are equivalent and return a parsed object synchronously:
 

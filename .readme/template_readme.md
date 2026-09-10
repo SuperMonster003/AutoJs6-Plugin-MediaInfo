@@ -135,6 +135,29 @@ const mi = require("mediainfo");
 
 ******
 
+### {{ h3_demo }}
+
+******
+
+{{ p_demo_intro }}
+
+<table>
+  <tr>
+    <th>{{ th_demo_script }}</th>
+    <th>{{ th_demo_dialog }}</th>
+    <th>{{ th_demo_details }}</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="{{ repo_url }}/blob/master/.readme/images/dark-script.png?raw=true" /><img src="{{ repo_url }}/blob/master/.readme/images/light-script.png?raw=true" alt="{{ th_demo_script }}" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="{{ repo_url }}/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="{{ repo_url }}/blob/master/.readme/images/light-dialog.png?raw=true" alt="{{ th_demo_dialog }}" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="{{ repo_url }}/blob/master/.readme/images/dark-details.png?raw=true" /><img src="{{ repo_url }}/blob/master/.readme/images/light-details.png?raw=true" alt="{{ th_demo_details }}" width="260" /></picture></td>
+  </tr>
+</table>
+
+{{ p_demo_reproduce }}
+
+******
+
 ### {{ h3_snapshot }}
 
 ******

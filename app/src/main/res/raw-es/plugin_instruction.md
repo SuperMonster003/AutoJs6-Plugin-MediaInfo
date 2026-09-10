@@ -26,7 +26,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` devuelve un objeto instantánea estructurado (vea `Estructura De La Instantánea Y Opciones` más abajo); `get(path, streamKind?, parameter)` devuelve el texto sin procesar del parámetro, con `streamKind` por defecto `general`. Por seguridad, los scripts Node solo pueden acceder a archivos dentro del directorio del proyecto, y las rutas relativas se resuelven desde la raíz del proyecto.
+`read(path, options?)` devuelve una instantánea estructurada (ver abajo); `get(path, streamKind, parameter, options?)` devuelve el texto original del parámetro. Las rutas relativas parten del directorio de trabajo; también se admiten rutas absolutas y directorios superiores cuando Android permite al anfitrión leerlos. Use una ruta de archivo, no un URI content.
 
 En el entorno Rhino (el motor de script predeterminado de AutoJs6), `mediainfo` es un módulo global; `mediainfo(path)` y `mediainfo.read(path)` son equivalentes y devuelven de forma síncrona un objeto analizado:
 

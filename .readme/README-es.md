@@ -114,7 +114,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` devuelve un objeto instantánea estructurado (vea `Estructura De La Instantánea Y Opciones` más abajo); `get(path, streamKind?, parameter)` devuelve el texto sin procesar del parámetro, con `streamKind` por defecto `general`. Por seguridad, los scripts Node solo pueden acceder a archivos dentro del directorio del proyecto, y las rutas relativas se resuelven desde la raíz del proyecto.
+`read(path, options?)` devuelve una instantánea estructurada (ver abajo); `get(path, streamKind, parameter, options?)` devuelve el texto original del parámetro. Las rutas relativas parten del directorio de trabajo; también se admiten rutas absolutas y directorios superiores cuando Android permite al anfitrión leerlos. Use una ruta de archivo, no un URI content.
 
 En el entorno Rhino (el motor de script predeterminado de AutoJs6), `mediainfo` es un módulo global; `mediainfo(path)` y `mediainfo.read(path)` son equivalentes y devuelven de forma síncrona un objeto analizado:
 
@@ -150,6 +150,29 @@ const mi = require("mediainfo");
   }
 })();
 ```
+
+******
+
+### Demostración
+
+******
+
+Pantallas reales de AutoJs6 con temas claro y oscuro. El ejemplo Rhino consulta dos pistas PCM de 8 kHz y 16 kHz; el botón MediaInfo abre el informe completo con la ruta original.
+
+<table>
+  <tr>
+    <th>Salida del script Rhino</th>
+    <th>Información del archivo multimedia</th>
+    <th>Detalles de MediaInfo</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-script.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-script.png?raw=true" alt="Salida del script Rhino" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-dialog.png?raw=true" alt="Información del archivo multimedia" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-details.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-details.png?raw=true" alt="Detalles de MediaInfo" width="260" /></picture></td>
+  </tr>
+</table>
+
+Ejecute el [script de demostración](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/demo/mediainfo.js) con la [muestra de dos pistas](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka), o cambie la ruta por su propio archivo. La muestra contiene silencio generado. La ruta original y las consultas ampliadas requieren las actualizaciones coordinadas del anfitrión y los plugins.
 
 ******
 
@@ -207,9 +230,9 @@ Abra el centro de plugins de AutoJs6; ver el plugin `MediaInfo` allí significa 
 
 Es lo esperado. El plugin no tiene interfaz propia ni crea icono de lanzador; tras la instalación, AutoJs6 lo descubre y lo controla por completo en segundo plano, y toda interacción ocurre dentro de AutoJs6.
 
-#### ¿Un script Node falla con `path must stay inside the scoped working directory`?
+#### ¿Un script Node muestra `path must stay inside the scoped working directory`?
 
-Por seguridad, el motor Node solo permite acceder a archivos dentro del directorio del proyecto. Mueva o copie el archivo multimedia al directorio del proyecto antes de leerlo; para acceder a otras ubicaciones (como la galería o descargas), use en su lugar un script del motor Rhino.
+Actualice AutoJs6 y el plugin Node Runtime. Las versiones actuales aceptan rutas de archivos normales fuera del proyecto, sujetas a los permisos de Android. El anfitrión o runtime anterior puede mantener la antigua restricción al directorio del proyecto.
 
 #### ¿`get()` devolvió una cadena vacía?
 
@@ -280,6 +303,7 @@ _2026/09/10_
 - `Función` Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin
 - `Función` El esquema snapshot v2 opcional agrupa los flujos JSON nativos en matrices y expone la version del motor, manteniendo snapshot v1 por defecto
 - `Corrección` Complete name muestra la ruta original en los detalles y las instantáneas MediaInfo en lugar de la caché privada o del descriptor, conservando el nombre de archivo de la instantánea
+- `Mejora` Actualizada la documentación de rutas Node y añadidas capturas reales claras/oscuras con una demostración ejecutable de dos pistas
 
 #### v2.0.0
 

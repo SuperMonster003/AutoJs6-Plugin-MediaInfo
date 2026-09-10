@@ -11,6 +11,7 @@
 * `Función` Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin
 * `Función` El esquema snapshot v2 opcional agrupa los flujos JSON nativos en matrices y expone la version del motor, manteniendo snapshot v1 por defecto
 * `Corrección` Complete name muestra la ruta original en los detalles y las instantáneas MediaInfo en lugar de la caché privada o del descriptor, conservando el nombre de archivo de la instantánea
+* `Mejora` Actualizada la documentación de rutas Node y añadidas capturas reales claras/oscuras con una demostración ejecutable de dos pistas
 
 # v2.0.0
 

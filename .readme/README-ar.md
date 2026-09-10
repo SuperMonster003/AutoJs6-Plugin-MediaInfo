@@ -114,7 +114,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-تعيد `read(path, options?)` كائن لقطة منظم (انظر `بنية اللقطة وخياراتها` أدناه); وتعيد `get(path, streamKind?, parameter)` النص الخام للمعلمة, والقيمة الافتراضية لـ `streamKind` هي `general`. لأسباب أمنية, لا يمكن لبرامج Node النصية الوصول إلا إلى الملفات داخل دليل المشروع, وتحل المسارات النسبية اعتبارا من جذر المشروع.
+تعيد `read(path, options?)` لقطة منظمة (انظر أدناه), وتعيد `get(path, streamKind, parameter, options?)` النص الأصلي للمعامل. تُحل المسارات النسبية من مجلد العمل; وتُقبل المسارات المطلقة والمجلدات الأعلى إذا سمح Android للمضيف بقراءتها. مرر مسار ملف وليس content URI.
 
 في بيئة Rhino (محرك البرمجة النصية الافتراضي في AutoJs6), تكون `mediainfo` وحدة عامة; و `mediainfo(path)` و `mediainfo.read(path)` متكافئان ويعيدان كائنا محللا بشكل متزامن:
 
@@ -150,6 +150,29 @@ const mi = require("mediainfo");
   }
 })();
 ```
+
+******
+
+### عرض توضيحي
+
+******
+
+شاشات AutoJs6 فعلية بالمظهرين الفاتح والداكن. يقرأ مثال Rhino مسارين صوتيين PCM بترددي 8 kHz و16 kHz; ويفتح زر MediaInfo التقرير الكامل مع مسار الملف الأصلي.
+
+<table>
+  <tr>
+    <th>مخرجات سكربت Rhino</th>
+    <th>معلومات ملف الوسائط</th>
+    <th>تفاصيل MediaInfo</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-script.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-script.png?raw=true" alt="مخرجات سكربت Rhino" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-dialog.png?raw=true" alt="معلومات ملف الوسائط" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-details.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-details.png?raw=true" alt="تفاصيل MediaInfo" width="260" /></picture></td>
+  </tr>
+</table>
+
+شغّل [سكربت العرض](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/demo/mediainfo.js) باستخدام [العينة ذات المسارين](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka), أو غيّر المسار إلى ملفك. تحتوي العينة على صمت مولّد. يتطلب عرض المسار الأصلي والاستعلامات الموسعة تحديثات متوافقة للمضيف والملحقات.
 
 ******
 
@@ -207,9 +230,9 @@ general, video, audio, text, other, image, menu
 
 هذا متوقع. لا يملك المكون واجهة مستقلة ولا ينشئ أيقونة تشغيل; وبعد التثبيت يكتشفه AutoJs6 ويديره بالكامل في الخلفية, ويجري كل تفاعل داخل AutoJs6.
 
-#### برنامج Node نصي يفشل برسالة `path must stay inside the scoped working directory`?
+#### يعرض سكربت Node الخطأ `path must stay inside the scoped working directory`?
 
-لأسباب أمنية, لا يسمح محرك Node إلا بالوصول إلى الملفات داخل دليل المشروع. انقل ملف الوسائط أو انسخه إلى دليل المشروع قبل قراءته; وللوصول إلى مواقع أخرى (مثل المعرض أو مجلد التنزيلات), استخدم برنامجا نصيا بمحرك Rhino بدلا من ذلك.
+حدّث AutoJs6 وملحق Node Runtime معاً. تقبل الإصدارات الحالية مسارات الملفات العادية خارج المشروع وفق أذونات Android. قد تبقى قيود مجلد المشروع القديمة في الإصدارات السابقة من المضيف أو بيئة التشغيل.
 
 #### أعادت `get()` سلسلة فارغة?
 
@@ -280,6 +303,7 @@ _2026/09/10_
 - `ميزة` تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة
 - `ميزة` يجمع snapshot v2 الاختياري مسارات JSON الأصلية في مصفوفات ويعرض إصدار المحرك مع إبقاء snapshot v1 افتراضيا
 - `إصلاح` يعرض Complete name في تفاصيل ولقطات MediaInfo مسار الملف الأصلي بدلا من ذاكرة التخزين الخاصة أو مسار الواصف مع الحفاظ على اسم الملف المعروض في اللقطة
+- `تحسين` تحديث شرح مسارات ملفات Node وإضافة لقطات فعلية بالمظهرين الفاتح والداكن ومثال قابل للتشغيل بمسارين صوتيين
 
 #### v2.0.0
 

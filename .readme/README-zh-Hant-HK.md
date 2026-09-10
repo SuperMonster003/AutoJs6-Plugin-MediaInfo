@@ -114,7 +114,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` 返回結構化快照對象 (見下方 `快照結構與選項`); `get(path, streamKind?, parameter)` 返回參數原始文本, `streamKind` 預設為 `general`. 出於安全限制, Node 腳本只能存取工程目錄內的文件, 相對路徑基於工程根目錄解析.
+`read(path, options?)` 傳回結構化快照 (見下文); `get(path, streamKind, parameter, options?)` 傳回參數原始文字. 相對路徑以工作目錄為基準, 亦支援絕對路徑及上層目錄, 檔案須在 Android 允許宿主讀取的範圍內. 請傳入檔案路徑, 而非 content URI.
 
 Rhino 環境 (AutoJs6 預設腳本引擎) 中 `mediainfo` 為全局模塊, `mediainfo(path)` 與 `mediainfo.read(path)` 等價, 同步返回解析對象:
 
@@ -150,6 +150,29 @@ const mi = require("mediainfo");
   }
 })();
 ```
+
+******
+
+### 執行示範
+
+******
+
+AutoJs6 深淺色介面. Rhino 範例讀取 8 kHz 與 16 kHz 兩條 PCM 音軌; 點擊 MediaInfo 按鈕後, 完整報告顯示媒體檔案的原始路徑.
+
+<table>
+  <tr>
+    <th>Rhino 腳本輸出</th>
+    <th>媒體檔案詳細資訊</th>
+    <th>MediaInfo 詳情</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-script.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-script.png?raw=true" alt="Rhino 腳本輸出" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-dialog.png?raw=true" alt="媒體檔案詳細資訊" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-details.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-details.png?raw=true" alt="MediaInfo 詳情" width="260" /></picture></td>
+  </tr>
+</table>
+
+可使用 [雙音軌樣本](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka) 執行 [示範腳本](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/demo/mediainfo.js), 或將腳本路徑改為自己的媒體檔案. 樣本為合成靜音. 原始路徑顯示與擴充查詢需同時更新配套宿主及插件.
 
 ******
 
@@ -209,7 +232,7 @@ general, video, audio, text, other, image, menu
 
 #### Node 腳本提示路徑必須位於工作目錄內 (path must stay inside the scoped working directory)?
 
-Node 引擎出於安全限制只允許存取工程目錄內的文件. 請將媒體文件放入工程目錄內再讀取; 若需要存取其他路徑 (如相冊或下載目錄), 可改用 Rhino 引擎腳本.
+請同時更新 AutoJs6 與 Node Runtime 插件. 目前版本支援專案目錄外的一般檔案路徑, 讀取權限由 Android 決定; 舊版宿主或執行環境可能仍保留原有的專案目錄限制.
 
 #### `get()` 返回了空字符串?
 
@@ -280,6 +303,7 @@ _2026/09/10_
 - `新增` MediaInfo 查詢支援從 0 開始的 streamNumber, countGet 串流計數以及用於單位, 說明和可讀名稱的 infoKind; Rhino 和 Node 保持預設第 1 條串流的 TEXT 查詢, 並協商外掛擴充能力
 - `新增` 明確選擇的 snapshot v2 將原生 JSON 同類串流按陣列分組並提供引擎版本, snapshot v1 繼續作為預設協定
 - `修復` MediaInfo 詳情與快照的 Complete name 顯示原始檔案路徑, 避免顯示私有快取或描述符路徑, 同時保留快照的顯示檔案名稱
+- `優化` 同步 Node 檔案路徑存取說明, 補充深淺色裝置截圖與可執行的雙音軌示範腳本
 
 #### v2.0.0
 

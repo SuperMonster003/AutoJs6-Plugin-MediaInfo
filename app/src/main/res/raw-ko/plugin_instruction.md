@@ -26,7 +26,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` 는 구조화된 스냅샷 객체를 반환합니다 (아래 `스냅샷 구조와 옵션` 참고). `get(path, streamKind?, parameter)` 는 매개변수의 원본 텍스트를 반환하며 `streamKind` 의 기본값은 `general` 입니다. 보안상 Node 스크립트는 프로젝트 디렉터리 안의 파일에만 접근할 수 있고, 상대 경로는 프로젝트 루트를 기준으로 해석됩니다.
+`read(path, options?)` 는 구조화된 스냅샷을 반환하며 (아래 참조), `get(path, streamKind, parameter, options?)` 는 매개변수의 원문을 반환합니다. 상대 경로는 작업 디렉터리를 기준으로 해석됩니다. 절대 경로와 상위 디렉터리도 지원하지만 Android가 호스트의 읽기를 허용해야 합니다. content URI 대신 파일 경로를 전달하세요.
 
 Rhino 환경 (AutoJs6 의 기본 스크립트 엔진) 에서 `mediainfo` 는 전역 모듈이며, `mediainfo(path)` 와 `mediainfo.read(path)` 는 동일하게 분석 객체를 동기적으로 반환합니다:
 

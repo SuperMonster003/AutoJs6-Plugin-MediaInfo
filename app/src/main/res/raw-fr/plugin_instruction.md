@@ -26,7 +26,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` renvoie un objet instantané structuré (voir `Structure De L'instantané Et Options` ci-dessous); `get(path, streamKind?, parameter)` renvoie le texte brut du paramètre, `streamKind` valant `general` par défaut. Par sécurité, les scripts Node ne peuvent accéder qu'aux fichiers du répertoire du projet, et les chemins relatifs sont résolus depuis la racine du projet.
+`read(path, options?)` renvoie un instantané structuré (voir ci-dessous); `get(path, streamKind, parameter, options?)` renvoie le texte brut du paramètre. Les chemins relatifs partent du répertoire de travail; les chemins absolus et les répertoires parents sont aussi acceptés si Android autorise leur lecture par l’hôte. Fournissez un chemin de fichier, pas une URI content.
 
 Dans l'environnement Rhino (moteur de script par défaut d'AutoJs6), `mediainfo` est un module global; `mediainfo(path)` et `mediainfo.read(path)` sont équivalents et renvoient de manière synchrone un objet analysé:
 

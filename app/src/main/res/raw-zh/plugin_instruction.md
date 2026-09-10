@@ -26,7 +26,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` 返回结构化快照对象 (见下方 `快照结构与选项`); `get(path, streamKind?, parameter)` 返回参数原始文本, `streamKind` 缺省为 `general`. 出于安全限制, Node 脚本只能访问工程目录内的文件, 相对路径基于工程根目录解析.
+`read(path, options?)` 返回结构化快照 (见下文); `get(path, streamKind, parameter, options?)` 返回参数原始文本. 相对路径基于工作目录解析, 绝对路径及父目录也可使用, 文件须处于 Android 允许宿主读取的范围内. 请传入文件路径, 而非 content URI.
 
 Rhino 环境 (AutoJs6 默认脚本引擎) 中 `mediainfo` 为全局模块, `mediainfo(path)` 与 `mediainfo.read(path)` 等价, 同步返回解析对象:
 

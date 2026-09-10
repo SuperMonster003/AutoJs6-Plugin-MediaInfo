@@ -37,7 +37,7 @@
   "p_choose_apk_note": "プラグインは自身のプロセス内でネイティブライブラリをロードします. 端末のアーキテクチャに合わない単一アーキテクチャ版を誤ってインストールすると, 呼び出し時に `MediaInfo library is not available` と表示されます. `universal` 版に入れ替えれば解決します.",
   "h3_script_api": "スクリプト API",
   "p_script_api_node": "Node 環境 (スクリプト先頭で `\"nodejs\"` を宣言) では `require(\"mediainfo\")` でモジュールを取得し, すべてのメソッドが Promise を返します",
-  "p_script_api_node_note": "`read(path, options?)` は構造化スナップショットオブジェクトを返します (下の `スナップショットの構造とオプション` を参照). `get(path, streamKind?, parameter)` はパラメータの生テキストを返し, `streamKind` の既定値は `general` です. 安全上の制限により, Node スクリプトはプロジェクトディレクトリ内のファイルのみアクセスでき, 相対パスはプロジェクトルートを基準に解決されます.",
+  "p_script_api_node_note": "`read(path, options?)` は構造化スナップショットを返し (下記参照), `get(path, streamKind, parameter, options?)` はパラメーターの元のテキストを返します. 相対パスは作業ディレクトリを基準に解決されます. 絶対パスと親ディレクトリも使用できますが, Android がホストに読み取りを許可している必要があります. content URI ではなくファイルパスを渡してください.",
   "p_script_api_rhino": "Rhino 環境 (AutoJs6 の既定スクリプトエンジン) では `mediainfo` はグローバルモジュールで, `mediainfo(path)` と `mediainfo.read(path)` は等価であり, 解析オブジェクトを同期的に返します",
   "p_script_api_rhino_note": "返されたオブジェクトの `path` と `inform` はそれぞれ解決済みパスと完全なテキストレポートです. 各ストリーム種別 (`general`, `video`, `audio` など) は, 解析済みフィールドを公開するプロパティ (例: `mi.video.width`, フィールド名は camelCase) としても, 生パラメータをリアルタイムに問い合わせる関数 (例: `mi.audio(\"BitRate\")`) としても機能します. Rhino スクリプトはホストが読み取り可能な任意のパスにアクセスできます.",
   "h3_snapshot": "スナップショットの構造とオプション",
@@ -61,8 +61,8 @@
       "a": "正常な動作です. プラグインには独立した画面がなく, ランチャーアイコンも作成しません. インストール後は AutoJs6 がバックグラウンドで自動検出して呼び出し, すべての操作は AutoJs6 内で完結します."
     },
     {
-      "q": "Node スクリプトで `path must stay inside the scoped working directory` と表示されます?",
-      "a": "Node エンジンは安全上の制限により, プロジェクトディレクトリ内のファイルのみアクセスを許可します. メディアファイルをプロジェクトディレクトリ内に置いてから読み取ってください. 他のパス (アルバムやダウンロードフォルダなど) にアクセスする必要がある場合は, Rhino エンジンのスクリプトをご利用ください."
+      "q": "Node スクリプトで `path must stay inside the scoped working directory` と表示される?",
+      "a": "AutoJs6 と Node Runtime プラグインを両方更新してください. 現在のバージョンは Android のファイル権限に従い, プロジェクト外の通常のファイルパスにも対応しています. 古いホストやランタイムには従来のプロジェクト内限定の制限が残っている場合があります."
     },
     {
       "q": "`get()` が空文字列を返しました?",
@@ -121,5 +121,11 @@
   "text_link_mediainfolib_official": "MediaInfoLib プロジェクト",
   "text_link_mediainfo_android": "MediaInfoLib Android ラッパー",
   "p_instruction_docs": "より詳しい使い方とフィールドの説明は [AutoJs6 MediaInfo ドキュメント]({{ docs_mediainfo_url }}) と [プロジェクトホームページ]({{ repo_url }}) を参照してください.",
-  "p_query_options": "MediaInfo クエリが 0 始まりの streamNumber, countGet によるストリーム数, 単位や説明や表示名を取得する infoKind に対応; Rhino と Node は既定の先頭ストリームの TEXT クエリを維持し, プラグインの拡張機能を確認"
+  "p_query_options": "MediaInfo クエリが 0 始まりの streamNumber, countGet によるストリーム数, 単位や説明や表示名を取得する infoKind に対応; Rhino と Node は既定の先頭ストリームの TEXT クエリを維持し, プラグインの拡張機能を確認",
+  "h3_demo": "動作例",
+  "p_demo_intro": "AutoJs6 のライト/ダークテーマ画面です. Rhino の例は 8 kHz と 16 kHz の PCM 音声トラックを読み取ります. MediaInfo ボタンで開く完全なレポートには元のファイルパスが表示されます.",
+  "th_demo_script": "Rhino スクリプト出力",
+  "th_demo_dialog": "メディアファイル情報",
+  "th_demo_details": "MediaInfo 詳細",
+  "p_demo_reproduce": "[2 トラックのサンプル]({{ repo_url }}/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka) で [デモスクリプト]({{ repo_url }}/blob/master/demo/mediainfo.js) を実行するか, パスを自分のメディアファイルに変更してください. サンプルは合成した無音です. 元のパス表示と拡張クエリにはホストとプラグインの対応する更新が必要です."
 }

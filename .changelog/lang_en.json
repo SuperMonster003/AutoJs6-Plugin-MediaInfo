@@ -13,6 +13,9 @@
       ],
       "fix": [
         "MediaInfo details and snapshots show the original source path in Complete name instead of a private cache or descriptor path, while preserving the snapshot display filename"
+      ],
+      "improvement": [
+        "Documented current Node file-path access and added light/dark device screenshots with a runnable two-track demo"
       ]
     },
     "v2.0.0": {

@@ -26,7 +26,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` は構造化スナップショットオブジェクトを返します (下の `スナップショットの構造とオプション` を参照). `get(path, streamKind?, parameter)` はパラメータの生テキストを返し, `streamKind` の既定値は `general` です. 安全上の制限により, Node スクリプトはプロジェクトディレクトリ内のファイルのみアクセスでき, 相対パスはプロジェクトルートを基準に解決されます.
+`read(path, options?)` は構造化スナップショットを返し (下記参照), `get(path, streamKind, parameter, options?)` はパラメーターの元のテキストを返します. 相対パスは作業ディレクトリを基準に解決されます. 絶対パスと親ディレクトリも使用できますが, Android がホストに読み取りを許可している必要があります. content URI ではなくファイルパスを渡してください.
 
 Rhino 環境 (AutoJs6 の既定スクリプトエンジン) では `mediainfo` はグローバルモジュールで, `mediainfo(path)` と `mediainfo.read(path)` は等価であり, 解析オブジェクトを同期的に返します:
 
