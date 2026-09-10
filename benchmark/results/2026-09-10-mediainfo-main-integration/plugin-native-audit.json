@@ -1,0 +1,191 @@
+{
+  "apks": {
+    "arm64-v8a": {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "bytes": 2964471,
+      "metadata": [
+        "assets/licenses/MediaInfoLib-LICENSE.txt",
+        "assets/licenses/ZenLib-LICENSE.txt",
+        "assets/mediainfo-upstream.lock.json"
+      ],
+      "nativeSha256": {
+        "arm64-v8a": "947b79e132f6f186626530367562e8ff66c5f6c3dd1a63124c10ca7af9e14e9b"
+      },
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\outputs\\apk\\release\\app-arm64-v8a-release.apk",
+      "sha256": "4d9a4c8bc9ee116cbdb8add4d93709d69366801e3aa7024608505a8e33c032b4"
+    },
+    "armeabi-v7a": {
+      "abis": [
+        "armeabi-v7a"
+      ],
+      "bytes": 2734517,
+      "metadata": [
+        "assets/licenses/MediaInfoLib-LICENSE.txt",
+        "assets/licenses/ZenLib-LICENSE.txt",
+        "assets/mediainfo-upstream.lock.json"
+      ],
+      "nativeSha256": {
+        "armeabi-v7a": "91da014dee8fcbbf1574b22fe8c870d61c45753662a67298eb429a73c7a3ab2b"
+      },
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\outputs\\apk\\release\\app-armeabi-v7a-release.apk",
+      "sha256": "44ba807fd91fea3beb73aa1dc3c19986ce4c44290d3319798eff316148092dea"
+    },
+    "universal": {
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64"
+      ],
+      "bytes": 11734697,
+      "metadata": [
+        "assets/licenses/MediaInfoLib-LICENSE.txt",
+        "assets/licenses/ZenLib-LICENSE.txt",
+        "assets/mediainfo-upstream.lock.json"
+      ],
+      "nativeSha256": {
+        "arm64-v8a": "947b79e132f6f186626530367562e8ff66c5f6c3dd1a63124c10ca7af9e14e9b",
+        "armeabi-v7a": "91da014dee8fcbbf1574b22fe8c870d61c45753662a67298eb429a73c7a3ab2b",
+        "x86": "13d6da0c4f2fb180ee3805b9a97b55d34571169e7aa548d1b96429a7e613daaf",
+        "x86_64": "60f78a789c57fdbb335259d5d3934c1733507c4782521fe9df41024524b0075a"
+      },
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\outputs\\apk\\release\\app-universal-release.apk",
+      "sha256": "60a8277889d34ac5e4c024d4784c02408ba3c2ebb6c37b410e34056271900bb1"
+    },
+    "x86": {
+      "abis": [
+        "x86"
+      ],
+      "bytes": 3352805,
+      "metadata": [
+        "assets/licenses/MediaInfoLib-LICENSE.txt",
+        "assets/licenses/ZenLib-LICENSE.txt",
+        "assets/mediainfo-upstream.lock.json"
+      ],
+      "nativeSha256": {
+        "x86": "13d6da0c4f2fb180ee3805b9a97b55d34571169e7aa548d1b96429a7e613daaf"
+      },
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\outputs\\apk\\release\\app-x86-release.apk",
+      "sha256": "b51cf662c4e990e99343f14deb20e5d08837f6083b3501f2a65f831afc5c2506"
+    },
+    "x86_64": {
+      "abis": [
+        "x86_64"
+      ],
+      "bytes": 3086836,
+      "metadata": [
+        "assets/licenses/MediaInfoLib-LICENSE.txt",
+        "assets/licenses/ZenLib-LICENSE.txt",
+        "assets/mediainfo-upstream.lock.json"
+      ],
+      "nativeSha256": {
+        "x86_64": "60f78a789c57fdbb335259d5d3934c1733507c4782521fe9df41024524b0075a"
+      },
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\outputs\\apk\\release\\app-x86_64-release.apk",
+      "sha256": "5e2a72273536472c47bc51694faf20bd6e7ede6b6501764914bc93d803c575bb"
+    }
+  },
+  "artifacts": {
+    "arm64-v8a": {
+      "bytes": 7180544,
+      "elfClass": "ELF64",
+      "exports": [
+        "JNI_OnLoad"
+      ],
+      "loadAlignments": [
+        "0x4000",
+        "0x4000",
+        "0x4000"
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libc.so",
+        "libdl.so",
+        "libm.so",
+        "libz.so"
+      ],
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\intermediates\\stripped_native_libs\\release\\stripReleaseDebugSymbols\\out\\lib\\arm64-v8a\\libmediainfo.so",
+      "sha256": "947b79e132f6f186626530367562e8ff66c5f6c3dd1a63124c10ca7af9e14e9b"
+    },
+    "armeabi-v7a": {
+      "bytes": 5177208,
+      "elfClass": "ELF32",
+      "exports": [
+        "JNI_OnLoad"
+      ],
+      "loadAlignments": [
+        "0x4000",
+        "0x4000",
+        "0x4000"
+      ],
+      "machine": "ARM",
+      "needed": [
+        "libc.so",
+        "libdl.so",
+        "libm.so",
+        "libz.so"
+      ],
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\intermediates\\stripped_native_libs\\release\\stripReleaseDebugSymbols\\out\\lib\\armeabi-v7a\\libmediainfo.so",
+      "sha256": "91da014dee8fcbbf1574b22fe8c870d61c45753662a67298eb429a73c7a3ab2b"
+    },
+    "x86": {
+      "bytes": 8061556,
+      "elfClass": "ELF32",
+      "exports": [
+        "JNI_OnLoad"
+      ],
+      "loadAlignments": [
+        "0x4000",
+        "0x4000",
+        "0x4000"
+      ],
+      "machine": "Intel 80386",
+      "needed": [
+        "libc.so",
+        "libdl.so",
+        "libm.so",
+        "libz.so"
+      ],
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\intermediates\\stripped_native_libs\\release\\stripReleaseDebugSymbols\\out\\lib\\x86\\libmediainfo.so",
+      "sha256": "13d6da0c4f2fb180ee3805b9a97b55d34571169e7aa548d1b96429a7e613daaf"
+    },
+    "x86_64": {
+      "bytes": 7725600,
+      "elfClass": "ELF64",
+      "exports": [
+        "JNI_OnLoad"
+      ],
+      "loadAlignments": [
+        "0x4000",
+        "0x4000",
+        "0x4000"
+      ],
+      "machine": "Advanced Micro Devices X86-64",
+      "needed": [
+        "libc.so",
+        "libdl.so",
+        "libm.so",
+        "libz.so"
+      ],
+      "path": "D:\\idea-projects\\AutoJs6-Plugin-MediaInfo\\app\\build\\intermediates\\stripped_native_libs\\release\\stripReleaseDebugSymbols\\out\\lib\\x86_64\\libmediainfo.so",
+      "sha256": "60f78a789c57fdbb335259d5d3934c1733507c4782521fe9df41024524b0075a"
+    }
+  },
+  "lock": "native\\upstream.lock.json",
+  "sources": {
+    "mediaInfoLib": {
+      "commit": "f23e69ce89581343f3b7a42e06828a5331e290d5",
+      "license": "BSD-2-Clause",
+      "repository": "https://github.com/MediaArea/MediaInfoLib.git",
+      "tag": "v26.05"
+    },
+    "zenLib": {
+      "commit": "894980d3ecbc843d6ac685493f8f2ed5c2b6864c",
+      "license": "Zlib",
+      "repository": "https://github.com/MediaArea/ZenLib.git",
+      "tag": "v0.4.41"
+    }
+  }
+}

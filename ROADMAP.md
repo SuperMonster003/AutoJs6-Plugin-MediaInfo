@@ -25,7 +25,7 @@
 | 里程碑 | 主题 | 状态 |
 |---|---|---|
 | M0 | 基线能力 (v1.0.0) | 已完成 |
-| M1 | 文档与工程化 | 进行中 |
+| M1 | 文档与工程化 | 本地验收完成, 待远端 CI |
 | M2 | 读取能力增强 | 核心能力已完成, 参数表延后 |
 | M3 | 性能与大文件 | 已完成 |
 | M4 | 健壮性与诊断 | 进行中 |
@@ -50,7 +50,7 @@
 
 ******
 
-## M1 文档与工程化 - 进行中
+## M1 文档与工程化 - 本地验收完成
 
 ******
 
@@ -60,10 +60,12 @@
 - [x] 生成脚本升级至同族最新实现: 支持 `--check` 漂移校验, 跨语言键位与列表形状对齐, 全角符号拦截, 版本对齐 (最新日志条目 == `version.properties`), `strings.xml` 描述同步校验. (落点: `.python/generate_markdown.py`)
 - [x] Markdown CI: GitHub Actions 在推送与 PR 时运行 `--check`, 防止源文件与产物脱节. (落点: `.github/workflows/markdown.yml`, `.python/check_markdown.bat`)
 - [x] ROADMAP 建立: 即本文档, 以可勾选清单维护能力规划. (落点: `ROADMAP.md`)
-- [ ] 演示物料: README 增补脚本调用效果与 AutoJs6 媒体信息对话框截图 (深浅色各一组), 图片纳入仓库或 Release 资源.
+- [x] 演示物料: 10 语言 README 增补 Rhino 脚本输出, AutoJs6 媒体信息对话框与 MediaInfo 详情页截图, 深浅色各 3 张; 来自三星 SM-A566B 的原始 PNG 纳入仓库, `picture` 按主题选择图片. 合成双音轨样本与可运行脚本同时提供. (落点: `.readme/images/`, `.readme/template_readme.md`, `demo/mediainfo.js`, `benchmark/results/2026-09-10-mediainfo-main-integration.json`)
 - [x] 文档整改后的首个发布: v1.1.0 (2026/08/31) 发布说明与新版 CHANGELOG 保持一致, 并核对 Releases 页面五种 ABI 资产命名. (落点: `.changelog/`, `app/build.gradle.kts`, [v1.1.0 Release](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/releases/tag/v1.1.0))
 
 验收条件: `py .python/generate_markdown.py --check` 输出 `MARKDOWN_OK languages=10 artifacts=36`; markdown CI 全绿; README 在 GitHub 明暗两种主题下渲染正常.
+
+本轮本地验收: Markdown 生成检查通过, 生成 README 的图片表格已在浏览器明暗两种模式预览并核对; 三星与 x86_64 模拟器均通过真实触摸打开详情页的测试. 本轮未推送或触发远端 CI, GitHub 上新提交的渲染与 CI 状态待后续发布流程确认.
 
 ******
 
@@ -86,6 +88,10 @@
 验收进度: snapshot-v2 及直接查询核心能力均已通过真实 AIDL, Rhino 生产引擎, Node 直连 / compat 门面与 Android Provider 验证. 双音轨样本覆盖冷查询与缓存命中, 原始路径覆盖 regular FD, pipe 副本及旧插件兼容. 双引擎类型声明, Ace Editor 补全与在线 / 离线文档已协同更新. `Info_Parameters` 继续延后; `REQUIRES_HOST_VERSION` 保持 3923, 旧事务与默认值继续兼容, 扩展事务仅在协商成功后调用. 本轮验证记录见 `benchmark/results/2026-09-10-mediainfo-m2-validation.json`.
 
 16 KB 实机补充: 同一 v2.1.0 (11) ARM64 Release 已在三星 SM-A566B / Android 16 / API 36 的 16384 字节页系统通过公开 AIDL 冒烟; 9 项插件服务测试也全部通过, 包括双音轨, InfoKind, 原始路径, snapshot-v1/v2 与缓存隔离. 本次仅补充插件设备覆盖, 宿主 Rhino / Node 验证仍引用前述独立记录. (落点: `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`)
+
+协同主线接入与补验: AutoJs6, Node Runtime, 类型声明, Ace Editor, 在线文档与离线文档均已接入各自主分支, 保留同期文件系统改动. 新租用三星 `localhost:54105` 与独立 x86_64 模拟器均为 API 36 / 16384 字节页系统, 分别通过宿主 17 项测试 (Rhino / Node 媒体 8 项, 控制台 7 项, 明暗主题实际点击入口 2 项); 新三星另通过 Node 完整 NPM / conformance 13 项. 最终 v2.1.0 (12) 混淆 Release 在两种架构各通过 1 项覆盖全部 6 个 AIDL 方法的冒烟. 原先两份控制台测试已按当前接口修复并实跑, 完整宿主测试 APK 编译不再排除任何文件. 两次三星租用与清理状态分别记录. (落点: `benchmark/results/2026-09-10-mediainfo-main-integration.json`, `MEDIAINFO_QUERY.md`)
+
+宿主 16 KB 边界: 三星首次启动提示 AutoJs6 使用页大小兼容模式. 宿主 APK 内 `libc++_shared.so`, `libjackpal-androidterm5.so`, `libjackpal-termexec2.so` 均为 4 KB ELF 对齐, 因此上述宿主功能测试通过不代表宿主全部原生依赖已完成 16 KB 迁移. MediaInfo 自身的 16 KB 原生对齐与 Release 调用已独立验证; 宿主旧终端依赖的缺口和提示截图见同一验收记录.
 
 ******
 

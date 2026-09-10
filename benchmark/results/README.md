@@ -13,6 +13,9 @@ The following full-profile results were recorded on 2026-08-31. Values are media
 
 Raw artifacts:
 
+- [M1/M2 main-branch integration, final build 12 and separate Samsung rental sessions](2026-09-10-mediainfo-main-integration.json)
+- [Initial M2 query validation and companion commits](2026-09-10-mediainfo-m2-validation.json)
+- [Samsung ARM64 16 KiB plugin service, timeout and build 11 Release validation](2026-09-10-api36-arm64-v8a-16k-samsung.json)
 - [API 36 x86_64 full profile](2026-08-31-api36-x86_64-full.json)
 - [API 29 x86 full profile](2026-08-31-api29-x86-full.json)
 - [API 31 ARM64 full profile](2026-08-31-api31-arm64-v8a-full.json)

@@ -1,0 +1,767 @@
+{
+  "schema": "autojs6-mediainfo-integration-validation-v1",
+  "date": "2026-09-10",
+  "scope": "Integrate the M2 companion work into main workspaces, close M1 demo-material work, and validate the real media-dialog details path on 16 KiB systems.",
+  "pluginSource": {
+    "commit": "effdca688e365f1cad81d2b6210f5d1d79a518a5",
+    "implementationCommit": "c18602ce6044e395cfe8ad893b309b13f5ae4c70",
+    "versionName": "2.1.0",
+    "versionCode": 12,
+    "nativeCodeUnchanged": true
+  },
+  "companionRepositories": {
+    "AutoJs6": {
+      "branch": "master",
+      "commit": "b3b3b29dce2ee7c43df08c4ba7954c9e291bb352",
+      "versionName": "6.8.0",
+      "versionCode": 5279,
+      "baseline": "94f65d301",
+      "consoleTestFixCommit": "221e17bc0787fccabf5d351523524aa4b9e85b50"
+    },
+    "NodeRuntime": {
+      "branch": "master",
+      "commit": "0789b3510be98a953e157e2b5946f6db51b7ccae",
+      "versionName": "1.4.0",
+      "versionCode": 154,
+      "baseline": "3f2a8f0",
+      "commitCount": 154
+    },
+    "Documentation": {
+      "branch": "master",
+      "commit": "027a39870c3534e0eb28f81f3e24a6f86e314f8d",
+      "versionName": "6.8.0",
+      "versionCode": 60
+    },
+    "Declarations": {
+      "branch": "main",
+      "commit": "29777c4414962806d3640c3303df480e70578639",
+      "version": "4.9.0"
+    },
+    "AceEditor": {
+      "branch": "master",
+      "commit": "992446316f36323ebec0facd75bac96e957d366a",
+      "versionName": "1.1.24",
+      "versionCode": 35
+    },
+    "OfflineDocumentation": {
+      "branch": "master",
+      "commit": "f0d90a6326ef63897e786be9e4f3f2d7d9121792",
+      "versionName": "6.8.0",
+      "versionCode": 19,
+      "preExistingPlatformChangesPreserved": true,
+      "uncommittedChanges": [
+        " D gradle/data/agp-gradle-compat.properties",
+        " D gradle/data/agp-releases.list",
+        " D gradle/data/android-studio-agp-compat.properties",
+        " D gradle/data/android-studio-build-version.properties",
+        " D gradle/data/android-studio-codename-version.properties",
+        " D gradle/data/android-studio-codename.properties",
+        " D gradle/data/gradle-kotlin-compat.properties",
+        " D gradle/data/java-gradle-compat.properties",
+        " D gradle/data/ksp-releases.properties",
+        " M settings.gradle.kts",
+        " M version.properties"
+      ]
+    }
+  },
+  "integration": {
+    "hostAndNode": "Applied the isolated query changes on the newer main branches; retained Android file paths, host MCP updates and Node platform 1.7.4.",
+    "otherCompanions": "Fast-forwarded the validated companion commits into their main working branches.",
+    "isolatedWorktrees": "Retained for provenance; no branch or worktree was deleted.",
+    "remotePublication": {
+      "pushed": false,
+      "tagged": false,
+      "released": false,
+      "remoteCiTriggered": false
+    }
+  },
+  "devices": [
+    {
+      "serial": "localhost:31277",
+      "role": "previous Samsung rental",
+      "abi": "arm64-v8a",
+      "api": 36,
+      "kernelPageSizeBytes": 16384,
+      "model": "SM-A566B",
+      "note": "The updated Node 1.4.0 (154) passed 13 tests before the lease expired. No integrated host test completion is claimed for this rental. Earlier plugin-only build 11 service/timeout/native-page evidence remains in the separate Samsung record."
+    },
+    {
+      "serial": "localhost:54105",
+      "role": "replacement Samsung rental explicitly supplied by the user",
+      "abi": "arm64-v8a",
+      "api": 36,
+      "kernelPageSizeBytes": 16384,
+      "pageSizeCommand": "adb -s localhost:54105 shell getconf PAGESIZE",
+      "model": "SM-A566B",
+      "fingerprint": "samsung/a56xnaeea_16kb/a56x:16/BP2A.250605.031.A3/A566BXXU6BYIF_OXM6BYIF:user/release-keys",
+      "initialState": "Host, MediaInfo and Node packages and the staged media paths were absent on initial inspection.",
+      "hostPageSizeCompatRaw": 4,
+      "mediainfoPageSizeCompatRaw": 0
+    },
+    {
+      "serial": "emulator-5582",
+      "role": "independent read-only AVD instance",
+      "avd": "Android16_16K_AVD",
+      "abi": "x86_64",
+      "api": 36,
+      "kernelPageSizeBytes": 16384,
+      "fingerprint": "google/sdk_gphone16k_x86_64/emu64xa16k:16/BE2A.250530.026.F3/13894323:userdebug/dev-keys",
+      "launchFlags": [
+        "-read-only",
+        "-no-window",
+        "-no-snapshot"
+      ],
+      "screenshotDisplayOverride": {
+        "width": 1080,
+        "height": 2340,
+        "density": 420
+      }
+    }
+  ],
+  "runs": [
+    {
+      "serial": "localhost:31277",
+      "role": "Node NPM and Android conformance before lease expiry",
+      "tests": 13,
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 26.635,
+      "log": "benchmark/results/2026-09-10-mediainfo-main-integration/previous-rental-node.txt",
+      "logSha256": "df3f4faa669863bc04d032084edab44aab0bca6888267a09858126d61c5eeec0",
+      "cases": [
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NpmEcosystemSmokeTest",
+          "test": "commonJsAndEsmPackagesRunInsidePluginRuntime",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "m18_missingCapabilitiesExplainDeclarationsWithoutRequiringAProfile",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_01_remoteRuntimeInfoAndPrewarmUseDedicatedNativeProcess",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_02_realCjsAndEsmExecuteThroughPublishedBinder",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_03_importedCommonJsStackRemovesFunctionWrapperOffset",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_04_rawTypeScriptEntryRequiresCompilerBeforeWorkspaceCreation",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_05_dynamicCtsRequiresCompilerOutput",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_06_precompiledSnapshotMapsTsMtsAndCtsDynamicSpecifiers",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_07_precompiledSnapshotRejectsMissingAmbiguousAndEscapingSpecifiers",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_08_esmCyclePreservesLiveBindingsThroughReExport",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_09_esmAndCjsFacadesSkipMissingTypeScriptCandidatesAndKeepNpmPrecedence",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3e_05_nodeCompatCorpusV2PassesThroughPublishedBinder",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3f_13_missingComputedCtsRequiresCompilerOutputBeforeProviderMaterialization",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "serial": "localhost:54105",
+      "role": "Full selected host classes; actual touch opens details in both themes",
+      "tests": 17,
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 12.783,
+      "log": "benchmark/results/2026-09-10-mediainfo-main-integration/samsung-host.txt",
+      "logSha256": "030125a5498ed298c0db99827e9b31675b281f22e624275aa56f1d7c1af009cc",
+      "cases": [
+        {
+          "class": "org.autojs.autojs.runtime.api.augment.mediainfo.MediainfoSnapshotRhinoInstrumentationTest",
+          "test": "publicRhinoApiKeepsReadAndNegotiatesSnapshotV2Explicitly",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "kotlinMediaRegistryAndFakeProviderAreStable",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "androidProviderUsesAndroidFileAccessOutsideTheWorkingDirectory",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "jsMediaCapabilitiesRequireExactManifestBeforeDispatch",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "oldPluginSnapshotsAreNormalizedBeforeReachingTheDetailsPage",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "jsMediaModulesUseFakeTransportAndCompatFacade",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "realMediainfoQueriesPreservePathsAndSelectSecondAudioTrack",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "androidProviderReturnsReadOnlyMediaSnapshotsAndRecorderPermissionStatus",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "commandInputKeepsLogViewportVisible",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "commandActionSwitchesBetweenRunAndStop",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "bottomSheetCommandInputKeepsLogViewportVisible",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "typeScriptConsoleIsLastAndHiddenInLogMenusByDefault",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "commandInputIsHiddenByDefault",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewStackFrameLinkDeviceTest",
+          "test": "dispatchCompilationDiagnosticLinkWithEditorCoordinates",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewStackFrameLinkDeviceTest",
+          "test": "submitsOneLineCommandAndClearsTheInput",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.ui.main.scripts.MediaInfoDialogInstrumentationTest",
+          "test": "neutralButtonShowsOriginalPathInLightTheme",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.ui.main.scripts.MediaInfoDialogInstrumentationTest",
+          "test": "neutralButtonShowsOriginalPathInDarkTheme",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "serial": "localhost:54105",
+      "role": "Complete current Node NPM and Android conformance classes",
+      "tests": 13,
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 27.526,
+      "log": "benchmark/results/2026-09-10-mediainfo-main-integration/samsung-node.txt",
+      "logSha256": "34be30ef01f653c956e2efa66e94a4eee47f2b9f16e6ad0a606f4ae83ac14a54",
+      "cases": [
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NpmEcosystemSmokeTest",
+          "test": "commonJsAndEsmPackagesRunInsidePluginRuntime",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "m18_missingCapabilitiesExplainDeclarationsWithoutRequiringAProfile",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_01_remoteRuntimeInfoAndPrewarmUseDedicatedNativeProcess",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_02_realCjsAndEsmExecuteThroughPublishedBinder",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_03_importedCommonJsStackRemovesFunctionWrapperOffset",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_04_rawTypeScriptEntryRequiresCompilerBeforeWorkspaceCreation",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_05_dynamicCtsRequiresCompilerOutput",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_06_precompiledSnapshotMapsTsMtsAndCtsDynamicSpecifiers",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_07_precompiledSnapshotRejectsMissingAmbiguousAndEscapingSpecifiers",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_08_esmCyclePreservesLiveBindingsThroughReExport",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3d_09_esmAndCjsFacadesSkipMissingTypeScriptCandidatesAndKeepNpmPrecedence",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3e_05_nodeCompatCorpusV2PassesThroughPublishedBinder",
+          "status": "passed"
+        },
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.nodejs.NodeRuntimePluginAndroidConformanceTest",
+          "test": "x3f_13_missingComputedCtsRequiresCompilerOutputBeforeProviderMaterialization",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "serial": "localhost:54105",
+      "role": "Final minified MediaInfo ARM64 Release; all six AIDL methods",
+      "tests": 1,
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 0.048,
+      "log": "benchmark/results/2026-09-10-mediainfo-main-integration/samsung-release.txt",
+      "logSha256": "80f8774f0c17dd35ee5b2dd54a56d27506dcc3e166723868a1241712df0e6755",
+      "cases": [
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoReleaseSmokeTest",
+          "test": "minifiedApkLoadsNativeEngineAndServesEveryAidlReadMethod",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "serial": "emulator-5582",
+      "role": "Full selected host classes; actual touch opens details in both themes",
+      "tests": 17,
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 12.572,
+      "log": "benchmark/results/2026-09-10-mediainfo-main-integration/emulator-host.txt",
+      "logSha256": "c9899f714408e801d7e96679500f143a6f093239a4d95fac6b705aafa864f176",
+      "cases": [
+        {
+          "class": "org.autojs.autojs.runtime.api.augment.mediainfo.MediainfoSnapshotRhinoInstrumentationTest",
+          "test": "publicRhinoApiKeepsReadAndNegotiatesSnapshotV2Explicitly",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "kotlinMediaRegistryAndFakeProviderAreStable",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "androidProviderUsesAndroidFileAccessOutsideTheWorkingDirectory",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "jsMediaCapabilitiesRequireExactManifestBeforeDispatch",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "oldPluginSnapshotsAreNormalizedBeforeReachingTheDetailsPage",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "jsMediaModulesUseFakeTransportAndCompatFacade",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "realMediainfoQueriesPreservePathsAndSelectSecondAudioTrack",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.engine.NodeMediaBridgeInstrumentationTest",
+          "test": "androidProviderReturnsReadOnlyMediaSnapshotsAndRecorderPermissionStatus",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "commandInputKeepsLogViewportVisible",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "commandActionSwitchesBetweenRunAndStop",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "bottomSheetCommandInputKeepsLogViewportVisible",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "typeScriptConsoleIsLastAndHiddenInLogMenusByDefault",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewLayoutDeviceTest",
+          "test": "commandInputIsHiddenByDefault",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewStackFrameLinkDeviceTest",
+          "test": "dispatchCompilationDiagnosticLinkWithEditorCoordinates",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.core.console.ConsoleViewStackFrameLinkDeviceTest",
+          "test": "submitsOneLineCommandAndClearsTheInput",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.ui.main.scripts.MediaInfoDialogInstrumentationTest",
+          "test": "neutralButtonShowsOriginalPathInLightTheme",
+          "status": "passed"
+        },
+        {
+          "class": "org.autojs.autojs.ui.main.scripts.MediaInfoDialogInstrumentationTest",
+          "test": "neutralButtonShowsOriginalPathInDarkTheme",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "serial": "emulator-5582",
+      "role": "Final minified MediaInfo x86_64 Release; all six AIDL methods",
+      "tests": 1,
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 0.039,
+      "log": "benchmark/results/2026-09-10-mediainfo-main-integration/emulator-release.txt",
+      "logSha256": "043cf92d33aeb1c91e4b9209e67bad93cf77b383baa35c1f7700ac63f38e0700",
+      "cases": [
+        {
+          "class": "io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoReleaseSmokeTest",
+          "test": "minifiedApkLoadsNativeEngineAndServesEveryAidlReadMethod",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "jvmTests": {
+    "mediainfo": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "sharedApi": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "node": {
+      "tests": 75,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "buildAndStaticChecks": {
+    "plugin": "Offline testDebugUnitTest, assembleDebug, assembleDebugAndroidTest, assembleRelease; final Release rebuilt after documentation changes.",
+    "host": "Offline assembleAppDebug and complete assembleAppDebugAndroidTest, plus mediainfo-api:testDebugUnitTest; no excluded source files or external exclusion init script.",
+    "node": "Current compile_commands.json NDK clang -fsyntax-only; offline testDebugUnitTest, assembleDebug, assembleDebugAndroidTest, typeCheckNodeTypescriptSmoke and verifyNodePluginExamples.",
+    "nodePythonTests": {
+      "tests": 2,
+      "failures": 0
+    },
+    "markdown": "MediaInfo MARKDOWN_OK languages=10 artifacts=36; Node 35 generated artifacts without drift; host regenerated from all ten JSON sources.",
+    "declarations": "tsc --noEmit --skipLibCheck --target es2020 docs/smoke/mediainfo-query-smoke.ts passed in the main declarations workspace.",
+    "ace": "Offline :app:generateAutoJs6LspDeclarations passed in the main Ace workspace.",
+    "demoScript": "node --check demo/mediainfo.js; actual production Rhino output inspected on both devices.",
+    "readmeThemePreview": "Generated README picture table rendered in local headless Edge light/dark modes; selected images and layout visually checked. This was a local preview, not a GitHub deployment.",
+    "gitDiffChecks": "No whitespace errors in each edited repository before commit.",
+    "priorDocsAndOfflineValidation": "2026-09-10-mediainfo-m2-validation.json; the identical committed content was fast-forwarded into the main workspaces."
+  },
+  "testMaintenance": {
+    "console": "Use EditorTheme, the current isCommandModeEnabled property, single-argument clickable-content API, bottom input row and expanded current log menu; all seven tests now compile and pass.",
+    "sourcePath": "Node now preserves the host absolute source path; the test no longer incorrectly requires Android symlink canonicalization of /data/user/0 to /data/data.",
+    "demoLoop": "Use let for loop-local query variables in Rhino; verified that the second track prints 16000 Hz and two channels.",
+    "ui": "Inject touch events at the visible neutral button, monitor DisplayMediaInfoActivity, assert rendered Complete name and selected theme; capture is opt-in."
+  },
+  "host16kLimitation": {
+    "status": "Functional host tests passed in Android page-size compatibility mode; full native 16 KiB readiness of AutoJs6 is not claimed.",
+    "libraries": [
+      "libc++_shared.so",
+      "libjackpal-androidterm5.so",
+      "libjackpal-termexec2.so"
+    ],
+    "loadAlignmentBytes": 4096,
+    "source": "The legacy terminal AAR dependencies in the host workspace contain the misaligned libraries; they are outside the MediaInfo plugin native build.",
+    "audit": "benchmark/results/2026-09-10-mediainfo-main-integration/host-arm64-native-alignment.json",
+    "warningScreenshot": "benchmark/results/2026-09-10-mediainfo-main-integration/host-page-size-compat-warning.png",
+    "systemDialog": "Acknowledged the first-launch warning before final actual-touch tests. Did not alter manifest or system properties to disable compatibility mode.",
+    "platformReference": "https://developer.android.com/guide/practices/page-sizes#16-kb-backcompat-mode"
+  },
+  "pluginNativeAudit": {
+    "path": "benchmark/results/2026-09-10-mediainfo-main-integration/plugin-native-audit.json",
+    "sha256": "c8e913126cdcd3ec730b98392f5e8a88027c8fc0b493765852a23c672f9e80df",
+    "abis": 4,
+    "apkCount": 5,
+    "signatures": "All five signed by the existing production certificate.",
+    "zipAlignment": "All five passed zipalign -c -P 16 4.",
+    "arm64NativeSha256": "947b79e132f6f186626530367562e8ff66c5f6c3dd1a63124c10ca7af9e14e9b",
+    "unchangedFromBuild11": true
+  },
+  "releaseApks": [
+    {
+      "abi": "arm64-v8a",
+      "path": "build/releases/v2.1.0-build12/autojs6-plugin-mediainfo-v2.1.0-arm64-v8a-39f13173.apk",
+      "sizeBytes": 2964471,
+      "crc32": "39f13173",
+      "sha256": "4d9a4c8bc9ee116cbdb8add4d93709d69366801e3aa7024608505a8e33c032b4",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 12
+    },
+    {
+      "abi": "armeabi-v7a",
+      "path": "build/releases/v2.1.0-build12/autojs6-plugin-mediainfo-v2.1.0-armeabi-v7a-eec3e65e.apk",
+      "sizeBytes": 2734517,
+      "crc32": "eec3e65e",
+      "sha256": "44ba807fd91fea3beb73aa1dc3c19986ce4c44290d3319798eff316148092dea",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 12
+    },
+    {
+      "abi": "universal",
+      "path": "build/releases/v2.1.0-build12/autojs6-plugin-mediainfo-v2.1.0-universal-9de63be2.apk",
+      "sizeBytes": 11734697,
+      "crc32": "9de63be2",
+      "sha256": "60a8277889d34ac5e4c024d4784c02408ba3c2ebb6c37b410e34056271900bb1",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 12
+    },
+    {
+      "abi": "x86",
+      "path": "build/releases/v2.1.0-build12/autojs6-plugin-mediainfo-v2.1.0-x86-36d460e0.apk",
+      "sizeBytes": 3352805,
+      "crc32": "36d460e0",
+      "sha256": "b51cf662c4e990e99343f14deb20e5d08837f6083b3501f2a65f831afc5c2506",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 12
+    },
+    {
+      "abi": "x86_64",
+      "path": "build/releases/v2.1.0-build12/autojs6-plugin-mediainfo-v2.1.0-x86_64-fda65bde.apk",
+      "sizeBytes": 3086836,
+      "crc32": "fda65bde",
+      "sha256": "5e2a72273536472c47bc51694faf20bd6e7ede6b6501764914bc93d803c575bb",
+      "signerSha256": "31a681fcfffb3e428420cae280ded89292b12a3b0f59e19b7a73e32a8ae4c213",
+      "versionName": "2.1.0",
+      "versionCode": 12
+    }
+  ],
+  "hostApks": {
+    "arm64": {
+      "path": "../AutoJs6/app/build/outputs/apk/app/debug/autojs6-v6.8.0-arm64-v8a.apk",
+      "sizeBytes": 47742447,
+      "sha256": "4c270f5524d7e6578dcde4ccc3e7b081a04bb8e09838db9c04b2537294d8e3c3"
+    },
+    "x86_64": {
+      "path": "../AutoJs6/app/build/outputs/apk/app/debug/autojs6-v6.8.0-x86_64.apk",
+      "sizeBytes": 47755870,
+      "sha256": "c4da5fa95ea2be694207ad564a69fc2207857db0724d264f7008c895b0e726c9"
+    },
+    "androidTest": {
+      "path": "../AutoJs6/app/build/outputs/apk/androidTest/app/debug/app-app-debug-androidTest.apk",
+      "sizeBytes": 2269897,
+      "sha256": "0123d6bf13b0f0f798f51a4626693780c2e8ceb429a1891806c011c003adc4cd"
+    }
+  },
+  "nodeApks": {
+    "arm64": {
+      "path": "../AutoJs6-Plugin-NodeJs-Runtime/app/build/outputs/apk/debug/autojs6-plugin-nodejs-runtime-v1.4.0-arm64-v8a.apk",
+      "sizeBytes": 28286660,
+      "sha256": "0110237eee062909b8e31e1b88757fe2b52c5f16111d083ee9db7ae8930eb751"
+    },
+    "x86_64": {
+      "path": "../AutoJs6-Plugin-NodeJs-Runtime/app/build/outputs/apk/debug/autojs6-plugin-nodejs-runtime-v1.4.0-x86_64.apk",
+      "sizeBytes": 30440695,
+      "sha256": "038647f86521e7525046107c64a9b010dac98982cbc8fa8ea779794bfcb84d98"
+    },
+    "androidTest": {
+      "path": "../AutoJs6-Plugin-NodeJs-Runtime/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "sizeBytes": 17191224,
+      "sha256": "66981d180c7e979017a3dcd69f99f5bbca6391c3d6c227620e96909fad446b95"
+    }
+  },
+  "pluginTestApk": {
+    "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+    "sizeBytes": 1905146,
+    "sha256": "792d6269da178b98300574b28654c1d37aa8a226931f499300bc51bbc4833b1d"
+  },
+  "demo": {
+    "fixture": {
+      "path": "app/src/androidTest/assets/mediainfo-two-audio.mka",
+      "sizeBytes": 8800,
+      "sha256": "fa26e03f372ac7a31a094a210a9ac6ef57a24a47199a8b372efb856a7a2a1113"
+    },
+    "script": {
+      "path": "demo/mediainfo.js",
+      "sizeBytes": 1129,
+      "sha256": "b6f8b8840467443ae6441c24250f6ce759139e3d73ee1f707f08350f02b47796"
+    },
+    "devicePath": "/sdcard/two-audio.mka",
+    "screenshots": [
+      {
+        "path": ".readme/images/dark-details.png",
+        "sizeBytes": 334630,
+        "sha256": "d346e023eaad24383dd141526a25dbf5777b575eeb9c9afbe46c3baecd52b7c2",
+        "dimensions": [
+          1080,
+          2340
+        ]
+      },
+      {
+        "path": ".readme/images/dark-dialog.png",
+        "sizeBytes": 129870,
+        "sha256": "af220bc02aa6b80e52aea98b20f6f67245df423735dcd6c91686c4e85cfe8688",
+        "dimensions": [
+          1080,
+          2340
+        ]
+      },
+      {
+        "path": ".readme/images/dark-script.png",
+        "sizeBytes": 149626,
+        "sha256": "148ba0ff9a89b2e4b3790ada014f191490d2f76d83afb540bdeb4044ec8e80df",
+        "dimensions": [
+          1080,
+          2340
+        ]
+      },
+      {
+        "path": ".readme/images/light-details.png",
+        "sizeBytes": 337441,
+        "sha256": "0a302728a22329999ceb3f079057850338b175400b3f1cdd9df5e1a4e5897146",
+        "dimensions": [
+          1080,
+          2340
+        ]
+      },
+      {
+        "path": ".readme/images/light-dialog.png",
+        "sizeBytes": 140128,
+        "sha256": "c7972e59d0689d1989546398ab5aa1f0162818dfad92ffb621de43aa46640937",
+        "dimensions": [
+          1080,
+          2340
+        ]
+      },
+      {
+        "path": ".readme/images/light-script.png",
+        "sizeBytes": 149361,
+        "sha256": "be5a4ecea94bea8db87b88957cbbc2a9b5e8cd04119aa698b3b84f9b00eadedf",
+        "dimensions": [
+          1080,
+          2340
+        ]
+      }
+    ],
+    "screenshotsSerial": "localhost:54105",
+    "edited": false
+  },
+  "cleanup": {
+    "previousRental": "Lease expired during the next host test APK transfer. User explicitly supplied a new rental; no cleanup or host test completion is inferred for the old endpoint.",
+    "replacementRental": {
+      "allTestsAndTransfersComplete": true,
+      "endpointUnavailableAfterTesting": true,
+      "reconnectResult": "Connection actively refused at localhost:54105; device not present in adb.",
+      "temporarySettingChanges": {
+        "MANAGE_EXTERNAL_STORAGE": "Host app-op set to allow for the external sample.",
+        "pointer_location": "Changed from 1 to 0 for screenshots."
+      },
+      "hostThemeRestoredByTests": true,
+      "otherDeviceSettingRestorationConfirmed": false,
+      "testPackagesAndStagedFilesRemovalConfirmed": false,
+      "lastConfirmedPackages": [
+        "org.autojs.autojs6",
+        "org.autojs.autojs6.test",
+        "io.github.supermonster003.autojs6.plugin.nodejs",
+        "io.github.supermonster003.autojs6.plugin.nodejs.test",
+        "io.github.supermonster003.autojs6.plugin.mediainfo",
+        "io.github.supermonster003.autojs6.plugin.mediainfo.test"
+      ]
+    },
+    "emulator": "Stopped the explicitly launched emulator-5582 with adb emu kill; the read-only session and its data changes were discarded. Other connected devices were untouched."
+  },
+  "priorEvidence": [
+    "2026-09-10-mediainfo-m2-validation.json",
+    "2026-09-10-api36-arm64-v8a-16k-samsung.json"
+  ],
+  "remainingScope": [
+    "Info_Parameters remains deferred.",
+    "Structured error codes remain a later M4 collaboration item.",
+    "Host legacy terminal dependencies still need their own native 16 KiB migration.",
+    "Remote CI and public release have not been requested or performed in this integration step."
+  ]
+}
