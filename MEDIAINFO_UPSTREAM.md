@@ -77,8 +77,9 @@ GitHub 上的 [`Freeze v1.1.0 release tag`](https://github.com/SuperMonster003/A
 - 已发布的 minified v1.1.0 Release 包在复核时暴露了旧包装层无法加载 JNI 的历史缺陷; 包内旧 `libmediainfo.so` 与可工作的已安装 v1.1.0 基线逐字相同, 因此差异审查使用同签名、版本号相同的已安装基线, 并在证据中明确标注来源与哈希. 按冻结策略不重建、不替换 v1.1.0. v2 已为 JNI 精确类名加入 R8 keep 规则, 并在 QV710AF65F 上安装实际 minified ARM64 Release APK, 通过只依赖公开 AIDL 的原生加载、服务发现和四类读取冒烟测试.
 - 至此 v2 的四 ABI、4 KB / 16 KB 页、最低 / 当前 API、ARM 实机、真实媒体、双版本解析差异、minified Release、超时及超大文件运行门禁均已通过. PR #1 已于 2026-09-01 以 merge commit `636a83cf024725c049367d43c849c727a4a93aec` 合并, 同一提交的 v2.0.0 Release 与五个已审计 APK 已正式发布.
 - 2026-09-10 在三星 SM-A566B / Android 16 / API 36 上补充 ARM64 16 KB 实体机验证. `getconf PAGE_SIZE` 为 16384, 插件测试进程的三个 `libmediainfo.so` 映射段均显示 KernelPageSize / MMUPageSize 为 16 kB. 使用此前已签名并校验哈希的 v2.1.0 (11) ARM64 Release 通过全部 6 个 AIDL 方法的混淆冒烟; 同版本 Debug 的 9 项服务测试及显式启用的超时清理测试均通过. 从该 Release APK 提取的原生 ELF 三个 LOAD segment 均为 `0x4000` 对齐, APK 通过 `zipalign -c -P 16 4`. 本次测试使用合成样本, 未重复跨仓库宿主测试或超大文件传输; 测试前不存在的插件与 instrumentation 包已清理. APK / 原生库哈希, 逐项结果, 内存页证据及原始日志见 `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`.
+- 同日完成 M2 配套主线接入后, v2.1.0 (12) 最终候选在新租用三星 ARM64 16 KB 设备与 API 36 x86_64 16 KB 模拟器各通过完整公开 AIDL Release 冒烟; 两端宿主各 17 项功能测试, 新三星 Node NPM / conformance 13 项均通过. 此次新增 README 设备截图, 原生库字节未改变. 三星同时揭示宿主旧终端 AAR 的三个 4 KB ELF 仍触发系统兼容模式, 该宿主限制与插件原生 16 KB 验证分开记录. 原始结果, 最终五 APK 哈希, 宿主库清单与系统提示截图见 `benchmark/results/2026-09-10-mediainfo-main-integration.json`.
 
-该三星设备存在并发安装活动: 本轮卸载并确认插件包不存在后, 后续只读复核观察到 MediaInfo 2.0.0 (10) 与 Node Runtime 1.4.0 (152) 已安装. 再次只读复核时 MediaInfo 已变为 2.1.0 (11), 说明后续安装仍在进行. 这些在清理后出现的安装均予以保留; 验收记录分别保存即时清理确认和后续观察, 不将设备最终安装状态视为本轮 v2.1.0 运行状态.
+此前的三星租用设备 `localhost:31277` 存在并发安装活动: 插件独立验收卸载并确认插件包不存在后, 后续只读复核观察到 MediaInfo 2.0.0 (10) 与 Node Runtime 1.4.0 (152) 已安装. 再次只读复核时 MediaInfo 已变为 2.1.0 (11), 说明后续安装仍在进行. 这些在清理后出现的安装均予以保留; 验收记录分别保存即时清理确认和后续观察, 不将设备最终安装状态视为该轮 v2.1.0 运行状态.
 
 ******
 

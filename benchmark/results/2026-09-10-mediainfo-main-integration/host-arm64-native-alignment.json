@@ -1,0 +1,37 @@
+{
+  "apk": "..\\AutoJs6\\app\\build\\outputs\\apk\\app\\debug\\autojs6-v6.8.0-arm64-v8a.apk",
+  "sha256": "4c270f5524d7e6578dcde4ccc3e7b081a04bb8e09838db9c04b2537294d8e3c3",
+  "libraries": [
+    {
+      "path": "lib/arm64-v8a/libc++_shared.so",
+      "sha256": "69e517e645a6d38f7536d64108d245f5a8208a4a5cd43375b4906f60a60a86c4",
+      "loadAlignments": [
+        4096,
+        4096,
+        4096,
+        4096
+      ],
+      "compatible16k": false
+    },
+    {
+      "path": "lib/arm64-v8a/libjackpal-androidterm5.so",
+      "sha256": "3dc5a897f0255c40283819b5098be0b9f44c325d66c07852668c69c87d07ab96",
+      "loadAlignments": [
+        4096,
+        4096,
+        4096
+      ],
+      "compatible16k": false
+    },
+    {
+      "path": "lib/arm64-v8a/libjackpal-termexec2.so",
+      "sha256": "60267f7e031529a40242e087553a1d08af6f9386708c2a4662ad377b6d02428e",
+      "loadAlignments": [
+        4096,
+        4096,
+        4096
+      ],
+      "compatible16k": false
+    }
+  ]
+}

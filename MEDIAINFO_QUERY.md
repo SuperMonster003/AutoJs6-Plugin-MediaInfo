@@ -87,23 +87,43 @@ The debug test process's three native-library mappings each reported 16 KiB
 kernel and MMU pages. Exact APK hashes, native alignment, cases and raw logs are
 recorded in `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`.
 
-The host baseline's full Android test source set has two unrelated console test
-compilation failures (`ConsoleViewLayoutDeviceTest` and
-`ConsoleViewStackFrameLinkDeviceTest`). A temporary external Gradle init script
-excluded those two files for the focused APK; production sources compiled
-normally. This exception is recorded in the validation JSON.
+That earlier host baseline needed an external init script to exclude two stale
+console tests. The integrated host now updates both tests to the current themed
+input bar API and layout, compiles the complete Android test source set, and
+passes all seven console cases. No exclusion remains in the integrated build.
+
+The final integration record is
+`benchmark/results/2026-09-10-mediainfo-main-integration.json`. On each of the new
+Samsung ARM64 rental and an x86_64 emulator, both running API 36 with 16 KiB
+kernel pages, all 17 selected host cases passed: eight Rhino/Node media cases,
+seven console cases and two light/dark UI cases. The UI cases inject an actual
+touch at the neutral button and assert the rendered report's source path.
+The new Samsung also passed all 13 current NPM/conformance cases. The final
+v2.1.0 (12) minified plugin passed its six-method public AIDL smoke test on each
+architecture. README screenshots and the runnable two-track demo are in
+`.readme/images/` and `demo/mediainfo.js`.
+
+The Samsung showed the host's first-launch page-size compatibility warning:
+three legacy terminal libraries in the host APK still have 4 KiB ELF alignment.
+The warning was acknowledged before the touch tests; host compatibility mode
+was not disabled. This limits the host's native 16 KiB readiness claim. The
+MediaInfo plugin has independently audited 16 KiB alignment and uses the same
+native library bytes as the earlier physical-device validation.
 
 ## Coordinated integration
 
-The companion changes are committed on `feature/mediainfo-m2-query` in AutoJs6,
-Node Runtime, Documentation, TypeScript Declarations, Ace Editor and Offline
-Documentation. Exact commit IDs are recorded in the validation JSON. They were
-prepared in isolated worktrees to preserve concurrent host and runtime work.
+The companion changes have been integrated into the main working branches of
+AutoJs6, Node Runtime, Documentation, TypeScript Declarations, Ace Editor and
+Offline Documentation. Host commit `b3b3b29dc` and Node commit `0789b35` preserve
+the newer Android file-path behavior while adding query negotiation. The other
+four repositories were fast-forwarded to their validated companion commits.
+Exact revisions are in the integration JSON. Original isolated worktrees remain
+available; pre-existing Offline Documentation platform edits were preserved.
 
 The full source path fix includes the host change: an older host that sends only
 a basename cannot supply the original full path to a new plugin. The updated
 host repairs reports from both old and new plugins. Install or integrate the
 host update together with the plugin when validating the media details page.
 
-Companion versions are Node Runtime 1.4.0 (148), declarations 4.9.0, Ace Editor
+Companion versions are Node Runtime 1.4.0 (154), declarations 4.9.0, Ace Editor
 1.1.24 (35), documentation 6.8.0 (60) and Offline Documentation 6.8.0 (19).
