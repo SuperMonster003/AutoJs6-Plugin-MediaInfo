@@ -167,6 +167,25 @@
       "io.github.supermonster003.autojs6.plugin.mediainfo.test": "Success",
       "io.github.supermonster003.autojs6.plugin.mediainfo": "Success"
     },
-    "remainingPackages": []
+    "remainingPackagesImmediatelyAfterCleanup": [],
+    "confirmedAtUtc": "2026-09-10T02:39:37.505937+00:00",
+    "subsequentReadOnlyObservation": {
+      "observedAtUtc": "2026-09-10T02:44:57.916942+00:00",
+      "packages": [
+        {
+          "package": "io.github.supermonster003.autojs6.plugin.mediainfo",
+          "versionName": "2.1.0",
+          "versionCode": 11
+        },
+        {
+          "package": "io.github.supermonster003.autojs6.plugin.nodejs",
+          "versionName": "1.4.0",
+          "versionCode": 152
+        }
+      ],
+      "ownInstrumentationPackagePresent": false,
+      "action": "Preserved later installations. The MediaInfo 2.0.0 / build 10 and Node Runtime build 152 packages differ from this run; no further device mutation was performed.",
+      "interpretation": "Another installation flow is using the same device after this run completed cleanup."
+    }
   }
 }
