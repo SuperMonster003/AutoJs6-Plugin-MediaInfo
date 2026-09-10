@@ -80,6 +80,13 @@ plus public-contract minified Release checks on both. The host passed all 7 test
 in the MediaInfo Rhino and Node media integration classes; Node Runtime passed
 the full 12-test NPM and Android conformance group.
 
+A supplementary Samsung SM-A566B / API 36 ARM64 run used a physical 16 KiB-page
+system and the same signed v2.1.0 (11) APK. All 9 service tests, the explicitly
+enabled stalled-pipe timeout test and the minified Release smoke test passed.
+The debug test process's three native-library mappings each reported 16 KiB
+kernel and MMU pages. Exact APK hashes, native alignment, cases and raw logs are
+recorded in `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`.
+
 The host baseline's full Android test source set has two unrelated console test
 compilation failures (`ConsoleViewLayoutDeviceTest` and
 `ConsoleViewStackFrameLinkDeviceTest`). A temporary external Gradle init script

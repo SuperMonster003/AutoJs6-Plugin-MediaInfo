@@ -85,6 +85,8 @@
 
 验收进度: snapshot-v2 及直接查询核心能力均已通过真实 AIDL, Rhino 生产引擎, Node 直连 / compat 门面与 Android Provider 验证. 双音轨样本覆盖冷查询与缓存命中, 原始路径覆盖 regular FD, pipe 副本及旧插件兼容. 双引擎类型声明, Ace Editor 补全与在线 / 离线文档已协同更新. `Info_Parameters` 继续延后; `REQUIRES_HOST_VERSION` 保持 3923, 旧事务与默认值继续兼容, 扩展事务仅在协商成功后调用. 本轮验证记录见 `benchmark/results/2026-09-10-mediainfo-m2-validation.json`.
 
+16 KB 实机补充: 同一 v2.1.0 (11) ARM64 Release 已在三星 SM-A566B / Android 16 / API 36 的 16384 字节页系统通过公开 AIDL 冒烟; 9 项插件服务测试也全部通过, 包括双音轨, InfoKind, 原始路径, snapshot-v1/v2 与缓存隔离. 本次仅补充插件设备覆盖, 宿主 Rhino / Node 验证仍引用前述独立记录. (落点: `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`)
+
 ******
 
 ## M3 性能与大文件 - 已完成
@@ -102,6 +104,7 @@
 
 - [x] 大文件 (1 GiB 合成 WAVE/BMP, 19.37 GiB MP4 与 77.97 GiB MKV) 直读耗时不随文件大小线性增长, 实体机测试副本均已清理.
 - [x] 取消后临时资源即时释放; 停滞管道在 x86_64 模拟器与 ARM64 实体机均于超时点结束, 测试前后私有临时文件集合一致.
+- [x] ARM64 16 KB 实体机取消补验: 三星 SM-A566B / API 36 显式启用停滞管道测试, 验证 30 秒期限, `MEDIAINFO_TIMEOUT` 前缀与临时文件集合不变; 9 项服务测试加超时测试合计 30.921 秒, 10/10 通过. (落点: `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`)
 - [x] 基准数据可复现, 且 API 36 x86_64, API 29 x86, API 31 ARM64 与 ARM64 真实媒体原始结果已入库.
 
 ******
@@ -134,7 +137,7 @@
 - [x] MediaInfoLib 版本透出与来源清单: `native/upstream.lock.json` 记录上游仓库, 标签, 完整提交, 许可, 工具链和编译选项并原样打入全部 APK; 运行时 `Info_Version` 与锁定标签交叉验证, APK 同时携带 MediaInfoLib / ZenLib 许可原文. (落点: `native/upstream.lock.json`, `GenerateMediaInfoMetadataTask`, `scripts/verify_native_build.py`, `MediainfoPluginServiceTest.kt`)
 - [x] 上游稳定版跟踪: 每周一及手动触发时查询 MediaInfoLib / ZenLib 的最新非 draft, 非 prerelease Release; 只有版本递增才更新固定标签, 完整提交, 许可与来源清单并创建或刷新 Draft PR. 同名标签移动会作为安全错误失败, PR 永不自动合并或发布. (落点: `.github/workflows/update-mediainfo-upstream.yml`, `scripts/update_mediainfo_upstream.py`)
 - [x] 原生结构化输出评估 (v2.1.x): 已实现仅插件内部可见的 `Output=JSON` JNI 路径, 对进程级输出选项执行加锁, 保存与异常安全恢复, 并在 API 31 ARM64 上用 MP4 / WebM / FLAC / 损坏 MP4 及并发文本调用验证. 结论是原生 JSON 可作为未来 `snapshot-v2` 的数据源, 但其机器字段名, 原始值, nested `extra` 与动态字段集合不能透明替换 `autojs6-plugin-mediainfo-snapshot-v1`; v1 继续使用文本解析, AIDL 与公开结构不变. (落点: `MEDIAINFO_NATIVE_JSON.md`, `native/bridge/mediainfo_jni.cpp`, `MediainfoPluginServiceTest.kt`, `benchmark/results/2026-09-01-api31-arm64-v8a-native-json-evaluation.json`)
-- [x] 16 KB page size 适配: 以 NDK r29 工具链和 `-z,max-page-size=16384` 生成四 ABI 的 16 KB 对齐 ELF; CI 校验每个 LOAD segment, 架构, `DT_NEEDED`, 导出符号和五个 APK 的原生内容, API 37 x86_64 16 KB 页模拟器已通过 JNI / AIDL 核心回归. (落点: `native/CMakeLists.txt`, `scripts/verify_native_build.py`, `.github/workflows/build.yml`)
+- [x] 16 KB page size 适配: 以 NDK r29 工具链和 `-z,max-page-size=16384` 生成四 ABI 的 16 KB 对齐 ELF; CI 校验每个 LOAD segment, 架构, `DT_NEEDED`, 导出符号和五个 APK 的原生内容. API 37 x86_64 16 KB 页模拟器已通过核心回归; 2026-09-10 补充三星 SM-A566B / API 36 ARM64 16 KB 实体机, 使用原 v2.1.0 签名 APK 通过混淆 Release 全部 6 个 AIDL 方法, 9 项服务测试与 1 项超时测试. 测试进程的 `libmediainfo.so` 三个映射段均实测 KernelPageSize / MMUPageSize 为 16 kB, Release ELF 的三个 LOAD segment 均为 `0x4000` 对齐. (落点: `native/CMakeLists.txt`, `scripts/verify_native_build.py`, `.github/workflows/build.yml`, `benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json`)
 - [x] 双版本解析兼容性审查: 在 API 31 ARM64 实体机上对 0.7.83 / 26.05 使用同一批 MP4, WebM, FLAC 与畸形 MP4, 审阅完整报告、固定字段查询和 sections 差异. 容器与核心流保持兼容; 日期 / 单位规范化、字段调整和新增元数据按上游演进接受, `IsTruncated` 明确视为非稳定诊断字段. (落点: `benchmark/results/2026-08-31-api31-arm64-v8a-v1.1.0-v2.0.0-diff.json`)
 - [x] minified Release 防回归: 固定 JNI 精确类名不被 R8 改写, 以独立 androidTest 经公开 AIDL 安装并验证真实 release APK; ARM64 实体机已通过, CI 对 x86_64 release 重复该门禁. (落点: `app/proguard-rules.pro`, `app/src/androidTest/java/io/github/supermonster003/autojs6/plugin/mediainfo/MediainfoReleaseSmokeTest.kt`, `.github/workflows/build.yml`)
 - [x] v2.0.0 发布候选: code 10 与十语言日志已生成; 五个生产签名 APK 的版本、签名连续性、CRC32 文件名、SHA-256、来源清单、许可和原生结构均通过审计, 最终 ARM64 / ARM32 字节在实体机复核并清理. (落点: `version.properties`, `.changelog/`, `benchmark/results/2026-08-31-v2.0.0-release.json`, `MEDIAINFO_UPSTREAM.md`)

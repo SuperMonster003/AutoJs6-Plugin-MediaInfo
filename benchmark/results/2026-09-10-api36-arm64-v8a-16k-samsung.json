@@ -1,0 +1,172 @@
+{
+  "schema": "autojs6-plugin-mediainfo-device-validation-v1",
+  "generatedAtUtc": "2026-09-10T02:41:05.802543+00:00",
+  "validationSourceRevision": "01c2e3d97460fe4b6e99e99e4a79e3f0f34c15ad",
+  "testedCodeRevision": "c18602ce6044e395cfe8ad893b309b13f5ae4c70",
+  "pluginVersion": {
+    "name": "2.1.0",
+    "code": 11
+  },
+  "purpose": "Add ARM64 physical 16 KiB-page evidence to the existing 4 KiB ARM64 and 16 KiB x86_64 emulator coverage.",
+  "device": {
+    "adbSerial": "localhost:31277",
+    "kind": "physical",
+    "manufacturer": "samsung",
+    "model": "SM-A566B",
+    "abis": [
+      "arm64-v8a"
+    ],
+    "androidRelease": "16",
+    "apiLevel": 36,
+    "pageSizeBytes": 16384,
+    "buildFingerprint": "samsung/a56xnaeea_16kb/a56x:16/BP2A.250605.031.A3/A566BXXU6BYIF_OXM6BYIF:user/release-keys",
+    "securityPatch": "2025-10-01",
+    "soc": "s5e8855"
+  },
+  "artifacts": [
+    {
+      "variant": "release",
+      "fileName": "autojs6-plugin-mediainfo-v2.1.0-arm64-v8a-edcd2557.apk",
+      "sha256": "9753f120f18cfe07328a94cbe4fb6c900008d9c0f502ac8754f0f009199ff3a5",
+      "sizeBytes": 2963511,
+      "matchesPreviouslyValidatedRelease": true,
+      "libmediainfoSha256": "947b79e132f6f186626530367562e8ff66c5f6c3dd1a63124c10ca7af9e14e9b"
+    },
+    {
+      "variant": "debug",
+      "fileName": "app-arm64-v8a-debug.apk",
+      "sha256": "245b2bb54a6d8bf48900db8553e8cc1f8a87e621822a33acf24f9f6a9d59540a",
+      "sizeBytes": 5114049,
+      "libmediainfoSha256": "e8e25ecbbe896e88653a0d9563ecc6cc68f693168592990231ac7f987e9878ba"
+    },
+    {
+      "variant": "androidTest",
+      "fileName": "app-debug-androidTest.apk",
+      "sha256": "792d6269da178b98300574b28654c1d37aa8a226931f499300bc51bbc4833b1d",
+      "sizeBytes": 1905146
+    }
+  ],
+  "staticNativeAudit": {
+    "bytes": 7180544,
+    "elfClass": "ELF64",
+    "exports": [
+      "JNI_OnLoad"
+    ],
+    "loadAlignments": [
+      "0x4000",
+      "0x4000",
+      "0x4000"
+    ],
+    "machine": "AArch64",
+    "needed": [
+      "libc.so",
+      "libdl.so",
+      "libm.so",
+      "libz.so"
+    ],
+    "sha256": "947b79e132f6f186626530367562e8ff66c5f6c3dd1a63124c10ca7af9e14e9b"
+  },
+  "apkZipAlignment": {
+    "command": "zipalign -c -P 16 4 <previously validated ARM64 release APK>",
+    "result": "passed"
+  },
+  "runtimeNativeMappings": {
+    "variant": "debug",
+    "source": "run-as <plugin> cat /proc/<instrumentation-process>/smaps during service/timeout tests",
+    "pageSizeCompatReportedByPackageManager": "0",
+    "mappings": [
+      {
+        "permissions": "r-xp",
+        "fileOffset": "00000000",
+        "library": "libmediainfo.so",
+        "kernelPageSizeKiB": 16,
+        "mmuPageSizeKiB": 16
+      },
+      {
+        "permissions": "r--p",
+        "fileOffset": "00a90000",
+        "library": "libmediainfo.so",
+        "kernelPageSizeKiB": 16,
+        "mmuPageSizeKiB": 16
+      },
+      {
+        "permissions": "rw-p",
+        "fileOffset": "00aac000",
+        "library": "libmediainfo.so",
+        "kernelPageSizeKiB": 16,
+        "mmuPageSizeKiB": 16
+      }
+    ]
+  },
+  "checks": {
+    "release": {
+      "result": "passed",
+      "tests": 1,
+      "skipped": 0,
+      "failures": 0,
+      "suiteTimeSeconds": 0.043,
+      "cases": [
+        "MediainfoReleaseSmokeTest.minifiedApkLoadsNativeEngineAndServesEveryAidlReadMethod"
+      ],
+      "log": "benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung/release-instrumentation.txt",
+      "logSha256": "01f6d1c9cdcd20f74632ce058af0b9ce4ea663e57277a6d5f8bf117ffe50f1c2"
+    },
+    "serviceAndTimeout": {
+      "result": "passed",
+      "tests": 10,
+      "skipped": 0,
+      "failures": 0,
+      "suiteTimeSeconds": 30.921,
+      "cases": [
+        "MediainfoPluginServiceTest.sourceIdentityIsPreservedAcrossSnapshotSchemasAndCacheEntries",
+        "MediainfoPluginServiceTest.nonSeekablePipeFallsBackWithoutLeakingTemporaryFiles",
+        "MediainfoPluginServiceTest.streamCountsAndInfoKindsAreAvailableThroughBinder",
+        "MediainfoPluginServiceTest.nativeBridgeReportsPinnedEngineAndPreservesUnicodePaths",
+        "MediainfoPluginServiceTest.discoveryBindingAndAllBinderMethodsRoundTrip",
+        "MediainfoPluginServiceTest.nativeJsonOutputIsIsolatedFromConcurrentTextReports",
+        "MediainfoPluginServiceTest.multipleAudioTracksCanBeCountedAndQueriedIndependently",
+        "MediainfoPluginServiceTest.invalidStreamKindClosesTheServiceOwnedDescriptor",
+        "MediainfoPluginServiceTest.unsupportedSnapshotSchemaClosesTheServiceOwnedDescriptor",
+        "MediainfoTimeoutTest.stalledPipeIsCanceledAtTheDeadlineWithoutLeakingItsTemporaryFile"
+      ],
+      "log": "benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung/service-instrumentation.txt",
+      "logSha256": "36c9c93ea68ede2c67084bef3d3a994a57cd87bb58e767dcb061dcf1379e1b82"
+    }
+  },
+  "coverage": [
+    "Native engine version and Unicode paths",
+    "All six public AIDL methods in the minified release APK",
+    "Direct regular-file descriptors and non-seekable pipe fallback",
+    "Original Complete name and snapshot source identity, v1/v2 schemas and cache isolation",
+    "Two audio streams, countGet, indexed get and MEASURE info kind",
+    "Concurrent native JSON and text output isolation",
+    "Invalid options and schema descriptor cleanup",
+    "30-second stalled-pipe cancellation with stable MEDIAINFO_TIMEOUT and no temporary-file leak"
+  ],
+  "timeout": {
+    "enabledArgument": "-e mediainfoTimeoutTest true",
+    "configuredDeadlineMs": 30000,
+    "assertedElapsedRangeMs": {
+      "minimumInclusive": 28000,
+      "maximumExclusive": 40000
+    },
+    "temporaryFilesUnchanged": true
+  },
+  "commands": [
+    "adb -s localhost:31277 shell getconf PAGE_SIZE",
+    "adb -s localhost:31277 install -t <release APK>",
+    "adb -s localhost:31277 install -t <androidTest APK>",
+    "adb -s localhost:31277 shell am instrument -w -r -e class io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoReleaseSmokeTest io.github.supermonster003.autojs6.plugin.mediainfo.test/androidx.test.runner.AndroidJUnitRunner",
+    "adb -s localhost:31277 install -r -t <debug APK>",
+    "adb -s localhost:31277 shell am instrument -w -r -e mediainfoTimeoutTest true -e class io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoPluginServiceTest,io.github.supermonster003.autojs6.plugin.mediainfo.MediainfoTimeoutTest io.github.supermonster003.autojs6.plugin.mediainfo.test/androidx.test.runner.AndroidJUnitRunner"
+  ],
+  "scope": "Plugin validation only. This supplements the previous host Rhino/Node results; those suites and multi-gigabyte media transfers were not repeated on this target.",
+  "cleanup": {
+    "packagesAbsentBeforeTest": true,
+    "uninstall": {
+      "io.github.supermonster003.autojs6.plugin.mediainfo.test": "Success",
+      "io.github.supermonster003.autojs6.plugin.mediainfo": "Success"
+    },
+    "remainingPackages": []
+  }
+}

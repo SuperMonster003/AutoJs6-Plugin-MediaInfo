@@ -213,5 +213,17 @@
   ],
   "deferred": [
     "Info_Parameters remains deferred; it is not carried in discovery capabilities."
+  ],
+  "supplementaryDeviceValidations": [
+    {
+      "record": "benchmark/results/2026-09-10-api36-arm64-v8a-16k-samsung.json",
+      "device": "Samsung SM-A566B",
+      "abi": "arm64-v8a",
+      "api": 36,
+      "pageSizeBytes": 16384,
+      "sameReleaseApk": true,
+      "passedTests": 11,
+      "scope": "Plugin service, timeout cleanup and minified Release; existing host Rhino/Node results remain separate."
+    }
   ]
 }
