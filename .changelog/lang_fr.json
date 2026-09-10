@@ -13,6 +13,9 @@
       ],
       "fix": [
         "Complete name affiche le chemin du fichier source dans les détails et instantanés MediaInfo au lieu du cache privé ou du descripteur, sans modifier le nom de fichier de l'instantané"
+      ],
+      "improvement": [
+        "Actualisation de l’accès aux chemins Node et ajout de captures réelles claires/sombres avec un exemple exécutable à deux pistes"
       ]
     },
     "v2.0.0": {

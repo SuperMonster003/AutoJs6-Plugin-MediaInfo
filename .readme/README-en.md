@@ -114,7 +114,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` returns a structured snapshot object (see `Snapshot Structure and Options` below); `get(path, streamKind?, parameter)` returns the raw parameter text, with `streamKind` defaulting to `general`. For safety, Node scripts can only access files inside the project directory, and relative paths resolve against the project root.
+`read(path, options?)` returns a structured snapshot (see below); `get(path, streamKind, parameter, options?)` returns the raw parameter text. Relative paths resolve against the working directory; absolute paths and parent directories are also supported when Android permits the host to read them. Pass a file path, not a content URI.
 
 In the Rhino environment (the default AutoJs6 script engine), `mediainfo` is a global module; `mediainfo(path)` and `mediainfo.read(path)` are equivalent and return a parsed object synchronously:
 
@@ -150,6 +150,29 @@ const mi = require("mediainfo");
   }
 })();
 ```
+
+******
+
+### Demonstration
+
+******
+
+Actual AutoJs6 screens in light and dark themes. The Rhino example queries two PCM audio tracks at 8 kHz and 16 kHz; the MediaInfo button opens the full report with the original source path.
+
+<table>
+  <tr>
+    <th>Rhino script output</th>
+    <th>Media file information</th>
+    <th>MediaInfo details</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-script.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-script.png?raw=true" alt="Rhino script output" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-dialog.png?raw=true" alt="Media file information" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-details.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-details.png?raw=true" alt="MediaInfo details" width="260" /></picture></td>
+  </tr>
+</table>
+
+Run the [demo script](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/demo/mediainfo.js) with the [two-track fixture](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka), or change its path to your own media file. The fixture is generated silence. Source-path display and extended queries require the coordinated host and plugin updates.
 
 ******
 
@@ -207,9 +230,9 @@ Open the AutoJs6 plugin center; seeing the `MediaInfo` plugin there means the ho
 
 This is expected. The plugin has no standalone interface and creates no launcher icon; after installation it is discovered and driven entirely by AutoJs6 in the background, and every interaction happens inside AutoJs6.
 
-#### A Node script fails with `path must stay inside the scoped working directory`?
+#### A Node script reports `path must stay inside the scoped working directory`?
 
-For safety, the Node engine only allows access to files inside the project directory. Move or copy the media file into the project directory before reading it; to access other locations (such as the gallery or download folders), use a Rhino engine script instead.
+Update both AutoJs6 and the Node Runtime plugin. Current versions accept ordinary file paths outside the project directory, subject to Android file permissions. Older host or runtime versions may still enforce the former project-directory restriction.
 
 #### `get()` returned an empty string?
 
@@ -280,6 +303,7 @@ _2026/09/10_
 - `Feature` MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities
 - `Feature` Opt-in snapshot v2 groups native JSON tracks into arrays and exposes the engine version while keeping snapshot v1 as the default
 - `Fix` MediaInfo details and snapshots show the original source path in Complete name instead of a private cache or descriptor path, while preserving the snapshot display filename
+- `Improvement` Documented current Node file-path access and added light/dark device screenshots with a runnable two-track demo
 
 #### v2.0.0
 

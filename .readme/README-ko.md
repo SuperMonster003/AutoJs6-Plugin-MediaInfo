@@ -114,7 +114,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` 는 구조화된 스냅샷 객체를 반환합니다 (아래 `스냅샷 구조와 옵션` 참고). `get(path, streamKind?, parameter)` 는 매개변수의 원본 텍스트를 반환하며 `streamKind` 의 기본값은 `general` 입니다. 보안상 Node 스크립트는 프로젝트 디렉터리 안의 파일에만 접근할 수 있고, 상대 경로는 프로젝트 루트를 기준으로 해석됩니다.
+`read(path, options?)` 는 구조화된 스냅샷을 반환하며 (아래 참조), `get(path, streamKind, parameter, options?)` 는 매개변수의 원문을 반환합니다. 상대 경로는 작업 디렉터리를 기준으로 해석됩니다. 절대 경로와 상위 디렉터리도 지원하지만 Android가 호스트의 읽기를 허용해야 합니다. content URI 대신 파일 경로를 전달하세요.
 
 Rhino 환경 (AutoJs6 의 기본 스크립트 엔진) 에서 `mediainfo` 는 전역 모듈이며, `mediainfo(path)` 와 `mediainfo.read(path)` 는 동일하게 분석 객체를 동기적으로 반환합니다:
 
@@ -150,6 +150,29 @@ const mi = require("mediainfo");
   }
 })();
 ```
+
+******
+
+### 실행 예시
+
+******
+
+AutoJs6의 밝은 테마와 어두운 테마 화면입니다. Rhino 예시는 8 kHz와 16 kHz PCM 오디오 트랙을 조회합니다. MediaInfo 버튼으로 여는 전체 보고서에는 원본 파일 경로가 표시됩니다.
+
+<table>
+  <tr>
+    <th>Rhino 스크립트 출력</th>
+    <th>미디어 파일 정보</th>
+    <th>MediaInfo 상세 정보</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-script.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-script.png?raw=true" alt="Rhino 스크립트 출력" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-dialog.png?raw=true" alt="미디어 파일 정보" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-details.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-details.png?raw=true" alt="MediaInfo 상세 정보" width="260" /></picture></td>
+  </tr>
+</table>
+
+[두 트랙 샘플](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka) 로 [데모 스크립트](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/demo/mediainfo.js) 를 실행하거나 경로를 자신의 미디어 파일로 바꾸세요. 샘플은 합성 무음입니다. 원본 경로 표시와 확장 조회에는 호스트와 플러그인의 해당 업데이트가 필요합니다.
 
 ******
 
@@ -207,9 +230,9 @@ AutoJs6 의 플러그인 센터를 열어 `MediaInfo` 플러그인이 보이면 
 
 정상입니다. 플러그인은 독립된 화면이 없고 런처 아이콘도 만들지 않습니다. 설치 후 AutoJs6 이 백그라운드에서 자동으로 발견하고 호출하며, 모든 상호작용은 AutoJs6 안에서 이루어집니다.
 
-#### Node 스크립트에서 `path must stay inside the scoped working directory` 오류가 발생합니다?
+#### Node 스크립트에 `path must stay inside the scoped working directory` 가 표시되나요?
 
-Node 엔진은 보안상 프로젝트 디렉터리 안의 파일만 접근을 허용합니다. 미디어 파일을 프로젝트 디렉터리로 옮기거나 복사한 뒤 읽어 주세요. 다른 경로 (갤러리나 다운로드 폴더 등) 에 접근해야 한다면 Rhino 엔진 스크립트를 사용하세요.
+AutoJs6와 Node Runtime 플러그인을 모두 업데이트하세요. 현재 버전은 Android 파일 권한에 따라 프로젝트 밖의 일반 파일 경로도 지원합니다. 이전 호스트나 런타임에는 기존 프로젝트 디렉터리 제한이 남아 있을 수 있습니다.
 
 #### `get()` 이 빈 문자열을 반환했습니다?
 
@@ -280,6 +303,7 @@ _2026/09/10_
 - `추가` MediaInfo 쿼리는 0부터 시작하는 streamNumber, countGet 스트림 수, 단위와 설명 및 표시 이름을 위한 infoKind를 지원; Rhino와 Node는 첫 스트림의 TEXT 기본 쿼리를 유지하고 플러그인 확장 기능을 확인
 - `추가` 명시적으로 선택하는 snapshot v2는 네이티브 JSON의 같은 종류 스트림을 배열로 묶고 엔진 버전을 제공하며 snapshot v1 기본값은 유지
 - `수정` MediaInfo 상세 정보와 스냅샷의 Complete name에 비공개 캐시나 디스크립터 경로 대신 원본 파일 경로를 표시하고 스냅샷의 표시 파일 이름은 유지
+- `개선` Node 파일 경로 안내를 갱신하고 실행 가능한 두 트랙 데모와 밝은/어두운 테마의 스크린샷 추가
 
 #### v2.0.0
 

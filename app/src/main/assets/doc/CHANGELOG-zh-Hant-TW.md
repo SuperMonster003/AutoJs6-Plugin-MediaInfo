@@ -11,6 +11,7 @@
 * `新增` MediaInfo 查詢支援從 0 開始的 streamNumber, countGet 串流計數以及用於單位, 說明和可讀名稱的 infoKind; Rhino 和 Node 保持預設第 1 條串流的 TEXT 查詢, 並協商外掛擴充能力
 * `新增` 明確選擇的 snapshot v2 將原生 JSON 同類串流按陣列分組並提供引擎版本, snapshot v1 繼續作為預設協定
 * `修復` MediaInfo 詳情與快照的 Complete name 顯示原始檔案路徑, 避免顯示私有快取或描述符路徑, 同時保留快照的顯示檔案名稱
+* `最佳化` 同步 Node 檔案路徑存取說明, 補充深淺色裝置擷取畫面與可執行的雙音軌示範指令碼
 
 # v2.0.0
 

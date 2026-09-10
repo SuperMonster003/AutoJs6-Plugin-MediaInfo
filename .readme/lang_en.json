@@ -37,7 +37,7 @@
   "p_choose_apk_note": "The plugin loads the native library inside its own process. If a single-ABI package that does not match the device was installed by mistake, calls fail with `MediaInfo library is not available`; switching to the `universal` package resolves it.",
   "h3_script_api": "Script API",
   "p_script_api_node": "In the Node environment (scripts starting with the `\"nodejs\"` directive), obtain the module via `require(\"mediainfo\")`; every method returns a Promise",
-  "p_script_api_node_note": "`read(path, options?)` returns a structured snapshot object (see `Snapshot Structure and Options` below); `get(path, streamKind?, parameter)` returns the raw parameter text, with `streamKind` defaulting to `general`. For safety, Node scripts can only access files inside the project directory, and relative paths resolve against the project root.",
+  "p_script_api_node_note": "`read(path, options?)` returns a structured snapshot (see below); `get(path, streamKind, parameter, options?)` returns the raw parameter text. Relative paths resolve against the working directory; absolute paths and parent directories are also supported when Android permits the host to read them. Pass a file path, not a content URI.",
   "p_script_api_rhino": "In the Rhino environment (the default AutoJs6 script engine), `mediainfo` is a global module; `mediainfo(path)` and `mediainfo.read(path)` are equivalent and return a parsed object synchronously",
   "p_script_api_rhino_note": "On the returned object, `path` and `inform` hold the resolved path and the full text report; each stream kind (such as `general`, `video`, `audio`) works both as a property exposing parsed fields (such as `mi.video.width`, field names in camelCase) and as a function for live raw parameter queries (such as `mi.audio(\"BitRate\")`). Rhino scripts may access any path the host is allowed to read.",
   "h3_snapshot": "Snapshot Structure and Options",
@@ -61,8 +61,8 @@
       "a": "This is expected. The plugin has no standalone interface and creates no launcher icon; after installation it is discovered and driven entirely by AutoJs6 in the background, and every interaction happens inside AutoJs6."
     },
     {
-      "q": "A Node script fails with `path must stay inside the scoped working directory`?",
-      "a": "For safety, the Node engine only allows access to files inside the project directory. Move or copy the media file into the project directory before reading it; to access other locations (such as the gallery or download folders), use a Rhino engine script instead."
+      "q": "A Node script reports `path must stay inside the scoped working directory`?",
+      "a": "Update both AutoJs6 and the Node Runtime plugin. Current versions accept ordinary file paths outside the project directory, subject to Android file permissions. Older host or runtime versions may still enforce the former project-directory restriction."
     },
     {
       "q": "`get()` returned an empty string?",
@@ -121,5 +121,11 @@
   "text_link_mediainfolib_official": "MediaInfoLib project",
   "text_link_mediainfo_android": "MediaInfoLib Android wrapper",
   "p_instruction_docs": "For more usage details and field references, see the [AutoJs6 MediaInfo documentation]({{ docs_mediainfo_url }}) and the [project homepage]({{ repo_url }}).",
-  "p_query_options": "MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities"
+  "p_query_options": "MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities",
+  "h3_demo": "Demonstration",
+  "p_demo_intro": "Actual AutoJs6 screens in light and dark themes. The Rhino example queries two PCM audio tracks at 8 kHz and 16 kHz; the MediaInfo button opens the full report with the original source path.",
+  "th_demo_script": "Rhino script output",
+  "th_demo_dialog": "Media file information",
+  "th_demo_details": "MediaInfo details",
+  "p_demo_reproduce": "Run the [demo script]({{ repo_url }}/blob/master/demo/mediainfo.js) with the [two-track fixture]({{ repo_url }}/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka), or change its path to your own media file. The fixture is generated silence. Source-path display and extended queries require the coordinated host and plugin updates."
 }

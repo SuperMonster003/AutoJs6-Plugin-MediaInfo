@@ -114,7 +114,7 @@ const mediainfo = require("mediainfo");
 })();
 ```
 
-`read(path, options?)` возвращает структурированный объект снимка (см. `Структура Снимка И Параметры` ниже); `get(path, streamKind?, parameter)` возвращает исходный текст параметра, `streamKind` по умолчанию равен `general`. В целях безопасности скрипты Node имеют доступ только к файлам внутри каталога проекта, а относительные пути разрешаются от корня проекта.
+`read(path, options?)` возвращает структурированный снимок (см. ниже); `get(path, streamKind, parameter, options?)` возвращает исходный текст параметра. Относительные пути разрешаются от рабочего каталога; абсолютные пути и родительские каталоги также поддерживаются, если Android разрешает приложению их читать. Передавайте путь к файлу, а не URI content.
 
 В среде Rhino (скриптовый движок AutoJs6 по умолчанию) `mediainfo` является глобальным модулем; `mediainfo(path)` и `mediainfo.read(path)` эквивалентны и синхронно возвращают разобранный объект:
 
@@ -150,6 +150,29 @@ const mi = require("mediainfo");
   }
 })();
 ```
+
+******
+
+### Демонстрация
+
+******
+
+Реальные экраны AutoJs6 в светлой и тёмной темах. Пример Rhino читает две дорожки PCM с частотой 8 kHz и 16 kHz; кнопка MediaInfo открывает полный отчёт с исходным путём к файлу.
+
+<table>
+  <tr>
+    <th>Вывод скрипта Rhino</th>
+    <th>Информация о медиафайле</th>
+    <th>Подробности MediaInfo</th>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-script.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-script.png?raw=true" alt="Вывод скрипта Rhino" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-dialog.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-dialog.png?raw=true" alt="Информация о медиафайле" width="260" /></picture></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/dark-details.png?raw=true" /><img src="https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/.readme/images/light-details.png?raw=true" alt="Подробности MediaInfo" width="260" /></picture></td>
+  </tr>
+</table>
+
+Запустите [демонстрационный скрипт](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/demo/mediainfo.js) с [образцом из двух дорожек](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/app/src/androidTest/assets/mediainfo-two-audio.mka) или укажите свой медиафайл. Образец содержит синтезированную тишину. Исходный путь и расширенные запросы требуют согласованных обновлений приложения и плагинов.
 
 ******
 
@@ -207,9 +230,9 @@ general, video, audio, text, other, image, menu
 
 Так и задумано. У плагина нет собственного интерфейса, и он не создает значок запуска; после установки его полностью обнаруживает и использует AutoJs6 в фоне, а все взаимодействие происходит внутри AutoJs6.
 
-#### Скрипт Node завершается ошибкой `path must stay inside the scoped working directory`?
+#### Скрипт Node сообщает `path must stay inside the scoped working directory`?
 
-В целях безопасности движок Node разрешает доступ только к файлам внутри каталога проекта. Переместите или скопируйте медиафайл в каталог проекта перед чтением; для доступа к другим местам (например галерее или загрузкам) используйте скрипт движка Rhino.
+Обновите AutoJs6 и плагин Node Runtime. Текущие версии принимают обычные пути вне проекта с учётом разрешений Android. Старые версии приложения или среды выполнения могут сохранять прежнее ограничение каталогом проекта.
 
 #### `get()` вернул пустую строку?
 
@@ -280,6 +303,7 @@ _2026/09/10_
 - `Функция` Запросы MediaInfo поддерживают streamNumber с нуля, подсчет потоков countGet и infoKind для единиц, описаний и читаемых имен; Rhino и Node сохраняют TEXT первого потока по умолчанию и согласуют возможности плагина
 - `Функция` Явно выбранная схема snapshot v2 группирует потоки из нативного JSON в массивы и предоставляет версию движка, сохраняя snapshot v1 по умолчанию
 - `Исправление` Complete name в подробностях и снимках MediaInfo показывает исходный путь вместо приватного кеша или дескриптора, сохраняя отображаемое имя файла снимка
+- `Улучшение` Обновлено описание путей Node и добавлены реальные снимки светлой/тёмной тем с запускаемым примером двух дорожек
 
 #### v2.0.0
 

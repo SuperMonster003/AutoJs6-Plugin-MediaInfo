@@ -11,6 +11,7 @@
 * `Feature` MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities
 * `Feature` Opt-in snapshot v2 groups native JSON tracks into arrays and exposes the engine version while keeping snapshot v1 as the default
 * `Fix` MediaInfo details and snapshots show the original source path in Complete name instead of a private cache or descriptor path, while preserving the snapshot display filename
+* `Improvement` Documented current Node file-path access and added light/dark device screenshots with a runnable two-track demo
 
 # v2.0.0
 
