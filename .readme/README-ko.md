@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.1
+
+_2026/09/11_
+
+- `개선` 64비트 네이티브 라이브러리의 16 KB 페이지 정렬을 빌드 시 검증, manifest 계약 검사 및 JSON 보고서 지원
+
 #### v2.1.0
 
 _2026/09/10_
@@ -318,20 +324,6 @@ _2026/09/01_
 - `개선` 동일한 실제 샘플에서 0.7.83과 26.05의 전체 보고서, 필드 조회, sections 차이를 검토함; 컨테이너와 핵심 스트림은 호환되며 필드 텍스트는 업스트림 분석 결과를 따름
 - `개선` README 레이아웃과 Gradle 플랫폼 버전 관리 방식을 통일
 - `의존성` 동결된 네이티브 파서를 MediaInfoLib 0.7.83에서 26.05로 업그레이드하고 ZenLib 0.4.41 및 Android NDK 29.0.14206865를 고정
-
-#### v1.1.0
-
-_2026/08/31_
-
-- `추가` 전체 파일 복사 없는 분석: 탐색 가능한 일반 파일 설명자를 /proc/self/fd 경로로 MediaInfoLib가 직접 읽습니다; 파이프이거나 직접 읽기에 실패한 경우에만 앱 전용 임시 복사본을 사용합니다
-- `추가` 프로세스 내 결과 캐시: API 27 이상에서 전체 보고서, 필드 조회, 스냅샷이 안정적인 파일 식별자, LRU, 10분 슬라이딩 만료, 메모리 부족 시 정리를 공유합니다
-- `추가` 협력적 취소와 시간 제한: 각 AIDL 호출은 30초로 제한됩니다; 초과하면 네이티브 분석 또는 대체 복사를 중단하고 임시 리소스를 해제한 뒤 MEDIAINFO_TIMEOUT을 반환합니다
-- `수정` 미디어 파일 전체를 항상 복사하던 동작을 제거하고 모든 오류 경로에서 설명자, 네이티브 분석기, 스트림, 임시 파일을 확실히 닫습니다
-- `수정` 캐시 식별자가 나노초 타임스탬프를 보존하며 해당 정보를 안전하게 검증할 수 없는 API 24에서 26까지는 캐시를 비활성화합니다
-- `개선` 동적 ABI 인벤토리가 실제로 패키징된 MediaInfoLib 라이브러리를 확인하고 런타임 보고서, 메타데이터, 5개 APK 변형의 일관성을 유지합니다
-- `개선` 스냅샷 파서가 현지화된 레이블, 반복 그룹, 알 수 없는 필드, MediaInfoLib의 부분 출력을 더 견고하게 처리합니다
-- `개선` 콜드와 웜 호출, 동시성, 시간 제한, 실제 미디어 검증을 위한 재현 가능한 벤치마크 도구를 추가하고 소스 매니페스트와 SHA-256 요약을 기록합니다
-- `개선` 검증된 문서 생성이 이제 10개 언어를 지원하며 README, 내장 지침, 변경 기록을 결정적으로 생성합니다
 
 ##### 더 많은 릴리스 기록
 
@@ -367,9 +359,9 @@ release APK 빌드:
 .\gradlew.bat :app:assembleRelease
 ```
 
-릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
+릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
 
-빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 2.1.0.
+빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 2.1.1.
 
 ******
 
@@ -412,3 +404,6 @@ app/src/main/res/raw-*/plugin_instruction.md
 - MediaInfo 공식 웹사이트: https://mediaarea.net/en/MediaInfo
 - MediaInfoLib 프로젝트: https://github.com/MediaArea/MediaInfoLib
 - MediaInfoLib Android 래퍼: https://github.com/olegazyx/MediaInfoLib-android
+
+
+[16 KB page alignment and build verification](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/docs/16kb.md)

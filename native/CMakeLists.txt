@@ -76,6 +76,7 @@ set(_autojs6_version_script "${CMAKE_CURRENT_SOURCE_DIR}/bridge/libmediainfo.map
 target_link_options(mediainfo PRIVATE
     "-Wl,--version-script=${_autojs6_version_script}"
     "-Wl,-z,max-page-size=16384"
+    "-Wl,-z,common-page-size=16384"
 )
 set_property(TARGET mediainfo APPEND PROPERTY LINK_DEPENDS "${_autojs6_version_script}")
 

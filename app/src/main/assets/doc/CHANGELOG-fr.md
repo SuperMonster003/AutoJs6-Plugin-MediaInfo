@@ -4,6 +4,12 @@
 
 ******
 
+# v2.1.1
+
+###### 2026/09/11
+
+* `Amélioration` Vérification à la compilation de l'alignement des pages de 16 KB des bibliothèques natives 64 bits, avec contrôle du contrat manifest et rapports JSON
+
 # v2.1.0
 
 ###### 2026/09/10

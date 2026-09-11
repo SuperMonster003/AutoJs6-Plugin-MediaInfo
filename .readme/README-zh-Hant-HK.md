@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.1
+
+_2026/09/11_
+
+- `優化` 建置階段校驗 64 位原生程式庫的 16 KB 頁面大小對齊, 檢查 manifest 契約並輸出 JSON 報告
+
 #### v2.1.0
 
 _2026/09/10_
@@ -318,20 +324,6 @@ _2026/09/01_
 - `優化` 同一批真實樣本的 0.7.83 / 26.05 完整報告, 字段查詢和 sections 差異已審閱; 容器與核心流保持兼容, 字段文本繼續遵循上游解析結果
 - `優化` 統一 README 版式與 Gradle 平台版本管理方式
 - `依賴` 原生解析引擎從凍結的 MediaInfoLib 0.7.83 升級至 26.05, 並固定 ZenLib 0.4.41 與 Android NDK 29.0.14206865
-
-#### v1.1.0
-
-_2026/08/31_
-
-- `新增` 免整文件複製解析: 可隨機存取的常規文件描述符透過 `/proc/self/fd` 交由 MediaInfoLib 直讀, 管道或直讀失敗時才使用私有臨時副本
-- `新增` 進程內結果緩存: API 27+ 對完整報告, 字段查詢與快照採用穩定文件身份, LRU, 10 分鐘滑動有效期及低記憶體清理, 避免重複解析
-- `新增` 協作取消與超時: 每次 AIDL 調用設有 30 秒上限, 超時中止原生解析或回退複製, 釋放臨時資源並返回 `MEDIAINFO_TIMEOUT`
-- `修復` 修復大文件常規描述符被不必要地整文件複製的問題, 並保證成功, 失敗, 參數校驗, 取消和超時路徑均關閉描述符與回退文件
-- `修復` 修復緩存對快速文件變更的識別精度: 使用納秒級 mtime / ctime, 並在 API 24-26 保守停用緩存重用
-- `優化` ABI 上報按已安裝 base / split APK 中實際存在的 `libmediainfo.so` 動態生成, 並保留安全的進程 ABI 回退
-- `優化` 增強快照小節解析, 正確處理重複和編號流, 畸形行, 值內冒號, 重複字段與獨立輸出選項
-- `優化` 加入可重現的合成基準與真實媒體驗證工具, 並記錄 x86, x86_64 與 ARM64 的完整效能基線
-- `優化` 重建 10 語言 README, 插件使用說明與更新日誌生成鏈路, 加入漂移校驗和 GitHub Actions 門禁
 
 ##### 更多發行歷史可參閱
 
@@ -367,9 +359,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` 形式.
+發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk` 形式.
 
-構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.1.0.
+構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.1.1.
 
 ******
 
@@ -412,3 +404,6 @@ app/src/main/res/raw-*/plugin_instruction.md
 - MediaInfo 官方網站: https://mediaarea.net/en/MediaInfo
 - MediaInfoLib 項目: https://github.com/MediaArea/MediaInfoLib
 - MediaInfoLib Android 封裝: https://github.com/olegazyx/MediaInfoLib-android
+
+
+[16 KB page alignment and build verification](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/docs/16kb.md)

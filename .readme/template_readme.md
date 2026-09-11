@@ -328,3 +328,6 @@ app/src/main/res/raw-*/plugin_instruction.md
 - {{ text_link_mediainfo_official }}: {{ mediainfo_official_url }}
 - {{ text_link_mediainfolib_official }}: {{ mediainfolib_url }}
 - {{ text_link_mediainfo_android }}: {{ mediainfo_android_url }}
+
+
+[16 KB page alignment and build verification](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/docs/16kb.md)

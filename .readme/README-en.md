@@ -296,6 +296,12 @@ The plugin's planned capabilities and their completion status are maintained as 
 
 ******
 
+#### v2.1.1
+
+_2026/09/11_
+
+- `Improvement` Build verification of 16 KB page alignment for 64-bit native libraries, including manifest contract checks and JSON reports
+
 #### v2.1.0
 
 _2026/09/10_
@@ -318,20 +324,6 @@ _2026/09/01_
 - `Improvement` Full reports, field queries, and sections from 0.7.83 and 26.05 were reviewed on the same real samples; containers and core streams remain compatible while field text continues to follow upstream parsing
 - `Improvement` Standardize the README layout and Gradle platform version management
 - `Dependency` Upgraded the frozen native parser from MediaInfoLib 0.7.83 to 26.05 and pinned ZenLib 0.4.41 with Android NDK 29.0.14206865
-
-#### v1.1.0
-
-_2026/08/31_
-
-- `Feature` Copy-free parsing: seekable regular file descriptors are read directly by MediaInfoLib through `/proc/self/fd`; only pipes or failed direct parses use a private temporary copy
-- `Feature` Process-local result cache: on API 27+, full reports, field queries, and snapshots use stable file identity, LRU eviction, a sliding 10-minute lifetime, and low-memory cleanup to avoid repeated parsing
-- `Feature` Cooperative cancellation and timeout: every AIDL call has a 30-second limit; timeout stops native parsing or fallback copying, releases temporary resources, and returns `MEDIAINFO_TIMEOUT`
-- `Fix` Fixed avoidable whole-file copying for large regular descriptors and ensured descriptors and fallback files close on success, failure, validation errors, cancellation, and timeout
-- `Fix` Fixed cache identity precision for rapid file changes by using nanosecond mtime / ctime and conservatively disabling cache reuse on API 24-26
-- `Improvement` Supported ABI reporting is generated dynamically from the `libmediainfo.so` files actually present in installed base or split APKs, with a safe process-ABI fallback
-- `Improvement` Hardened snapshot section parsing for repeated and numbered streams, malformed lines, embedded colons, duplicate fields, and independent output options
-- `Improvement` Added reproducible synthetic benchmark and real-media validation tooling, with complete x86, x86_64, and ARM64 performance baselines
-- `Improvement` Rebuilt the 10-language README, plugin instructions, and changelog generation pipeline with drift validation and GitHub Actions gates
 
 ##### For more release history
 
@@ -367,9 +359,9 @@ Build release APKs:
 .\gradlew.bat :app:assembleRelease
 ```
 
-For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk` pattern.
+For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk` pattern.
 
-Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.1.0.
+Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.1.1.
 
 ******
 
@@ -412,3 +404,6 @@ Project code is licensed under the [Mozilla Public License 2.0](https://github.c
 - MediaInfo official website: https://mediaarea.net/en/MediaInfo
 - MediaInfoLib project: https://github.com/MediaArea/MediaInfoLib
 - MediaInfoLib Android wrapper: https://github.com/olegazyx/MediaInfoLib-android
+
+
+[16 KB page alignment and build verification](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/docs/16kb.md)
