@@ -10,6 +10,7 @@ import java.util.Properties
 import javax.inject.Inject
 
 plugins {
+    id("io.github.supermonster003.autojs6-native-alignment")
     id("org.autojs.build.utils")
     id("org.autojs.build.versions")
     id("org.autojs.build.signs")

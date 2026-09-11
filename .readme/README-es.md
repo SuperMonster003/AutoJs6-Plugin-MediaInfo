@@ -296,6 +296,12 @@ Las capacidades planificadas del plugin y su estado de finalización se mantiene
 
 ******
 
+#### v2.1.1
+
+_2026/09/11_
+
+- `Mejora` Verificación de compilación de la alineación de páginas de 16 KB en bibliotecas nativas de 64 bits, con controles del contrato manifest e informes JSON
+
 #### v2.1.0
 
 _2026/09/10_
@@ -318,20 +324,6 @@ _2026/09/01_
 - `Mejora` Se revisaron informes completos, consultas de campos y sections de 0.7.83 y 26.05 con las mismas muestras reales; los contenedores y flujos principales siguen siendo compatibles y el texto de los campos sigue el análisis upstream
 - `Mejora` Unificar el diseño del README y la gestión de versiones de la plataforma Gradle
 - `Dependencia` Se actualizó el analizador nativo congelado de MediaInfoLib 0.7.83 a 26.05 y se fijaron ZenLib 0.4.41 y Android NDK 29.0.14206865
-
-#### v1.1.0
-
-_2026/08/31_
-
-- `Función` Análisis sin copiar el archivo completo: los descriptores de archivos normales con acceso aleatorio se leen directamente desde MediaInfoLib mediante /proc/self/fd; solo las tuberías o los fallos de lectura directa usan una copia temporal privada
-- `Función` Caché de resultados dentro del proceso: en API 27+, los informes completos, las consultas de campos y las instantáneas usan una identidad de archivo estable, LRU, caducidad deslizante de 10 minutos y limpieza por baja memoria
-- `Función` Cancelación cooperativa y tiempo límite: cada llamada AIDL tiene un límite de 30 segundos; al superarlo se detiene el análisis nativo o la copia alternativa, se liberan los recursos temporales y se devuelve MEDIAINFO_TIMEOUT
-- `Corrección` Se eliminó la copia sistemática del archivo multimedia completo y se garantiza el cierre de descriptores, analizadores nativos, flujos y archivos temporales en todas las rutas de error
-- `Corrección` La identidad de caché conserva marcas de tiempo con nanosegundos y la caché se desactiva en API 24 a 26, donde esa información no puede validarse de forma segura
-- `Mejora` El inventario dinámico de ABI comprueba las bibliotecas MediaInfoLib realmente empaquetadas y mantiene coherentes el informe de ejecución, los metadatos y las cinco variantes APK
-- `Mejora` El analizador de instantáneas tolera mejor etiquetas localizadas, grupos repetidos, campos desconocidos y salidas parciales de MediaInfoLib
-- `Mejora` Se añadieron herramientas de benchmark reproducibles para llamadas en frío y en caliente, concurrencia, tiempos límite y validación con medios reales, con manifiesto de fuentes y resumen SHA-256
-- `Mejora` La generación documental validada ahora cubre 10 idiomas y produce de forma determinista README, instrucciones integradas y registros de cambios
 
 ##### Para más historial de versiones
 
@@ -367,9 +359,9 @@ Compilar los APK release:
 .\gradlew.bat :app:assembleRelease
 ```
 
-Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.1.0-<abi>-<crc32>.apk`.
+Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk`.
 
-Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 2.1.0.
+Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 2.1.1.
 
 ******
 
@@ -412,3 +404,6 @@ El código del proyecto está licenciado bajo la [Mozilla Public License 2.0](ht
 - Sitio web oficial de MediaInfo: https://mediaarea.net/en/MediaInfo
 - Proyecto MediaInfoLib: https://github.com/MediaArea/MediaInfoLib
 - Envoltorio MediaInfoLib Android: https://github.com/olegazyx/MediaInfoLib-android
+
+
+[16 KB page alignment and build verification](https://github.com/SuperMonster003/AutoJs6-Plugin-MediaInfo/blob/master/docs/16kb.md)
