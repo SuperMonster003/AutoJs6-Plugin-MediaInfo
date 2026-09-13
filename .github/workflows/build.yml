@@ -26,7 +26,7 @@ jobs:
           python3 scripts/verify_native_build.py
 
       - name: Set up Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
@@ -77,7 +77,7 @@ jobs:
           python3 scripts/verify_native_build.py
 
       - name: Set up Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
@@ -107,3 +107,52 @@ jobs:
           # The action executes each script input line in a separate shell.
           # Keep stateful variables, traps, and assertions inside one driver.
           script: bash scripts/run_ci_service_validation.sh
+
+  verify-16kb:
+    name: Debug and minified release round trip on 16KB pages
+    needs: verify-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Verify pinned upstream sources
+        run: |
+          python3 scripts/update_mediainfo_upstream.py --fetch-locked
+          python3 scripts/verify_native_build.py
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Install pinned native toolchain
+        run: |
+          sdkmanager_path="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$sdkmanager_path"
+          "$sdkmanager_path" "ndk;29.0.14206865" "cmake;3.22.1"
+          test -d "${ANDROID_HOME}/ndk/29.0.14206865"
+          test -x "${ANDROID_HOME}/cmake/3.22.1/bin/cmake"
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Verify debug and minified release discovery/Binder methods
+        uses: reactivecircus/android-emulator-runner@v2.38.0
+        with:
+          api-level: 35
+          target: google_apis_ps16k
+          arch: x86_64
+          profile: pixel_7
+          # The action executes each script input line in a separate shell.
+          # Keep stateful variables, traps, and assertions inside one driver.
+          script: MEDIAINFO_EXPECTED_PAGE_SIZE=16384 bash scripts/run_ci_service_validation.sh
