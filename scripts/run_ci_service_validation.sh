@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ -n "${MEDIAINFO_EXPECTED_PAGE_SIZE:-}" ]]; then
+  page_size="$(adb shell 'getconf PAGE_SIZE 2>/dev/null || getconf PAGESIZE 2>/dev/null' | tr -d '\r')"
+  test "$page_size" = "$MEDIAINFO_EXPECTED_PAGE_SIZE"
+fi
+
 readonly app_package="io.github.supermonster003.autojs6.plugin.mediainfo"
 readonly test_package="${app_package}.test"
 readonly release_abi="${MEDIAINFO_RELEASE_SMOKE_ABI:-x86_64}"
