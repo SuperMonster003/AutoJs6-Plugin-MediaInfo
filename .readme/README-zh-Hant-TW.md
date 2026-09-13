@@ -296,6 +296,13 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.2
+
+_2026/09/13_
+
+- `修復` 發佈彙整使用目前建構並驗證版本和簽章, 避免舊 APK 被冠以新版本檔案名稱
+- `最佳化` 宿主啟用, 外掛中繼資料, 多語言文件與簽章發佈彙整遵循統一外掛規範
+
 #### v2.1.1
 
 _2026/09/11_
@@ -310,20 +317,6 @@ _2026/09/10_
 - `新增` 明確選擇的 snapshot v2 將原生 JSON 同類串流按陣列分組並提供引擎版本, snapshot v1 繼續作為預設協定
 - `修復` MediaInfo 詳情與快照的 Complete name 顯示原始檔案路徑, 避免顯示私有快取或描述符路徑, 同時保留快照的顯示檔案名稱
 - `最佳化` 同步 Node 檔案路徑存取說明, 補充深淺色裝置擷取畫面與可執行的雙音軌示範指令碼
-
-#### v2.0.0
-
-_2026/09/01_
-
-- `新增` 官方原始碼建置: 從固定的 MediaArea MediaInfoLib 26.05 與 ZenLib 0.4.41 直接產生四種 ABI, 不再依賴陳舊個人儲存庫的預先編譯程式庫
-- `新增` 可重現來源鏈: 在鎖定檔與 APK 中記錄上游標籤, 完整提交, NDK / CMake 設定及授權原文, 並自動稽核 ELF 與五個 APK
-- `新增` 上游穩定版追蹤: 每週或手動檢查官方 Release, 僅以 Draft PR 提交固定版本更新, 偵測標籤移動且永不自動合併或發布
-- `修復` 固定 JNI 包裝類別及其方法不被 R8 改寫, 並安裝實際 minified Release APK 執行公開 AIDL 冒煙測試, 防止原生程式庫在發布建置中無法使用
-- `最佳化` MediaInfoLib 26.05 提供更豐富的編碼, HDR / 色彩, 校驗和與封面圖中繼資料, 同時維持公開 AIDL 與 `autojs6-plugin-mediainfo-snapshot-v1` 契約
-- `最佳化` 四種 ABI 均支援 16 KB page size, 並通過 API 24-37, x86 / x86_64, ARM32 / ARM64, 逾時, 快取, 真實媒體與超大檔案門禁
-- `最佳化` 同一批真實樣本的 0.7.83 / 26.05 完整報告, 欄位查詢和 sections 差異已審閱; 容器與核心串流保持相容, 欄位文字繼續遵循上游解析結果
-- `最佳化` 統一 README 版式與 Gradle 平台版本管理方式
-- `依賴` 原生解析引擎從凍結的 MediaInfoLib 0.7.83 升級至 26.05, 並固定 ZenLib 0.4.41 與 Android NDK 29.0.14206865
 
 ##### 更多發行歷史可參閱
 
@@ -359,9 +352,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-發佈歸檔可執行 `:app:appendDigestToReleasedFiles` 工作, 將 `app/release` 下的 APK 複製到 `app/releases` 並重新命名為 `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk` 形式.
+發佈歸檔可執行 `:app:appendDigestToReleasedFiles` 工作, 將 `app/release` 下的 APK 複製到 `app/releases` 並重新命名為 `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` 形式.
 
-建置參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.1.1.
+建置參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.1.2.
 
 ******
 

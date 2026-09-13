@@ -5,6 +5,15 @@
   "changelog_label_improvement": "改善",
   "changelog_label_dependency": "依存関係",
   "$data": {
+    "v2.1.2": {
+      "released_date": "2026/09/13",
+      "improvement": [
+        "ホストからの有効化, メタデータ, 多言語文書および署名済み APK の収集を共通規約に統一"
+      ],
+      "fix": [
+        "公開用 APK を現在のビルドから収集し, バージョンと署名を確認して旧 APK に新バージョン名が付く問題を防止"
+      ]
+    },
     "v2.1.1": {
       "released_date": "2026/09/11",
       "improvement": [

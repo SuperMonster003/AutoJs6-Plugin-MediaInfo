@@ -5,6 +5,15 @@
   "changelog_label_improvement": "개선",
   "changelog_label_dependency": "의존성",
   "$data": {
+    "v2.1.2": {
+      "released_date": "2026/09/13",
+      "improvement": [
+        "호스트 활성화, 메타데이터, 다국어 문서 및 서명된 APK 수집을 공통 규칙에 맞게 정리"
+      ],
+      "fix": [
+        "현재 빌드의 버전과 서명을 확인하여 이전 APK가 새 버전 이름으로 수집되는 문제 방지"
+      ]
+    },
     "v2.1.1": {
       "released_date": "2026/09/11",
       "improvement": [
