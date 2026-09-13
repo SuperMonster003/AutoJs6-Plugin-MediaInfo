@@ -11,7 +11,8 @@
         "Harmonisation de l'activation, des métadonnées, de la documentation traduite et de la collecte des APK signés"
       ],
       "fix": [
-        "La collecte utilise la compilation actuelle et vérifie versions et signatures pour éviter de renommer un ancien APK en nouvelle version"
+        "La collecte utilise la compilation actuelle et vérifie versions et signatures pour éviter de renommer un ancien APK en nouvelle version",
+        "Utiliser des dates de compilation en anglais indépendamment de la langue de la machine"
       ]
     },
     "v2.1.1": {

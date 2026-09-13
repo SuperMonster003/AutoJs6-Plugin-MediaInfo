@@ -9,6 +9,7 @@
 ###### 2026/09/13
 
 * `Fix` Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version
+* `Fix` Use English build dates in plugin metadata regardless of the build machine locale
 * `Improvement` Host activation, plugin metadata, localized documentation and signed release collection follow the common plugin conventions
 
 # v2.1.1

@@ -9,6 +9,7 @@
 ###### 2026/09/13
 
 * `Corrección` La recopilación usa la compilación actual y verifica versiones y firmas para evitar renombrar APK antiguos como una versión nueva
+* `Corrección` Usar fechas de compilación en inglés independientemente del idioma de la máquina
 * `Mejora` Activación del host, metadatos, documentación traducida y recopilación de APK firmados conforme a las convenciones comunes
 
 # v2.1.1

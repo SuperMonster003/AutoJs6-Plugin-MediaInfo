@@ -11,7 +11,8 @@
         "Host activation, plugin metadata, localized documentation and signed release collection follow the common plugin conventions"
       ],
       "fix": [
-        "Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version"
+        "Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version",
+        "Use English build dates in plugin metadata regardless of the build machine locale"
       ]
     },
     "v2.1.1": {
