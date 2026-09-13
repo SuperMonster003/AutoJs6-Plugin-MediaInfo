@@ -5,6 +5,15 @@
   "changelog_label_improvement": "Mejora",
   "changelog_label_dependency": "Dependencia",
   "$data": {
+    "v2.1.2": {
+      "released_date": "2026/09/13",
+      "improvement": [
+        "Activación del host, metadatos, documentación traducida y recopilación de APK firmados conforme a las convenciones comunes"
+      ],
+      "fix": [
+        "La recopilación usa la compilación actual y verifica versiones y firmas para evitar renombrar APK antiguos como una versión nueva"
+      ]
+    },
     "v2.1.1": {
       "released_date": "2026/09/11",
       "improvement": [

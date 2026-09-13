@@ -296,6 +296,13 @@ The plugin's planned capabilities and their completion status are maintained as 
 
 ******
 
+#### v2.1.2
+
+_2026/09/13_
+
+- `Fix` Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version
+- `Improvement` Host activation, plugin metadata, localized documentation and signed release collection follow the common plugin conventions
+
 #### v2.1.1
 
 _2026/09/11_
@@ -310,20 +317,6 @@ _2026/09/10_
 - `Feature` Opt-in snapshot v2 groups native JSON tracks into arrays and exposes the engine version while keeping snapshot v1 as the default
 - `Fix` MediaInfo details and snapshots show the original source path in Complete name instead of a private cache or descriptor path, while preserving the snapshot display filename
 - `Improvement` Documented current Node file-path access and added light/dark device screenshots with a runnable two-track demo
-
-#### v2.0.0
-
-_2026/09/01_
-
-- `Feature` Official-source build: all four ABIs are generated directly from pinned MediaArea MediaInfoLib 26.05 and ZenLib 0.4.41 sources, replacing prebuilt libraries from the dormant personal repository
-- `Feature` Reproducible provenance: upstream tags, full commits, NDK / CMake settings, and license texts are recorded in the lock file and every APK, with automated ELF and five-APK audits
-- `Feature` Stable upstream tracking: weekly or manual checks propose pinned official Release updates through Draft PRs, detect moved tags, and never merge or publish automatically
-- `Fix` Preserved the exact JNI wrapper class and methods through R8 and added a public-AIDL smoke test that installs the actual minified Release APK, preventing native loading failures in release builds
-- `Improvement` MediaInfoLib 26.05 exposes richer codec, HDR / color, checksum, and cover-image metadata while preserving the public AIDL and `autojs6-plugin-mediainfo-snapshot-v1` contracts
-- `Improvement` Every ABI supports 16 KB page sizes and passes gates across API 24-37, x86 / x86_64, ARM32 / ARM64, timeout, cache, real-media, and huge-file scenarios
-- `Improvement` Full reports, field queries, and sections from 0.7.83 and 26.05 were reviewed on the same real samples; containers and core streams remain compatible while field text continues to follow upstream parsing
-- `Improvement` Standardize the README layout and Gradle platform version management
-- `Dependency` Upgraded the frozen native parser from MediaInfoLib 0.7.83 to 26.05 and pinned ZenLib 0.4.41 with Android NDK 29.0.14206865
 
 ##### For more release history
 
@@ -359,9 +352,9 @@ Build release APKs:
 .\gradlew.bat :app:assembleRelease
 ```
 
-For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk` pattern.
+For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` pattern.
 
-Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.1.1.
+Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.1.2.
 
 ******
 

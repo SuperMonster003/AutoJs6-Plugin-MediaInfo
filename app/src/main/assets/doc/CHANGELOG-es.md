@@ -4,6 +4,13 @@
 
 ******
 
+# v2.1.2
+
+###### 2026/09/13
+
+* `Corrección` La recopilación usa la compilación actual y verifica versiones y firmas para evitar renombrar APK antiguos como una versión nueva
+* `Mejora` Activación del host, metadatos, documentación traducida y recopilación de APK firmados conforme a las convenciones comunes
+
 # v2.1.1
 
 ###### 2026/09/11

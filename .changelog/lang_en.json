@@ -5,6 +5,15 @@
   "changelog_label_improvement": "Improvement",
   "changelog_label_dependency": "Dependency",
   "$data": {
+    "v2.1.2": {
+      "released_date": "2026/09/13",
+      "improvement": [
+        "Host activation, plugin metadata, localized documentation and signed release collection follow the common plugin conventions"
+      ],
+      "fix": [
+        "Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version"
+      ]
+    },
     "v2.1.1": {
       "released_date": "2026/09/11",
       "improvement": [

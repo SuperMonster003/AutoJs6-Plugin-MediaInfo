@@ -4,6 +4,13 @@
 
 ******
 
+# v2.1.2
+
+###### 2026/09/13
+
+* `Fix` Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version
+* `Improvement` Host activation, plugin metadata, localized documentation and signed release collection follow the common plugin conventions
+
 # v2.1.1
 
 ###### 2026/09/11

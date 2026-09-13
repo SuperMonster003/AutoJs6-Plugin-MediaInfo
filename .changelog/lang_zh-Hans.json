@@ -5,6 +5,15 @@
   "changelog_label_improvement": "优化",
   "changelog_label_dependency": "依赖",
   "$data": {
+    "v2.1.2": {
+      "released_date": "2026/09/13",
+      "improvement": [
+        "宿主激活, 插件元数据, 多语言文档与签名发布归集遵循统一插件规范"
+      ],
+      "fix": [
+        "发布归集使用当前构建并校验版本和签名, 避免旧 APK 被冠以新版本文件名"
+      ]
+    },
     "v2.1.1": {
       "released_date": "2026/09/11",
       "improvement": [

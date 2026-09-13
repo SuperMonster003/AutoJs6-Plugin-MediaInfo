@@ -296,6 +296,13 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.2
+
+_2026/09/13_
+
+- `修正` 公開用 APK を現在のビルドから収集し, バージョンと署名を確認して旧 APK に新バージョン名が付く問題を防止
+- `改善` ホストからの有効化, メタデータ, 多言語文書および署名済み APK の収集を共通規約に統一
+
 #### v2.1.1
 
 _2026/09/11_
@@ -310,20 +317,6 @@ _2026/09/10_
 - `追加` 明示的に選択する snapshot v2 はネイティブ JSON の同種ストリームを配列にまとめてエンジンバージョンを提供し, 既定は snapshot v1 を維持
 - `修正` MediaInfo 詳細とスナップショットの Complete name に元のファイルパスを表示し, プライベートキャッシュや記述子のパスを表示しないよう改善; スナップショットの表示ファイル名は維持
 - `改善` Node のファイルパス説明を更新し, 実行可能な 2 トラックのデモとライト/ダークテーマの画面画像を追加
-
-#### v2.0.0
-
-_2026/09/01_
-
-- `追加` 公式ソースビルド: 固定した MediaArea MediaInfoLib 26.05 と ZenLib 0.4.41 から 4 ABI を直接生成し, 古い個人リポジトリのプリビルドライブラリを廃止
-- `追加` 再現可能な来歴: 上流タグ, 完全なコミット, NDK / CMake 設定, ライセンス原文をロックファイルと各 APK に記録し, ELF と 5 APK を自動監査
-- `追加` 上流安定版の追跡: 毎週または手動で公式 Release を確認し, 固定バージョン更新を Draft PR のみで提案, タグ移動を検出して自動マージや公開は不実施
-- `修正` R8 後も JNI ラッパーの正確なクラス名とメソッドを保持し, 実際の minified Release APK をインストールする公開 AIDL スモークテストでリリース時のネイティブ読込失敗を防止
-- `改善` MediaInfoLib 26.05 によりコーデック, HDR / 色, チェックサム, カバー画像のメタデータを拡充しつつ, 公開 AIDL と `autojs6-plugin-mediainfo-snapshot-v1` の契約を維持
-- `改善` 全 ABI が 16 KB page size に対応し, API 24-37, x86 / x86_64, ARM32 / ARM64, タイムアウト, キャッシュ, 実メディア, 巨大ファイルの各ゲートを通過
-- `改善` 同じ実メディアで 0.7.83 と 26.05 の完全レポート, フィールド照会, sections を比較済み; コンテナと主要ストリームは互換で, フィールド文言は上流解析に追従
-- `改善` README のレイアウトと Gradle プラットフォームのバージョン管理方式を統一
-- `依存関係` 凍結済みネイティブ解析器を MediaInfoLib 0.7.83 から 26.05 へ更新し, ZenLib 0.4.41 と Android NDK 29.0.14206865 を固定
 
 ##### その他のリリース履歴
 
@@ -359,9 +352,9 @@ release APK をビルド:
 .\gradlew.bat :app:assembleRelease
 ```
 
-リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.1-<abi>-<crc32>.apk` 形式にリネームします.
+リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` 形式にリネームします.
 
-ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 2.1.1.
+ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 2.1.2.
 
 ******
 
