@@ -301,6 +301,7 @@ Les capacités prévues du plugin et leur état d'avancement sont maintenus sous
 _2026/09/13_
 
 - `Correction` La collecte utilise la compilation actuelle et vérifie versions et signatures pour éviter de renommer un ancien APK en nouvelle version
+- `Correction` Utiliser des dates de compilation en anglais indépendamment de la langue de la machine
 - `Amélioration` Harmonisation de l'activation, des métadonnées, de la documentation traduite et de la collecte des APK signés
 
 #### v2.1.1
