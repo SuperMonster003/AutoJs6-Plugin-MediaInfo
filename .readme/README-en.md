@@ -296,6 +296,12 @@ The plugin's planned capabilities and their completion status are maintained as 
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `Improvement` Raise compileSdk and targetSdk to 37 (Android 17); the plugin's behavior does not depend on the new target
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `Improvement` Build verification of 16 KB page alignment for 64-bit native libraries, including manifest contract checks and JSON reports
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `Feature` MediaInfo queries support zero-based streamNumber, countGet stream counts, and infoKind for units, descriptions and readable names; Rhino and Node preserve default first-stream TEXT queries and negotiate extended plugin capabilities
-- `Feature` Opt-in snapshot v2 groups native JSON tracks into arrays and exposes the engine version while keeping snapshot v1 as the default
-- `Fix` MediaInfo details and snapshots show the original source path in Complete name instead of a private cache or descriptor path, while preserving the snapshot display filename
-- `Improvement` Documented current Node file-path access and added light/dark device screenshots with a runnable two-track demo
 
 ##### For more release history
 
@@ -353,9 +350,9 @@ Build release APKs:
 .\gradlew.bat :app:assembleRelease
 ```
 
-For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` pattern.
+For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` pattern.
 
-Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 36, current version 2.1.2.
+Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 37, current version 2.1.3.
 
 ******
 

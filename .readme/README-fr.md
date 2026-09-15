@@ -296,6 +296,12 @@ Les capacités prévues du plugin et leur état d'avancement sont maintenus sous
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `Amélioration` compileSdk et targetSdk passent à 37 (Android 17) ; le comportement du plugin ne dépend pas de la nouvelle cible
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `Amélioration` Vérification à la compilation de l'alignement des pages de 16 KB des bibliothèques natives 64 bits, avec contrôle du contrat manifest et rapports JSON
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `Nouveauté` Les requêtes MediaInfo prennent en charge streamNumber à partir de 0, countGet et infoKind pour les unités, descriptions et noms lisibles; Rhino et Node conservent TEXT sur le premier flux par défaut et négocient les capacités du plugin
-- `Nouveauté` Le schéma snapshot v2 optionnel regroupe les flux JSON natifs en tableaux et expose la version du moteur, avec snapshot v1 par défaut
-- `Correction` Complete name affiche le chemin du fichier source dans les détails et instantanés MediaInfo au lieu du cache privé ou du descripteur, sans modifier le nom de fichier de l'instantané
-- `Amélioration` Actualisation de l’accès aux chemins Node et ajout de captures réelles claires/sombres avec un exemple exécutable à deux pistes
 
 ##### Pour plus d'historique des versions
 
@@ -353,9 +350,9 @@ Compiler les APK release:
 .\gradlew.bat :app:assembleRelease
 ```
 
-Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk`.
+Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk`.
 
-Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal 24 (Android 7.0), SDK cible 36, version actuelle 2.1.2.
+Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal 24 (Android 7.0), SDK cible 37, version actuelle 2.1.3.
 
 ******
 

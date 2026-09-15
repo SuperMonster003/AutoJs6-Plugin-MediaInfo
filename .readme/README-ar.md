@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `تحسين` رفع compileSdk و targetSdk إلى 37 (Android 17)؛ لا يعتمد سلوك المكون الإضافي على الهدف الجديد
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `تحسين` التحقق أثناء البناء من محاذاة صفحات 16 KB للمكتبات الأصلية ذات 64 بت, مع فحص عقد manifest وتقارير JSON
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `ميزة` تدعم استعلامات MediaInfo فهرس streamNumber من الصفر وعدد المسارات عبر countGet وinfoKind للوحدات والأوصاف والأسماء المقروءة; يحافظ Rhino وNode على TEXT للمسار الأول افتراضيا مع التحقق من قدرات الإضافة
-- `ميزة` يجمع snapshot v2 الاختياري مسارات JSON الأصلية في مصفوفات ويعرض إصدار المحرك مع إبقاء snapshot v1 افتراضيا
-- `إصلاح` يعرض Complete name في تفاصيل ولقطات MediaInfo مسار الملف الأصلي بدلا من ذاكرة التخزين الخاصة أو مسار الواصف مع الحفاظ على اسم الملف المعروض في اللقطة
-- `تحسين` تحديث شرح مسارات ملفات Node وإضافة لقطات فعلية بالمظهرين الفاتح والداكن ومثال قابل للتشغيل بمسارين صوتيين
 
 ##### لمزيد من سجل الإصدارات
 
@@ -353,9 +350,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-لأرشفة الإصدارات, شغل المهمة `:app:appendDigestToReleasedFiles` التي تنسخ حزم APK من `app/release` إلى `app/releases` وتعيد تسميتها بالنمط `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk`.
+لأرشفة الإصدارات, شغل المهمة `:app:appendDigestToReleasedFiles` التي تنسخ حزم APK من `app/release` إلى `app/releases` وتعيد تسميتها بالنمط `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk`.
 
-معاملات البناء مجمعة في `version.properties`: الحد الأدنى من SDK هو 24 (Android 7.0), و SDK الهدف 36, والإصدار الحالي 2.1.2.
+معاملات البناء مجمعة في `version.properties`: الحد الأدنى من SDK هو 24 (Android 7.0), و SDK الهدف 37, والإصدار الحالي 2.1.3.
 
 ******
 

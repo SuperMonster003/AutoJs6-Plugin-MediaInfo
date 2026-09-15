@@ -24,7 +24,7 @@
   "snapshot_schema_plugin": "autojs6-plugin-mediainfo-snapshot-v1",
   "snapshot_schema_node": "autojs6-node-mediainfo-snapshot-v1",
   "android_min_sdk": "24",
-  "android_target_sdk": "36",
+  "android_target_sdk": "37",
   "min_android_version": "7.0",
   "stream_kinds": "general, video, audio, text, other, image, menu"
 }

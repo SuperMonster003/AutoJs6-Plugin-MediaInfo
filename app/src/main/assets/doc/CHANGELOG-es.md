@@ -4,6 +4,12 @@
 
 ******
 
+# v2.1.3
+
+###### 2026/09/15
+
+* `Mejora` compileSdk y targetSdk suben a 37 (Android 17); el comportamiento del plugin no depende del nuevo objetivo
+
 # v2.1.2
 
 ###### 2026/09/13

@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `改善` compileSdk と targetSdk を 37 (Android 17) に引き上げ, プラグインの動作は新しいターゲットの影響を受けない
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `改善` 64 ビットのネイティブライブラリの 16 KB ページアラインメントをビルド時に検証, manifest 契約の検査と JSON レポートに対応
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `追加` MediaInfo クエリが 0 始まりの streamNumber, countGet によるストリーム数, 単位や説明や表示名を取得する infoKind に対応; Rhino と Node は既定の先頭ストリームの TEXT クエリを維持し, プラグインの拡張機能を確認
-- `追加` 明示的に選択する snapshot v2 はネイティブ JSON の同種ストリームを配列にまとめてエンジンバージョンを提供し, 既定は snapshot v1 を維持
-- `修正` MediaInfo 詳細とスナップショットの Complete name に元のファイルパスを表示し, プライベートキャッシュや記述子のパスを表示しないよう改善; スナップショットの表示ファイル名は維持
-- `改善` Node のファイルパス説明を更新し, 実行可能な 2 トラックのデモとライト/ダークテーマの画面画像を追加
 
 ##### その他のリリース履歴
 
@@ -353,9 +350,9 @@ release APK をビルド:
 .\gradlew.bat :app:assembleRelease
 ```
 
-リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` 形式にリネームします.
+リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 形式にリネームします.
 
-ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 36, 現在のバージョン 2.1.2.
+ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 37, 現在のバージョン 2.1.3.
 
 ******
 
