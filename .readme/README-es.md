@@ -296,6 +296,12 @@ Las capacidades planificadas del plugin y su estado de finalización se mantiene
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `Mejora` compileSdk y targetSdk suben a 37 (Android 17); el comportamiento del plugin no depende del nuevo objetivo
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `Mejora` Verificación de compilación de la alineación de páginas de 16 KB en bibliotecas nativas de 64 bits, con controles del contrato manifest e informes JSON
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `Función` Las consultas MediaInfo admiten streamNumber desde 0, countGet e infoKind para unidades, descripciones y nombres legibles; Rhino y Node mantienen TEXT del primer flujo por defecto y negocian las capacidades del plugin
-- `Función` El esquema snapshot v2 opcional agrupa los flujos JSON nativos en matrices y expone la version del motor, manteniendo snapshot v1 por defecto
-- `Corrección` Complete name muestra la ruta original en los detalles y las instantáneas MediaInfo en lugar de la caché privada o del descriptor, conservando el nombre de archivo de la instantánea
-- `Mejora` Actualizada la documentación de rutas Node y añadidas capturas reales claras/oscuras con una demostración ejecutable de dos pistas
 
 ##### Para más historial de versiones
 
@@ -353,9 +350,9 @@ Compilar los APK release:
 .\gradlew.bat :app:assembleRelease
 ```
 
-Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk`.
+Para archivar publicaciones, ejecute la tarea `:app:appendDigestToReleasedFiles`, que copia los APK de `app/release` a `app/releases` y los renombra con el patrón `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk`.
 
-Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 36, versión actual 2.1.2.
+Los parámetros de compilación están centralizados en `version.properties`: SDK mínimo 24 (Android 7.0), SDK objetivo 37, versión actual 2.1.3.
 
 ******
 

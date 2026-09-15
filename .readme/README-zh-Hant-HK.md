@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `優化` 將 compileSdk 與 targetSdk 提升到 37 (Android 17), 插件行為不受新目標版本影響
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `優化` 建置階段校驗 64 位原生程式庫的 16 KB 頁面大小對齊, 檢查 manifest 契約並輸出 JSON 報告
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `新增` MediaInfo 查詢支援從 0 開始的 streamNumber, countGet 串流計數以及用於單位, 說明和可讀名稱的 infoKind; Rhino 和 Node 保持預設第 1 條串流的 TEXT 查詢, 並協商外掛擴充能力
-- `新增` 明確選擇的 snapshot v2 將原生 JSON 同類串流按陣列分組並提供引擎版本, snapshot v1 繼續作為預設協定
-- `修復` MediaInfo 詳情與快照的 Complete name 顯示原始檔案路徑, 避免顯示私有快取或描述符路徑, 同時保留快照的顯示檔案名稱
-- `優化` 同步 Node 檔案路徑存取說明, 補充深淺色裝置截圖與可執行的雙音軌示範腳本
 
 ##### 更多發行歷史可參閱
 
@@ -353,9 +350,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` 形式.
+發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 形式.
 
-構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 36, 目前版本 2.1.2.
+構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 37, 目前版本 2.1.3.
 
 ******
 

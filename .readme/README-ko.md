@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.3
+
+_2026/09/15_
+
+- `개선` compileSdk 와 targetSdk 를 37 (Android 17) 로 올리며, 플러그인 동작은 새 대상 버전의 영향을 받지 않음
+
 #### v2.1.2
 
 _2026/09/13_
@@ -309,15 +315,6 @@ _2026/09/13_
 _2026/09/11_
 
 - `개선` 64비트 네이티브 라이브러리의 16 KB 페이지 정렬을 빌드 시 검증, manifest 계약 검사 및 JSON 보고서 지원
-
-#### v2.1.0
-
-_2026/09/10_
-
-- `추가` MediaInfo 쿼리는 0부터 시작하는 streamNumber, countGet 스트림 수, 단위와 설명 및 표시 이름을 위한 infoKind를 지원; Rhino와 Node는 첫 스트림의 TEXT 기본 쿼리를 유지하고 플러그인 확장 기능을 확인
-- `추가` 명시적으로 선택하는 snapshot v2는 네이티브 JSON의 같은 종류 스트림을 배열로 묶고 엔진 버전을 제공하며 snapshot v1 기본값은 유지
-- `수정` MediaInfo 상세 정보와 스냅샷의 Complete name에 비공개 캐시나 디스크립터 경로 대신 원본 파일 경로를 표시하고 스냅샷의 표시 파일 이름은 유지
-- `개선` Node 파일 경로 안내를 갱신하고 실행 가능한 두 트랙 데모와 밝은/어두운 테마의 스크린샷 추가
 
 ##### 더 많은 릴리스 기록
 
@@ -353,9 +350,9 @@ release APK 빌드:
 .\gradlew.bat :app:assembleRelease
 ```
 
-릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.2-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
+릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
 
-빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 36, 현재 버전 2.1.2.
+빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 37, 현재 버전 2.1.3.
 
 ******
 
