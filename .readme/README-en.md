@@ -296,6 +296,12 @@ The plugin's planned capabilities and their completion status are maintained as 
 
 ******
 
+#### v2.1.4
+
+_2026/10/04_
+
+- `Improvement` Plugin Center icons use the sizes, positions, light and dark artwork, and circular backgrounds adjusted in Icon Studio, retaining reproducible sources and parameters
+
 #### v2.1.3
 
 _2026/09/19_
@@ -310,12 +316,6 @@ _2026/09/13_
 - `Fix` Release collection uses the current build and verifies versions and signatures, preventing old APKs from being renamed as a new version
 - `Fix` Use English build dates in plugin metadata regardless of the build machine locale
 - `Improvement` Host activation, plugin metadata, localized documentation and signed release collection follow the common plugin conventions
-
-#### v2.1.1
-
-_2026/09/11_
-
-- `Improvement` Build verification of 16 KB page alignment for 64-bit native libraries, including manifest contract checks and JSON reports
 
 ##### For more release history
 
@@ -351,9 +351,9 @@ Build release APKs:
 .\gradlew.bat :app:assembleRelease
 ```
 
-For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` pattern.
+For release archiving, run the `:app:appendDigestToReleasedFiles` task, which copies the APKs under `app/release` into `app/releases` and renames them to the `autojs6-plugin-mediainfo-v2.1.4-<abi>-<crc32>.apk` pattern.
 
-Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 37, current version 2.1.3.
+Build parameters are centralized in `version.properties`: minimum SDK 24 (Android 7.0), target SDK 37, current version 2.1.4.
 
 ******
 

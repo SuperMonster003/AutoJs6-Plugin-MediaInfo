@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.4
+
+_2026/10/04_
+
+- `개선` 플러그인 센터 아이콘에 Icon Studio에서 조정한 크기, 위치, 밝은 이미지와 어두운 이미지 및 원형 배경을 적용하고 재생성 가능한 원본과 매개변수를 유지
+
 #### v2.1.3
 
 _2026/09/19_
@@ -310,12 +316,6 @@ _2026/09/13_
 - `수정` 현재 빌드의 버전과 서명을 확인하여 이전 APK가 새 버전 이름으로 수집되는 문제 방지
 - `수정` 빌드 환경 언어와 관계없이 플러그인 메타데이터의 빌드 날짜를 영어로 통일
 - `개선` 호스트 활성화, 메타데이터, 다국어 문서 및 서명된 APK 수집을 공통 규칙에 맞게 정리
-
-#### v2.1.1
-
-_2026/09/11_
-
-- `개선` 64비트 네이티브 라이브러리의 16 KB 페이지 정렬을 빌드 시 검증, manifest 계약 검사 및 JSON 보고서 지원
 
 ##### 더 많은 릴리스 기록
 
@@ -351,9 +351,9 @@ release APK 빌드:
 .\gradlew.bat :app:assembleRelease
 ```
 
-릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
+릴리스 보관을 위해 `:app:appendDigestToReleasedFiles` 작업을 실행하면 `app/release` 아래의 APK 를 `app/releases` 로 복사하고 `autojs6-plugin-mediainfo-v2.1.4-<abi>-<crc32>.apk` 형식으로 이름을 바꿉니다.
 
-빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 37, 현재 버전 2.1.3.
+빌드 매개변수는 `version.properties` 에 집중되어 있습니다: 최소 SDK 24 (Android 7.0), 대상 SDK 37, 현재 버전 2.1.4.
 
 ******
 

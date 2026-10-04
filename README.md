@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.4
+
+_2026/10/04_
+
+- `优化` 插件中心图标采用统一工作台调整后的尺寸, 位置, 亮暗图稿与圆形底色, 保留可重建原稿和参数
+
 #### v2.1.3
 
 _2026/09/19_
@@ -310,12 +316,6 @@ _2026/09/13_
 - `修复` 旧 APK 被误用为新版本发布产物的问题, 归集时校验当前版本及签名
 - `修复` 插件信息中的构建日期受构建环境语言影响, 未统一使用英文格式的问题
 - `优化` 统一宿主激活流程, 插件信息及多语言文档, 并完善签名发布校验
-
-#### v2.1.1
-
-_2026/09/11_
-
-- `优化` 构建阶段校验 64 位原生库的 16 KB 内存页对齐及 Manifest 配置, 并输出校验报告
 
 ##### 更多发行历史可参阅
 
@@ -351,9 +351,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 形式.
+发布归档可运行 `:app:appendDigestToReleasedFiles` 任务, 将 `app/release` 下的 APK 复制到 `app/releases` 并重命名为 `autojs6-plugin-mediainfo-v2.1.4-<abi>-<crc32>.apk` 形式.
 
-构建参数集中于 `version.properties`: 最低 SDK 24 (Android 7.0), 目标 SDK 37, 当前版本 2.1.3.
+构建参数集中于 `version.properties`: 最低 SDK 24 (Android 7.0), 目标 SDK 37, 当前版本 2.1.4.
 
 ******
 

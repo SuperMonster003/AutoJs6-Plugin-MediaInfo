@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.4
+
+_2026/10/04_
+
+- `改善` プラグインセンターのアイコンに Icon Studio で調整したサイズ, 位置, 明暗の図稿と円形背景を適用し, 再生成可能な原稿とパラメーターを保持
+
 #### v2.1.3
 
 _2026/09/19_
@@ -310,12 +316,6 @@ _2026/09/13_
 - `修正` 公開用 APK を現在のビルドから収集し, バージョンと署名を確認して旧 APK に新バージョン名が付く問題を防止
 - `修正` ビルド環境の言語にかかわらずプラグインのビルド日付を英語に統一
 - `改善` ホストからの有効化, メタデータ, 多言語文書および署名済み APK の収集を共通規約に統一
-
-#### v2.1.1
-
-_2026/09/11_
-
-- `改善` 64 ビットのネイティブライブラリの 16 KB ページアラインメントをビルド時に検証, manifest 契約の検査と JSON レポートに対応
 
 ##### その他のリリース履歴
 
@@ -351,9 +351,9 @@ release APK をビルド:
 .\gradlew.bat :app:assembleRelease
 ```
 
-リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 形式にリネームします.
+リリースアーカイブには `:app:appendDigestToReleasedFiles` タスクを実行します. `app/release` 配下の APK を `app/releases` にコピーし, `autojs6-plugin-mediainfo-v2.1.4-<abi>-<crc32>.apk` 形式にリネームします.
 
-ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 37, 現在のバージョン 2.1.3.
+ビルドパラメータは `version.properties` に集約されています: 最小 SDK 24 (Android 7.0), ターゲット SDK 37, 現在のバージョン 2.1.4.
 
 ******
 

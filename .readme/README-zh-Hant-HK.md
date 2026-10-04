@@ -296,6 +296,12 @@ snapshot schema: autojs6-plugin-mediainfo-snapshot-v1
 
 ******
 
+#### v2.1.4
+
+_2026/10/04_
+
+- `優化` 外掛程式中心圖示採用統一工作台調整後的尺寸, 位置, 明暗圖稿與圓形底色, 保留可重建原稿和參數
+
 #### v2.1.3
 
 _2026/09/19_
@@ -310,12 +316,6 @@ _2026/09/13_
 - `修復` 發佈彙整使用目前建構並驗證版本和簽章, 避免舊 APK 被冠以新版本檔案名稱
 - `修復` 插件中繼資料的建置日期固定使用英文, 不受建置機器語言影響
 - `優化` 宿主啟用, 外掛中繼資料, 多語言文件與簽章發佈彙整遵循統一外掛規範
-
-#### v2.1.1
-
-_2026/09/11_
-
-- `優化` 建置階段校驗 64 位原生程式庫的 16 KB 頁面大小對齊, 檢查 manifest 契約並輸出 JSON 報告
 
 ##### 更多發行歷史可參閱
 
@@ -351,9 +351,9 @@ git submodule update --init --recursive
 .\gradlew.bat :app:assembleRelease
 ```
 
-發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk` 形式.
+發布歸檔可運行 `:app:appendDigestToReleasedFiles` 任務, 將 `app/release` 下的 APK 複製到 `app/releases` 並重命名為 `autojs6-plugin-mediainfo-v2.1.4-<abi>-<crc32>.apk` 形式.
 
-構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 37, 目前版本 2.1.3.
+構建參數集中於 `version.properties`: 最低 SDK 24 (Android 7.0), 目標 SDK 37, 目前版本 2.1.4.
 
 ******
 
