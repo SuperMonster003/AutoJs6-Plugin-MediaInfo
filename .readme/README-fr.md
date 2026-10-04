@@ -296,6 +296,12 @@ Les capacités prévues du plugin et leur état d'avancement sont maintenus sous
 
 ******
 
+#### v2.1.4
+
+_2026/10/04_
+
+- `Amélioration` Les icônes du centre de plugins utilisent les tailles, positions, images claires et sombres et fonds circulaires réglés dans Icon Studio, avec les sources et paramètres permettant de les reproduire
+
 #### v2.1.3
 
 _2026/09/19_
@@ -310,12 +316,6 @@ _2026/09/13_
 - `Correction` La collecte utilise la compilation actuelle et vérifie versions et signatures pour éviter de renommer un ancien APK en nouvelle version
 - `Correction` Utiliser des dates de compilation en anglais indépendamment de la langue de la machine
 - `Amélioration` Harmonisation de l'activation, des métadonnées, de la documentation traduite et de la collecte des APK signés
-
-#### v2.1.1
-
-_2026/09/11_
-
-- `Amélioration` Vérification à la compilation de l'alignement des pages de 16 KB des bibliothèques natives 64 bits, avec contrôle du contrat manifest et rapports JSON
 
 ##### Pour plus d'historique des versions
 
@@ -351,9 +351,9 @@ Compiler les APK release:
 .\gradlew.bat :app:assembleRelease
 ```
 
-Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v2.1.3-<abi>-<crc32>.apk`.
+Pour l'archivage des publications, exécutez la tache `:app:appendDigestToReleasedFiles`, qui copie les APK de `app/release` vers `app/releases` et les renomme selon le motif `autojs6-plugin-mediainfo-v2.1.4-<abi>-<crc32>.apk`.
 
-Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal 24 (Android 7.0), SDK cible 37, version actuelle 2.1.3.
+Les paramètres de compilation sont centralisés dans `version.properties`: SDK minimal 24 (Android 7.0), SDK cible 37, version actuelle 2.1.4.
 
 ******
 
