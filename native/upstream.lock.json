@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "pluginReleaseLine": "2.x",
   "initialPluginVersion": "2.0.0",
-  "lockedAt": "2026-08-31",
+  "lockedAt": "2026-10-12",
   "sources": {
     "mediaInfoLib": {
       "repository": "https://github.com/MediaArea/MediaInfoLib.git",
       "submodulePath": "native/upstream/MediaInfoLib",
-      "tag": "v26.05",
-      "commit": "f23e69ce89581343f3b7a42e06828a5331e290d5",
+      "tag": "v26.10",
+      "commit": "153ad67a62172534b401e9d9a5752dc759fff77b",
       "license": "BSD-2-Clause",
       "licensePath": "LICENSE"
     },
